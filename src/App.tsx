@@ -1,14 +1,14 @@
 import React from 'react';
-import { useState } from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import './App.css';
-import Home from './views/Home/index';
+import Navigation from './views/Navigation';
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <div className="App">
-      <Home></Home>
+      <BrowserRouter>
+        <Navigation/>
+      </BrowserRouter>
     </div>
   );
 }
