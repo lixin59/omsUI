@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 // router
-import { NavLink, Switch, Route } from 'react-router-dom';
+import { NavLink, Switch, Route, Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
@@ -21,7 +21,7 @@ const useStyles = makeStyles({
 
 export default function Navigation() {
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState<number>(0);
 
   return (
     <div>
@@ -38,13 +38,13 @@ export default function Navigation() {
         <BottomNavigationAction label="运维模式" component={NavLink} to='/mode' className={classes.navItem} />
         <BottomNavigationAction label="关于" component={NavLink} to='/about' className={classes.navItem}/>
       </BottomNavigation>
-      <hr/>
       <div>
         <Switch>
           <Route path='/home' component={Home}/>
           <Route path='/group' component={Group}/>
           <Route path='/mode' component={Mode}/>
           <Route path='/about'component={About}/>
+          <Redirect from='/*' to='/home' />
         </Switch>
       </div>
     </div>
