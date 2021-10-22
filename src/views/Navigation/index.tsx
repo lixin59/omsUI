@@ -24,7 +24,7 @@ export default function Navigation() {
   const [value, setValue] = useState<number>(0);
 
   return (
-    <div>
+    <>
       <BottomNavigation
         value={value}
         onChange={(event, newValue) => {
@@ -38,7 +38,7 @@ export default function Navigation() {
         <BottomNavigationAction label="运维模式" component={NavLink} to='/mode' className={classes.navItem} />
         <BottomNavigationAction label="关于" component={NavLink} to='/about' className={classes.navItem}/>
       </BottomNavigation>
-      <div>
+      <div style={{ height: 'calc(100% - 56px)' }}>
         <Switch>
           <Route path='/home' component={Home}/>
           <Route path='/group' component={Group}/>
@@ -47,6 +47,6 @@ export default function Navigation() {
           <Redirect from='/*' to='/home' />
         </Switch>
       </div>
-    </div>
+    </>
   );
 }

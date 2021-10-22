@@ -1,7 +1,7 @@
 import React from 'react';
-
+import BodyBox from '../../components/Bodybox';
 export default function Mode() {
   return (
-    <div>Mode</div>
+    <BodyBox>Mode</BodyBox>
   );
 }

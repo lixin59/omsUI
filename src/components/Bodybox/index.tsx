@@ -1,7 +1,19 @@
 import React from 'react';
 
-export default function Bodybox() {
+type tProps = {
+    children?: any
+}
+
+export default function BodyBox(props: tProps) {
+  const { children } = props;
   return (
-    <div>BodyBox</div>
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#f2f1f1',
+      }}>
+      {children}
+    </div>
   );
 }
