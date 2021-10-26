@@ -11,6 +11,7 @@ export default function BodyBox(props: tProps) {
       style={{
         width: '100%',
         height: '100%',
+        overflowY: 'scroll',
         backgroundColor: '#f2f1f1',
       }}>
       {children}
