@@ -3,6 +3,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import { useSnackbar } from 'notistack';
 
 type tProps = {
   filePath?: string
@@ -30,6 +31,8 @@ export default function UploadButtons(props: tProps) {
   const classes = useStyles();
   const [fileInfo, setFileInfo] = useState<null | object>(null);
   const [fileName, setFileName] = useState<string>('未选择任何文件');
+  const { enqueueSnackbar } = useSnackbar();
+
   const changeFile = (e: ChangeEvent<HTMLInputElement>) => {
     // @ts-ignore
     if (!e.target!.files[0]!.name) {
@@ -43,6 +46,20 @@ export default function UploadButtons(props: tProps) {
   const uploadFile = () => {
     console.log(filePath);
     console.log(fileInfo);
+    if (!filePath) {
+      enqueueSnackbar('远程文件路径地址不能为空！！！', {
+        autoHideDuration: 3000,
+        variant: 'warning',
+      });
+      return;
+    }
+    if (!fileInfo) {
+      enqueueSnackbar('请选择需要上传的文件！！！', {
+        autoHideDuration: 3000,
+        variant: 'warning',
+      });
+      return;
+    }
   };
   return (
     <div className={classes.root}>
