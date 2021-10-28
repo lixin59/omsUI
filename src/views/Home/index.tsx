@@ -1,171 +1,51 @@
 import React from 'react';
+import { ActionCreator } from 'redux';
+import { connect } from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
+import actions from '../../store/action';
 import BodyBox from '../../components/Bodybox';
 import { hostInfo } from './typings';
 import HostInfoCard from '../../components/HostInfoCard';
+import { IState } from '../../store/interface';
+import homeStyle from './homStyle';
 
-const data: hostInfo[] = [
-  {
-    id: 1,
-    hostName: '127',
-    status: false,
-    user: 'xm',
-    host: '127.0.0.1',
-    port: '22',
-    group: '组1',
-    tag: '',
-  },
-  {
-    id: 2,
-    hostName: '127',
-    status: true,
-    user: 'xm',
-    host: '127.0.0.1',
-    port: '22',
-    group: '组2',
-    tag: '',
-  },
-  {
-    id: 3,
-    hostName: '127',
-    status: false,
-    user: 'xm',
-    host: '127.0.0.1',
-    port: '22',
-    group: '组1',
-    tag: '',
-  },
-  {
-    id: 4,
-    hostName: '127',
-    status: false,
-    user: 'xm',
-    host: '127.0.0.1',
-    port: '22',
-    group: '组1',
-    tag: '',
-  },
-  {
-    id: 5,
-    hostName: '127',
-    status: false,
-    user: 'xm',
-    host: '127.0.0.1',
-    port: '22',
-    group: '组1',
-    tag: '',
-  },
-  {
-    id: 6,
-    hostName: '127',
-    status: false,
-    user: 'xm',
-    host: '127.0.0.1',
-    port: '22',
-    group: '组1',
-    tag: '',
-  },
-  {
-    id: 7,
-    hostName: '127',
-    status: false,
-    user: 'xm',
-    host: '127.0.0.1',
-    port: '22',
-    group: '组1',
-    tag: '',
-  },
-  {
-    id: 8,
-    hostName: '127',
-    status: false,
-    user: 'xm',
-    host: '127.0.0.1',
-    port: '22',
-    group: '组1',
-    tag: '',
-  },
-  {
-    id: 9,
-    hostName: '127',
-    status: false,
-    user: 'xm',
-    host: '127.0.0.1',
-    port: '22',
-    group: '组1',
-    tag: '',
-  },
-  {
-    id: 10,
-    hostName: '127',
-    status: false,
-    user: 'xm',
-    host: '127.0.0.1',
-    port: '22',
-    group: '组1',
-    tag: '',
-  },
-  {
-    id: 11,
-    hostName: '127',
-    status: false,
-    user: 'xm',
-    host: '127.0.0.1',
-    port: '22',
-    group: '组1',
-    tag: '',
-  },
-  {
-    id: 12,
-    hostName: '127',
-    status: false,
-    user: 'xm',
-    host: '127.0.0.1',
-    port: '22',
-    group: '组1',
-    tag: '',
-  },
-  {
-    id: 13,
-    hostName: '127',
-    status: false,
-    user: 'xm',
-    host: '127.0.0.1',
-    port: '22',
-    group: '组1',
-    tag: '',
-  },
+type tDP = {
+  deleteHost: ActionCreator<any>;
+};
 
-];
+type tOP = {};
 
-export default function Home() {
+type tSP = tOP & {
+  hostList: hostInfo[],
+};
+
+const mapStateToProps = (state: IState, props: tOP): tSP => ({
+  ...props,
+  hostList: state.data,
+});
+const mapDispatch: tDP = {
+  deleteHost: actions.deleteHostInfo,
+};
+
+type tProps = tSP & tDP;
+
+function Home(props: tProps) {
+  const { hostList, deleteHost } = props;
+  const classes = makeStyles(homeStyle)();
   return (
     <BodyBox>
-      {/* <div style={{ fontSize: '30px', width: '200px', height: '200px', margin: '0 auto' }}>*/}
-      {/*  Home*/}
-      {/* </div>*/}
-      <div style={{
-        width: '90%',
-        margin: '0 auto',
-        paddingTop: '20px',
-        paddingBottom: '20px',
-        // height: '100%',
-        // overflow: 'scroll',
-        // display: 'flex',
-        display: 'grid',
-        // flexFlow: 'row wrap',
-        alignContent: 'space-evenly',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        justifyItems: 'center',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))',
-        gridGap: '20px 20px',
-      }}>
-        {data.map((i: hostInfo) => {
+      <div className={classes.home}>
+        {hostList.map((i: hostInfo) => {
           return (
-            <HostInfoCard hostInfo={i} key={i.id}/>
+            <HostInfoCard hostInfo={i} key={i.id} deleteHost={deleteHost}/>
           );
         })}
       </div>
     </BodyBox>
   );
 }
+
+export default connect(
+    mapStateToProps, // 把仓库的状态映射为组件的属性对象
+    mapDispatch,
+)(Home);

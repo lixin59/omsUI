@@ -11,9 +11,11 @@ import ListItemText from '@material-ui/core/ListItemText';
 import PowerIcon from '@material-ui/icons/Power';
 import PowerOffIcon from '@material-ui/icons/PowerOff';
 import { hostInfo } from '../../views/Home/typings';
+import { ActionCreator } from 'redux';
 
 type tProps = {
-  hostInfo: hostInfo
+  hostInfo: hostInfo;
+  deleteHost: ActionCreator<any>
 }
 
 const useStyles = makeStyles({
@@ -43,7 +45,7 @@ const useStyles = makeStyles({
 });
 
 function HostInfoCard(props: tProps) {
-  const { hostInfo } = props;
+  const { hostInfo, deleteHost } = props;
   const classes = useStyles();
   return (
     <Card className={classes.root}>
@@ -52,7 +54,12 @@ function HostInfoCard(props: tProps) {
         <Button className={classes.button} variant="contained" color="primary">
           编辑
         </Button>
-        <Button className={classes.button} variant="contained" color="secondary">
+        <Button
+          className={classes.button}
+          variant="contained"
+          color="secondary"
+          onClick={() => deleteHost(hostInfo.id)}
+        >
           删除
         </Button>
       </Typography>
