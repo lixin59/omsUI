@@ -1,35 +1,9 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import OmsTabs from '../../components/OmsTabs/Tabs';
 import OmsTab from '../../components/OmsTabs/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-
-interface TabPanelProps {
-  children?: ReactNode;
-  index: any;
-  value: any;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`vertical-tabpanel-${index}`}
-      aria-labelledby={`vertical-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
+import TabPanel from '../../components/OmsTabs/TabPanel';
+import UploadFile from './UploadFile';
 
 function a11yProps(index: any) {
   return {
@@ -44,6 +18,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     // backgroundColor: theme.palette.background.paper,
     display: 'flex',
     height: '100%',
+    width: '100%',
     indicator: {
       '& > span': {
         maxWidth: 40,
@@ -51,6 +26,10 @@ const useStyles = makeStyles((theme: Theme) => ({
         backgroundColor: '#4bce21',
       },
     },
+  },
+  TabPanel: {
+    height: '100%',
+    width: '100%',
   },
   tabs: {
     width: '200px',
@@ -86,8 +65,8 @@ function ModeTabs() {
         <OmsTab label="Item Six" {...a11yProps(5)} />
         <OmsTab label="Item Seven" {...a11yProps(6)} />
       </OmsTabs>
-      <TabPanel value={value} index={0}>
-        Item One
+      <TabPanel className={classes.TabPanel} value={value} index={0}>
+        <UploadFile/>
       </TabPanel>
       <TabPanel value={value} index={1}>
         Item Two

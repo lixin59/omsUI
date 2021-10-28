@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 export interface StyledTabsProps {
   className: any,
@@ -9,4 +9,11 @@ export interface StyledTabsProps {
 export interface StyledTabProps {
   label: string;
   className?: any,
+}
+
+export interface TabPanelProps {
+  children?: ReactNode;
+  index: any;
+  value: any;
+  className?: any;
 }
