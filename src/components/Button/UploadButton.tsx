@@ -66,7 +66,7 @@ export default function UploadButtons(props: tProps) {
       <TextField
         size="small"
         disabled
-        id="outlined-disabled"
+        id="select-file"
         variant="outlined"
         value={fileName}
       />
