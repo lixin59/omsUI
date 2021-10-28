@@ -23,7 +23,7 @@ ReactDOM.render(
       )}
       anchorOrigin={{
         vertical: 'top',
-        horizontal: 'center',
+        horizontal: 'right',
       }}
       maxSnack={4}
       iconVariant={{

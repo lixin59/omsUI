@@ -12,6 +12,7 @@ import PowerIcon from '@material-ui/icons/Power';
 import PowerOffIcon from '@material-ui/icons/PowerOff';
 import { hostInfo } from '../../views/Home/typings';
 import { ActionCreator } from 'redux';
+import { useSnackbar } from 'notistack';
 
 type tProps = {
   hostInfo: hostInfo;
@@ -47,6 +48,16 @@ const useStyles = makeStyles({
 function HostInfoCard(props: tProps) {
   const { hostInfo, deleteHost } = props;
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const onDelete = () => {
+    deleteHost(hostInfo.id);
+    enqueueSnackbar(`主机: ${hostInfo.hostName} 已被删除`, {
+      autoHideDuration: 3000,
+      variant: 'success',
+    });
+  };
+
   return (
     <Card className={classes.root}>
       <Typography className={classes.title} color="textSecondary" gutterBottom>
@@ -58,7 +69,7 @@ function HostInfoCard(props: tProps) {
           className={classes.button}
           variant="contained"
           color="secondary"
-          onClick={() => deleteHost(hostInfo.id)}
+          onClick={() => onDelete()}
         >
           删除
         </Button>
