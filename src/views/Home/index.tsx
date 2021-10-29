@@ -34,7 +34,7 @@ type tSP = tOP & {
 
 const mapStateToProps = (state: IState, props: tOP): tSP => ({
   ...props,
-  hostList: state.data,
+  hostList: state.hostList,
 });
 const mapDispatch: tDP = {
   deleteHost: actions.deleteHostInfo,

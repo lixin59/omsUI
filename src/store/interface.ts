@@ -6,5 +6,5 @@ export interface HostAction {
 }
 
 export interface IState {
-  data: hostInfo[]
+  hostList: hostInfo[]
 }

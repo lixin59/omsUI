@@ -2,7 +2,7 @@ import { HostAction } from './interface';
 import { hostActions } from './action-types';
 import { hostInfo } from '../views/Home/typings';
 
-const data: hostInfo[] = [
+const hostList: hostInfo[] = [
   {
     id: 1,
     hostName: '127',
@@ -137,21 +137,21 @@ const data: hostInfo[] = [
 ];
 // 初始化state数据
 const initialState ={
-  data,
+  hostList,
 };
 
 // 状态处理函数
-const reducer = (state = initialState, action: HostAction): {data: hostInfo[]} => {
+const reducer = (state = initialState, action: HostAction) => {
   switch (action.type) {
     case hostActions.DELETE_HOST_INFO: {
       const newdata = {
-        data: state.data.filter((item: hostInfo)=> item.id !== action.value),
+        hostList: state.hostList.filter((item: hostInfo)=> item.id !== action.value),
       };
       return newdata;
     }
     case hostActions.ADD_HOST_INFO: {
       const newdata = {
-        data: [...state.data, action.value],
+        hostList: [...state.hostList, action.value],
       };
       return newdata;
     }
