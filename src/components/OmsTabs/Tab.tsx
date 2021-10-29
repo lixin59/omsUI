@@ -10,7 +10,9 @@ const OmsTab = withStyles((theme: Theme) =>
       'textTransform': 'none',
       'minWidth': 72,
       'fontWeight': theme.typography.fontWeightRegular,
-      'marginRight': theme.spacing(4),
+      'marginLeft': theme.spacing(2),
+      'marginRight': theme.spacing(2),
+      'borderRadius': '8px',
       'fontFamily': [
         '-apple-system',
         'BlinkMacSystemFont',
@@ -25,11 +27,13 @@ const OmsTab = withStyles((theme: Theme) =>
       ].join(','),
       '&:hover': {
         color: '#40a9ff',
+        backgroundColor: '#e1e1e1',
         opacity: 1,
       },
       '&$selected': {
         color: '#1890ff',
         fontSize: 18,
+        backgroundColor: '#e1e1e1',
         fontWeight: theme.typography.fontWeightMedium,
       },
       '&:focus': {

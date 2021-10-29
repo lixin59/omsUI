@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: '100%',
   },
   tabs: {
-    width: '200px',
+    width: '240px',
     borderRight: `1px solid ${theme.palette.divider}`,
   },
 }));
@@ -68,10 +68,10 @@ function ModeTabs() {
       <TabPanel className={classes.TabPanel} value={value} index={0}>
         <UploadFile/>
       </TabPanel>
-      <TabPanel value={value} index={1}>
+      <TabPanel className={classes.TabPanel} value={value} index={1}>
         Item Two
       </TabPanel>
-      <TabPanel value={value} index={2}>
+      <TabPanel className={classes.TabPanel} value={value} index={2}>
         Item Three
       </TabPanel>
       <TabPanel value={value} index={3}>
