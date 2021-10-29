@@ -34,7 +34,7 @@ ReactDOM.render(
       }}>
       <Provider store={store}>
         <App/>
-      </Provider>,
+      </Provider>
     </SnackbarProvider>,
     // </React.StrictMode>,
     document.getElementById('root'),

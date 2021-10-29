@@ -1,6 +1,7 @@
 import { Styles } from '@material-ui/styles';
+import { Theme } from '@material-ui/core/styles';
 
-const homeStyle: Styles<any, {}> = {
+const homeStyle: Styles<any, {}> = (theme: Theme)=>( {
   home: {
     width: '90%',
     margin: '0 auto',
@@ -18,6 +19,13 @@ const homeStyle: Styles<any, {}> = {
     gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))',
     gridGap: '20px 20px',
   },
-};
+  FabButton: {
+    position: 'fixed',
+    bottom: '10vh',
+    right: '1vw',
+    zIndex: 999,
+    margin: theme.spacing(1),
+  },
+});
 
 export default homeStyle;
