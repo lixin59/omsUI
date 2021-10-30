@@ -29,6 +29,7 @@ export default function TipDialog({ open = false, title = '', text = '', toClose
     if (todo) {
       todo();
     }
+    toClose();
     // setIsOpen(false);
   };
 
