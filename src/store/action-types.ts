@@ -1,8 +1,29 @@
-export const WILL_DELETE= 'WILL_DELETE';
+export const WILL_DELETE = 'WILL_DELETE';
 export const WILL_ADD = 'WILL_ADD';// 更新数据
-export const GETDATA = 'GETDATA'; // 获取数据
+export const WILL_EDIT_HOST = 'WILL_EDIT_HOST'; // 编辑主机信息
+
+export const WILL_DELETE_GROUP = 'WILL_DELETE_GROUP';
+export const WILL_ADD_GROUP = 'WILL_ADD_GROUP';// 更新数据
+export const WILL_EDIT_GROUP = 'WILL_EDIT_GROUP'; // 编辑分组信息
+
+export const WILL_DELETE_TAG = 'WILL_DELETE_TAG';
+export const WILL_ADD_TAG = 'WILL_ADD_TAG';// 更新数据
+export const WILL_EDIT_TAG = 'WILL_EDIT_TAG'; // 编辑标签信息
 
 export enum hostActions{
   DELETE_HOST_INFO = 'DELETE_HOST_INFO',
   ADD_HOST_INFO = 'ADD_HOST_INFO',
+  EDIT_HOST_INFO = 'EDIT_HOST_INFO',
+}
+
+export enum groupActions{
+  DELETE_GROUP_INFO = 'DELETE_GROUP_INFO',
+  ADD_GROUP_INFO = 'ADD_GROUP_INFO',
+  EDIT_GROUP_INFO = 'EDIT_GROUP_INFO',
+}
+
+export enum tagActions{
+  DELETE_TAG_INFO = 'DELETE_TAG_INFO',
+  ADD_TAG_INFO = 'ADD_TAG_INFO',
+  EDIT_TAG_INFO = 'EDIT_TAG_INFO',
 }

@@ -6,5 +6,17 @@ export interface HostAction {
 }
 
 export interface IState {
-  hostList: hostInfo[]
+  hostList: hostInfo[];
+  groupList: GroupInfo[];
+  tagList: TagInfo[];
+}
+
+export interface GroupInfo {
+  name: string;
+  pattern: string;
+  rule: string;
+}
+
+export interface TagInfo {
+  name: string;
 }
