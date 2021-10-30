@@ -10,6 +10,7 @@ import GroupTable from './GroupTable';
 import styles from './style';
 import { ActionCreator } from 'redux';
 import { GroupInfo } from '../../store/interface';
+import { useSnackbar } from 'notistack';
 
 type tDP = {
   deleteGroup: ActionCreator<any>;
@@ -27,6 +28,7 @@ type tProps = tSP & tDP;
 
 const Grouping = (props: tProps) => {
   const classes = makeStyles(styles)();
+  const { enqueueSnackbar } = useSnackbar();
   const [pattern, setPattern] = useState<string>('');
   const [rule, setRule] = useState<string>('');
   const [name, setName] = useState<string>('');
@@ -35,9 +37,34 @@ const Grouping = (props: tProps) => {
   };
 
   const addNewGroup = () => {
-    console.log(pattern);
-    console.log(rule);
-    console.log(name);
+    if (!pattern) {
+      enqueueSnackbar(`请选择一个模式！`, {
+        autoHideDuration: 3000,
+        variant: 'warning',
+      });
+      return;
+    }
+    if (pattern === '规则模式' && !rule) {
+      enqueueSnackbar(`选中规则模式, 匹配的规则不能为空！`, {
+        autoHideDuration: 3000,
+        variant: 'warning',
+      });
+      return;
+    }
+    if (!name) {
+      enqueueSnackbar(`分组名称不能为空！`, {
+        autoHideDuration: 3000,
+        variant: 'warning',
+      });
+      return;
+    }
+    if (props.groupList.some((e) => e.name === name)) {
+      enqueueSnackbar(`该分组已存在！`, {
+        autoHideDuration: 3000,
+        variant: 'warning',
+      });
+      return;
+    }
     props.addGroup({ name, pattern, rule });
   };
 

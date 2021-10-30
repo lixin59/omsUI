@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -12,6 +12,8 @@ import Button from '@material-ui/core/Button';
 import styles from './style';
 import { ActionCreator } from 'redux';
 import { GroupInfo } from '../../store/interface';
+import TipDialog from '../../components/OmsDialog/TipDialog';
+import { useSnackbar } from 'notistack';
 
 type tDP = {
   deleteGroup: ActionCreator<any>;
@@ -54,8 +56,28 @@ const columns: Column[] = [
 
 export default function GroupTable({ groupList, deleteGroup }: tProps) {
   const classes = makeStyles(styles)();
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const { enqueueSnackbar } = useSnackbar();
+  const [page, setPage] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  const [open, setOpen] = useState<boolean>(false);
+  const [name, setName] = useState<string>('');
+
+  const title: string = '确定要删除这个分组吗？';
+  const text: string = '如果不想删除可以点击取消';
+  const dltButtonClick = (name: string) => {
+    setName(name);
+    setOpen(true);
+  };
+  const closeDialog = () => {
+    setOpen(false);
+  };
+  const toDelete = () => {
+    deleteGroup(name);
+    enqueueSnackbar(`分组: ${name} 已被删除`, {
+      autoHideDuration: 3000,
+      variant: 'success',
+    });
+  };
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -99,7 +121,7 @@ export default function GroupTable({ groupList, deleteGroup }: tProps) {
                   <TableCell align='center'>
                     <Button
                       className={classes.deleteButton}
-                      onClick={() => deleteGroup(row.name)}
+                      onClick={() => dltButtonClick(row.name)}
                     >
                       删除
                     </Button>
@@ -118,6 +140,13 @@ export default function GroupTable({ groupList, deleteGroup }: tProps) {
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+      <TipDialog
+        open={open}
+        title={title}
+        text={text}
+        toClose={closeDialog}
+        todo={toDelete}
       />
     </Paper>
   );

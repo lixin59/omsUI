@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
@@ -7,6 +7,7 @@ import TagTable from './TagTable';
 import styles from './style';
 import { ActionCreator } from 'redux';
 import { TagInfo } from '../../store/interface';
+import { useSnackbar } from 'notistack';
 
 type tDP = {
   deleteTag: ActionCreator<any>;
@@ -24,9 +25,24 @@ type tProps = tSP & tDP;
 
 const Tag = (props: tProps) => {
   const classes = makeStyles(styles)();
+  const { enqueueSnackbar } = useSnackbar();
   const [tag, setTag] = useState<string>('');
 
   const addNewTag = () => {
+    if (!tag) {
+      enqueueSnackbar(`标签名称不能为空`, {
+        autoHideDuration: 3000,
+        variant: 'warning',
+      });
+      return;
+    }
+    if (props.tagList.some((e) => e.name === tag)) {
+      enqueueSnackbar(`该标签已存在！`, {
+        autoHideDuration: 3000,
+        variant: 'warning',
+      });
+      return;
+    }
     props.addTag({ name: tag });
   };
 
