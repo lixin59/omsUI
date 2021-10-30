@@ -30,7 +30,7 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
     cursor: 'pointer',
     width: '50%',
     height: '100%',
-    backgroundColor: theme.palette.grey.A400,
+    backgroundColor: theme.palette.grey['300'],
     border: '1px solid #000',
     '&:hover': {
       boxShadow: '0px 0px 2px 3px #119c0f',
