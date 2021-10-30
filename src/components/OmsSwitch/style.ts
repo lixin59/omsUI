@@ -8,7 +8,8 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
     width: '48px',
     height: '24px',
     borderRadius: '12px',
-    backgroundColor: '#808080',
+    border: '1px solid #000',
+    backgroundColor: theme.palette.grey.A100,
     position: 'relative',
     display: 'flex',
     justifyContent: 'space-between',
@@ -29,7 +30,7 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
     cursor: 'pointer',
     width: '50%',
     height: '100%',
-    backgroundColor: '#f1f1f1',
+    backgroundColor: theme.palette.grey.A400,
     border: '1px solid #000',
     '&:hover': {
       boxShadow: '0px 0px 2px 3px #119c0f',

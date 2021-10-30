@@ -3,8 +3,7 @@ import BodyBox from '../../components/Bodybox';
 import Button from '@material-ui/core/Button';
 import { useSnackbar } from 'notistack';
 export default function Group() {
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-
+  const { enqueueSnackbar } = useSnackbar();
   const handleClick = () => {
     enqueueSnackbar('I love hooks', {
       variant: 'success',

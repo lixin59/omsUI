@@ -1,19 +1,24 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 
 type tProps = {
-    children?: any
+    children?: ReactNode
 }
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: '100%',
+    height: '100%',
+    overflowY: 'scroll',
+    backgroundColor: theme.palette.grey.A100,
+  },
+}));
 
 export default function BodyBox(props: tProps) {
   const { children } = props;
+  const classes = useStyles();
   return (
-    <div
-      style={{
-        width: '100%',
-        height: '100%',
-        overflowY: 'scroll',
-        backgroundColor: '#f2f1f1',
-      }}>
+    <div className={classes.root}>
       {children}
     </div>
   );

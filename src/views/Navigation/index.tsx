@@ -8,19 +8,10 @@ import Home from '../Home';
 import About from '../About';
 import Group from '../Group';
 import Mode from '../Mode';
-
-const useStyles = makeStyles({
-  root: {
-    width: '100%',
-    backgroundColor: '#393d49',
-  },
-  navItem: {
-    color: '#eaeaea',
-  },
-});
+import styles from './style';
 
 export default function Navigation() {
-  const classes = useStyles();
+  const classes = makeStyles(styles)();
   const [value, setValue] = useState<number>(0);
 
   return (
@@ -33,10 +24,10 @@ export default function Navigation() {
         showLabels
         className={classes.root}
       >
-        <BottomNavigationAction label="主机" component={NavLink} to='/home' className={classes.navItem}/>
-        <BottomNavigationAction label="组" component={NavLink} to='/group' className={classes.navItem} />
-        <BottomNavigationAction label="运维模式" component={NavLink} to='/mode' className={classes.navItem} />
-        <BottomNavigationAction label="关于" component={NavLink} to='/about' className={classes.navItem}/>
+        <BottomNavigationAction label='主机' component={NavLink} to='/home' className={classes.navItem}/>
+        <BottomNavigationAction label='组' component={NavLink} to='/group' className={classes.navItem} />
+        <BottomNavigationAction label='运维模式' component={NavLink} to='/mode' className={classes.navItem} />
+        <BottomNavigationAction label='关于' component={NavLink} to='/about' className={classes.navItem}/>
       </BottomNavigation>
       <div style={{ height: 'calc(100% - 56px)' }}>
         <Switch>
