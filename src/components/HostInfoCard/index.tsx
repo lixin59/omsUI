@@ -10,14 +10,10 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import PowerIcon from '@material-ui/icons/Power';
 import PowerOffIcon from '@material-ui/icons/PowerOff';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import { hostInfo } from '../../views/Home/typings';
 import { ActionCreator } from 'redux';
 import { useSnackbar } from 'notistack';
+import TipDialog from '../OmsDialog/TipDialog';
 
 type tProps = {
   hostInfo: hostInfo;
@@ -54,6 +50,8 @@ function HostInfoCard(props: tProps) {
   const { hostInfo, deleteHost } = props;
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
+  const title: string = '确定要删除这台主机吗？';
+  const text: string = '如果是不小心点到了删除按钮请点击取消，否则请你考虑清楚在决定是否要删除，后果自负！！！';
 
   const [open, setOpen] = useState<boolean>(false);
   const closeDialog = () => {
@@ -62,6 +60,7 @@ function HostInfoCard(props: tProps) {
 
   const openDialog = () => {
     setOpen(true);
+    console.log(open);
   };
 
   const onDelete = () => {
@@ -75,70 +74,77 @@ function HostInfoCard(props: tProps) {
   return (
     <>
       <Card className={classes.root}>
-        <Typography className={classes.title} color="textSecondary" gutterBottom>
-          <Button className={classes.button} variant="contained">命令</Button>
-          <Button className={classes.button} variant="contained" color="primary">
+        <Typography className={classes.title} color='textSecondary' gutterBottom>
+          <Button className={classes.button} variant='contained'>命令</Button>
+          <Button className={classes.button} variant='contained' color='primary'>
             编辑
           </Button>
           <Button
             className={classes.button}
-            variant="contained"
-            color="secondary"
+            variant='contained'
+            color='secondary'
             onClick={() => openDialog()}
           >
             删除
           </Button>
         </Typography>
         <Divider/>
-        <List component="nav" aria-label="main mailbox folders">
+        <List component='nav' aria-label='main mailbox folders'>
           <ListItem className={classes.listItem}>
-            <ListItemText className={classes.listItemText} primary="主机名:" />
+            <ListItemText className={classes.listItemText} primary='主机名:' />
             <ListItemText primary={hostInfo.hostName || ''} />
           </ListItem>
           <ListItem className={classes.listItem}>
-            <ListItemText className={classes.listItemText} primary="状态:" />
+            <ListItemText className={classes.listItemText} primary='状态:' />
             <ListItemText style={{ color: hostInfo.status ? '#4bce21' : '#d90229' }}>
               { hostInfo.status ? (<PowerIcon/>) : (<PowerOffIcon/>) }
             </ListItemText>
           </ListItem>
           <ListItem className={classes.listItem}>
-            <ListItemText className={classes.listItemText} primary="用户:" />
+            <ListItemText className={classes.listItemText} primary='用户:' />
             <ListItemText primary={hostInfo.user || ''} />
           </ListItem>
           <ListItem className={classes.listItem}>
-            <ListItemText className={classes.listItemText} primary="地址:" />
+            <ListItemText className={classes.listItemText} primary='地址:' />
             <ListItemText primary={hostInfo.host || ''} />
           </ListItem>
           <ListItem className={classes.listItem}>
-            <ListItemText className={classes.listItemText} primary="端口:" />
+            <ListItemText className={classes.listItemText} primary='端口:' />
             <ListItemText primary={hostInfo.port || ''} />
           </ListItem>
           <ListItem className={classes.listItem}>
-            <ListItemText className={classes.listItemText} primary="组:" />
+            <ListItemText className={classes.listItemText} primary='组:' />
             <ListItemText primary={hostInfo.group || ''} />
           </ListItem>
           <ListItem className={classes.listItem}>
-            <ListItemText className={classes.listItemText} primary="标签:" />
+            <ListItemText className={classes.listItemText} primary='标签:' />
             <ListItemText primary={hostInfo.tag || ''} />
           </ListItem>
         </List>
       </Card>
-      <Dialog open={open} onClose={closeDialog} aria-labelledby="is-delete-host">
-        <DialogTitle id="is-delete-host" style={{ backgroundColor: '#ecad5a' }}>确定要删除这台主机吗？</DialogTitle>
-        <DialogContent dividers>
-          <DialogContentText>
-            如果是不小心点到了删除按钮请点击取消，否则请你考虑清楚在决定是否要删除，后果自负！！！
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeDialog} color="primary">
-            取消
-          </Button>
-          <Button onClick={onDelete} color="primary">
-            确定
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <TipDialog
+        open={open}
+        text={text}
+        title={title}
+        toClose={closeDialog}
+        todo={onDelete}
+      />
+      {/* <Dialog open={open} onClose={closeDialog} aria-labelledby='is-delete-host'>*/}
+      {/*  <DialogTitle id='is-delete-host' style={{ backgroundColor: '#ecad5a' }}>确定要删除这台主机吗？</DialogTitle>*/}
+      {/*  <DialogContent dividers>*/}
+      {/*    <DialogContentText>*/}
+      {/*      如果是不小心点到了删除按钮请点击取消，否则请你考虑清楚在决定是否要删除，后果自负！！！*/}
+      {/*    </DialogContentText>*/}
+      {/*  </DialogContent>*/}
+      {/*  <DialogActions>*/}
+      {/*    <Button onClick={closeDialog} color='primary'>*/}
+      {/*      取消*/}
+      {/*    </Button>*/}
+      {/*    <Button onClick={onDelete} color='primary'>*/}
+      {/*      确定*/}
+      {/*    </Button>*/}
+      {/*  </DialogActions>*/}
+      {/* </Dialog>*/}
     </>
   );
 }
