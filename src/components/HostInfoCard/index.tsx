@@ -14,53 +14,78 @@ import { hostInfo } from '../../views/Home/typings';
 import { ActionCreator } from 'redux';
 import { useSnackbar } from 'notistack';
 import TipDialog from '../OmsDialog/TipDialog';
+import FormDialog from '../OmsDialog/FormDialog';
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import styles from './style';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import { GroupInfo, TagInfo } from '../../store/interface';
 
 type tProps = {
   hostInfo: hostInfo;
-  deleteHost: ActionCreator<any>
+  deleteHost: ActionCreator<any>;
+  editHost: ActionCreator<any>;
+  groupList: GroupInfo[];
+  tagList: TagInfo[];
 }
 
-const useStyles = makeStyles({
-  root: {
-    width: '400px',
-    minWidth: 275,
-  },
-  listItem: {
-    padding: 0,
-    paddingLeft: '40px',
-  },
-  listItemText: {
-    width: '4%',
-  },
-  title: {
-    height: '40px',
-    lineHeight: '30px',
-    fontSize: 14,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-  },
-  button: {
-    width: '40px',
-    height: '20px',
-  },
-});
-
 function HostInfoCard(props: tProps) {
-  const { hostInfo, deleteHost } = props;
-  const classes = useStyles();
+  const { hostInfo, deleteHost, editHost, groupList, tagList } = props;
+  const classes = makeStyles(styles)();
   const { enqueueSnackbar } = useSnackbar();
-  const title: string = '确定要删除这台主机吗？';
+  const titles: string = '确定要删除这台主机吗？';
   const text: string = '如果是不小心点到了删除按钮请点击取消，否则请你考虑清楚在决定是否要删除，后果自负！！！';
 
   const [open, setOpen] = useState<boolean>(false);
+  const [isOpen, setIsoOpen] = useState<boolean>(false);
+  const [hostName, setHostName] = useState<string>(hostInfo.hostName);
+  const [host, setHost] = useState<string>(hostInfo.host);
+  const [port, setPort] = useState<string>(hostInfo.password);
+  const [user, setUser] = useState<string>(hostInfo.user);
+  const [password, setPassword] = useState<string>(hostInfo.password);
+  const [group, setGroup] = useState<string>(hostInfo.group);
+  const [tag, setTag] = useState<string>(hostInfo.tag);
+
   const closeDialog = () => {
+    console.log('o', open);
     setOpen(false);
+    // setIsoOpen(false);
   };
 
-  const openDialog = () => {
-    setOpen(true);
-    console.log(open);
+  const closeEditDialog = () => {
+    console.log('Is44', isOpen);
+    setIsoOpen(false);
+  };
+
+  const openDialog = (type:string) => {
+    if (type === 'edit') {
+      setIsoOpen(true);
+    }
+    if (type === 'delete') {
+      setOpen(true);
+    }
+  };
+
+  const editNewHost = () => {
+    editHost({
+      id: hostInfo.id,
+      hostName,
+      status: hostInfo.status,
+      password,
+      user,
+      host,
+      port,
+      group,
+      tag,
+    });
+    enqueueSnackbar(`主机: ${hostInfo.hostName} 信息已经修改`, {
+      autoHideDuration: 3000,
+      variant: 'success',
+    });
   };
 
   const onDelete = () => {
@@ -71,19 +96,106 @@ function HostInfoCard(props: tProps) {
     });
   };
 
+  const title = '编辑主机信息';
+  const content = (<>
+    <TextField
+      autoFocus
+      margin='dense'
+      id='host-name'
+      label='主机名'
+      fullWidth
+      value={hostName}
+      onChange={(e) => setHostName(e.target.value)}
+    />
+    <TextField
+      autoFocus
+      margin='dense'
+      id='host-ip'
+      label='主机地址'
+      fullWidth
+      value={host}
+      onChange={(e) => setHost(e.target.value)}
+    />
+    <TextField
+      autoFocus
+      margin='dense'
+      id='user-name'
+      label='用户名'
+      fullWidth
+      value={user}
+      onChange={(e) => setUser(e.target.value)}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position='start'>
+            <AccountCircle />
+          </InputAdornment>
+        ),
+      }}
+    />
+    <TextField
+      autoFocus
+      margin='dense'
+      id='port'
+      label='端口号'
+      fullWidth
+      value={port}
+      onChange={(e) => setPort(e.target.value)}
+    />
+    <TextField
+      autoFocus
+      margin='dense'
+      id='password'
+      label='请输入密码或key'
+      fullWidth
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+    />
+    <FormControl className={classes.Select}>
+      {groupList.length > 0 ? (<><InputLabel id='group-select-label'>选择分组</InputLabel>
+        <Select
+          labelId='group-select-label'
+          id='group-select'
+          value={group}
+          onChange={(e) => setGroup(e?.target?.value as string)}
+        >
+          {groupList.map((e) => {
+            return (<MenuItem key={e.name} value={e.name}>{e.name}</MenuItem>);
+          })}
+        </Select></>) : '请在分组页面添加分组才可以选择分组' }
+    </FormControl>
+    <FormControl className={classes.Select}>
+      { tagList.length > 0 ? (<><InputLabel id='tag-select-label'>选择标签</InputLabel>
+        <Select
+          labelId='tag-select-label'
+          id='tag-select'
+          value={tag}
+          onChange={(e) => setTag(e?.target?.value as string)}
+        >
+          {tagList.map((e) => {
+            return (<MenuItem key={e.name} value={e.name}>{e.name}</MenuItem>);
+          })}
+        </Select></>) : '请在分组页面添加标签才可以选择标签'}
+    </FormControl>
+  </>);
+
   return (
     <>
-      <Card className={classes.root}>
+      <Card className={classes.HostInfoCard}>
         <Typography className={classes.title} color='textSecondary' gutterBottom>
           <Button className={classes.button} variant='contained'>命令</Button>
-          <Button className={classes.button} variant='contained' color='primary'>
+          <Button
+            className={classes.button}
+            variant='contained'
+            color='primary'
+            onClick={() => openDialog('edit')}
+          >
             编辑
           </Button>
           <Button
             className={classes.button}
             variant='contained'
             color='secondary'
-            onClick={() => openDialog()}
+            onClick={() => openDialog('delete')}
           >
             删除
           </Button>
@@ -125,26 +237,17 @@ function HostInfoCard(props: tProps) {
       <TipDialog
         open={open}
         text={text}
-        title={title}
+        title={titles}
         toClose={closeDialog}
         todo={onDelete}
       />
-      {/* <Dialog open={open} onClose={closeDialog} aria-labelledby='is-delete-host'>*/}
-      {/*  <DialogTitle id='is-delete-host' style={{ backgroundColor: '#ecad5a' }}>确定要删除这台主机吗？</DialogTitle>*/}
-      {/*  <DialogContent dividers>*/}
-      {/*    <DialogContentText>*/}
-      {/*      如果是不小心点到了删除按钮请点击取消，否则请你考虑清楚在决定是否要删除，后果自负！！！*/}
-      {/*    </DialogContentText>*/}
-      {/*  </DialogContent>*/}
-      {/*  <DialogActions>*/}
-      {/*    <Button onClick={closeDialog} color='primary'>*/}
-      {/*      取消*/}
-      {/*    </Button>*/}
-      {/*    <Button onClick={onDelete} color='primary'>*/}
-      {/*      确定*/}
-      {/*    </Button>*/}
-      {/*  </DialogActions>*/}
-      {/* </Dialog>*/}
+      <FormDialog
+        open={isOpen}
+        content={content}
+        toClose={closeEditDialog}
+        title={title}
+        todo={editNewHost}
+      />
     </>
   );
 }

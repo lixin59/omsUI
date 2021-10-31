@@ -20,7 +20,7 @@ export default function* hostInfoSaga() {
       }
       if (editHost) {
         console.log(editHost);
-        yield put({ type: hostActions.EDIT_HOST_INFO, value: deleteHost.value });
+        yield put({ type: hostActions.EDIT_HOST_INFO, value: editHost.value });
       }
       console.log('正在更新数据');
     }

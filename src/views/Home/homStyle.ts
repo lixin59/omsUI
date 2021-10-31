@@ -1,7 +1,7 @@
 import { Styles } from '@material-ui/styles';
 import { Theme } from '@material-ui/core/styles';
 
-const homeStyle: Styles<any, {}> = (theme: Theme)=>( {
+const homeStyle: Styles<any, {}> = (theme: Theme) => ({
   home: {
     width: '90%',
     margin: '0 auto',
@@ -25,6 +25,9 @@ const homeStyle: Styles<any, {}> = (theme: Theme)=>( {
     right: '1vw',
     zIndex: 999,
     margin: theme.spacing(1),
+  },
+  Select: {
+    width: '100%',
   },
 });
 

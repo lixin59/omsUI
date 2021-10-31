@@ -3,6 +3,7 @@ export type hostInfo = {
   hostName: string;
   status: boolean;
   user: string;
+  password: string;
   host: string;
   port: string;
   group: string;

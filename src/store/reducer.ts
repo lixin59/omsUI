@@ -8,6 +8,7 @@ const hostList: hostInfo[] = [
     hostName: '127',
     status: false,
     user: 'xm',
+    password: '1221',
     host: '127.0.0.1',
     port: '22',
     group: '组1',
@@ -18,6 +19,7 @@ const hostList: hostInfo[] = [
     hostName: '127',
     status: true,
     user: 'xm',
+    password: '1221',
     host: '127.0.0.1',
     port: '22',
     group: '组2',
@@ -28,6 +30,7 @@ const hostList: hostInfo[] = [
     hostName: '127',
     status: false,
     user: 'xm',
+    password: '1221',
     host: '127.0.0.1',
     port: '22',
     group: '组1',
@@ -85,7 +88,10 @@ const reducer = (state = initialState, action: HostAction) => {
           arr[i] = action.value;
         }
       });
-      return state;
+      return ({
+        ...state,
+        hostList: [...state.hostList],
+      });
     }
     case groupActions.DELETE_GROUP_INFO: {
       return ({
@@ -105,7 +111,10 @@ const reducer = (state = initialState, action: HostAction) => {
           arr[i] = action.value;
         }
       });
-      return state;
+      return ({
+        ...state,
+        groupList: [...state.groupList],
+      });
     }
     case tagActions.DELETE_TAG_INFO: {
       return ({
@@ -125,7 +134,10 @@ const reducer = (state = initialState, action: HostAction) => {
           arr[i] = action.value;
         }
       });
-      return state;
+      return ({
+        ...state,
+        tagList: [...state.tagList],
+      });
     }
     default:
       return state;
