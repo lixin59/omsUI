@@ -1,6 +1,6 @@
 export type hostInfo = {
   id: number;
-  hostName: string;
+  name: string;
   status: boolean;
   user: string;
   password: string;

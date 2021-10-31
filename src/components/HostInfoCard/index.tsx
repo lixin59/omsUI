@@ -42,7 +42,7 @@ function HostInfoCard(props: tProps) {
 
   const [open, setOpen] = useState<boolean>(false);
   const [isOpen, setIsoOpen] = useState<boolean>(false);
-  const [hostName, setHostName] = useState<string>(hostInfo.hostName);
+  const [name, setHostName] = useState<string>(hostInfo.name);
   const [host, setHost] = useState<string>(hostInfo.host);
   const [port, setPort] = useState<string>(hostInfo.password);
   const [user, setUser] = useState<string>(hostInfo.user);
@@ -73,7 +73,7 @@ function HostInfoCard(props: tProps) {
   const editNewHost = () => {
     editHost({
       id: hostInfo.id,
-      hostName,
+      name,
       status: hostInfo.status,
       password,
       user,
@@ -82,7 +82,7 @@ function HostInfoCard(props: tProps) {
       group,
       tag,
     });
-    enqueueSnackbar(`主机: ${hostInfo.hostName} 信息已经修改`, {
+    enqueueSnackbar(`主机: ${hostInfo.name} 信息已经修改`, {
       autoHideDuration: 3000,
       variant: 'success',
     });
@@ -90,7 +90,7 @@ function HostInfoCard(props: tProps) {
 
   const onDelete = () => {
     deleteHost(hostInfo.id);
-    enqueueSnackbar(`主机: ${hostInfo.hostName} 已被删除`, {
+    enqueueSnackbar(`主机: ${hostInfo.name} 已被删除`, {
       autoHideDuration: 3000,
       variant: 'success',
     });
@@ -104,7 +104,7 @@ function HostInfoCard(props: tProps) {
       id='host-name'
       label='主机名'
       fullWidth
-      value={hostName}
+      value={name}
       onChange={(e) => setHostName(e.target.value)}
     />
     <TextField
@@ -204,7 +204,7 @@ function HostInfoCard(props: tProps) {
         <List component='nav' aria-label='main mailbox folders'>
           <ListItem className={classes.listItem}>
             <ListItemText className={classes.listItemText} primary='主机名:' />
-            <ListItemText primary={hostInfo.hostName || ''} />
+            <ListItemText primary={hostInfo.name || ''} />
           </ListItem>
           <ListItem className={classes.listItem}>
             <ListItemText className={classes.listItemText} primary='状态:' />

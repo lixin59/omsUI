@@ -55,7 +55,7 @@ function Home(props: tProps) {
 
   const [open, setOpen] = useState<boolean>(false);
   const [hostStatus, setHostStatus] = useState<boolean>(false);
-  const [hostName, setHostName] = useState<string>('');
+  const [name, setHostName] = useState<string>('');
   const [host, setHost] = useState<string>('');
   const [port, setPort] = useState<string>('');
   const [user, setUser] = useState<string>('');
@@ -86,7 +86,7 @@ function Home(props: tProps) {
       });
       return;
     }
-    if (!hostName) {
+    if (!name) {
       enqueueSnackbar(`用户名不能为空`, {
         autoHideDuration: 3000,
         variant: 'error',
@@ -102,10 +102,10 @@ function Home(props: tProps) {
       status: hostStatus,
       password,
       tag,
-      hostName,
+      name,
     };
     addHost(data);
-    enqueueSnackbar(`主机: ${hostName} 已添加`, {
+    enqueueSnackbar(`主机: ${name} 已添加`, {
       autoHideDuration: 3000,
       variant: 'success',
     });

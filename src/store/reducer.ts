@@ -5,7 +5,7 @@ import { hostInfo } from '../views/Home/typings';
 const hostList: hostInfo[] = [
   {
     id: 1,
-    hostName: '127',
+    name: '1271',
     status: false,
     user: 'xm',
     password: '1221',
@@ -16,7 +16,7 @@ const hostList: hostInfo[] = [
   },
   {
     id: 2,
-    hostName: '127',
+    name: '1272',
     status: true,
     user: 'xm',
     password: '1221',
@@ -27,7 +27,7 @@ const hostList: hostInfo[] = [
   },
   {
     id: 3,
-    hostName: '127',
+    name: '1273',
     status: false,
     user: 'xm',
     password: '1221',
