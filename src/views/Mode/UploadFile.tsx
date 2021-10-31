@@ -5,12 +5,14 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import UploadButtons from '../../components/Button/UploadButton';
 import Select from '@material-ui/core/Select';
+import OmsSelect from '../../components/OmsSelect';
 import TextField from '@material-ui/core/TextField';
 // import { ActionCreator } from 'redux';
 import { GroupInfo, IState, TagInfo } from '../../store/interface';
 // import actions from '../../store/action';
 import { connect } from 'react-redux';
 import { hostInfo } from '../Home/typings';
+import { deepPurple } from '@material-ui/core/colors';
 
 type tDP = {
   // deleteGroup: ActionCreator<any>;
@@ -110,7 +112,7 @@ const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
       <div className={classes.ControlBox}>
         <FormControl className={classes.Control}>
           <InputLabel id='type-select-label'>请选择类型</InputLabel>
-          <Select
+          <OmsSelect
             labelId='type-select-label'
             id='type-select'
             value={type}
@@ -119,7 +121,7 @@ const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
             <MenuItem value={'host'}>主机</MenuItem>
             <MenuItem value={'group'}>组</MenuItem>
             <MenuItem value={'tag'}>标签</MenuItem>
-          </Select>
+          </OmsSelect>
         </FormControl>
         <FormControl className={classes.Control}>
           <InputLabel id='typeItem-select-label'>{itemType[(selectType(false) as tItem)]}</InputLabel>
