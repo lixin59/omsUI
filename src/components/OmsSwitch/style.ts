@@ -12,19 +12,19 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
     backgroundColor: theme.palette.grey.A100,
     position: 'relative',
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
   },
   switchIconMoon: {
     width: '50%',
     height: '100%',
     backgroundImage: `url(${moon})`,
-    backgroundSize: '100%',
+    backgroundSize: '100%'
   },
   switchIconSun: {
     width: '50%',
     height: '100%',
     backgroundImage: `url(${sun})`,
-    backgroundSize: '100%',
+    backgroundSize: '100%'
   },
   switchChecked: {
     cursor: 'pointer',
@@ -33,13 +33,13 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
     backgroundColor: theme.palette.grey['300'],
     border: '1px solid #000',
     '&:hover': {
-      boxShadow: '0px 0px 2px 3px #119c0f',
+      boxShadow: '0px 0px 2px 3px #119c0f'
     },
     borderRadius: '50%',
     position: 'absolute',
     top: '0px',
     left: '-2px',
-    zIndex: 999,
+    zIndex: 999
   },
   switchNoChecked: {
     cursor: 'pointer',
@@ -48,14 +48,14 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
     backgroundColor: theme.palette.grey['50'],
     border: '1px solid #000',
     '&:hover': {
-      boxShadow: '0px 0px 2px 3px #26e924',
+      boxShadow: '0px 0px 2px 3px #26e924'
     },
     borderRadius: '50%',
     position: 'absolute',
     top: '0px',
     right: '-2px',
-    zIndex: 999,
-  },
+    zIndex: 999
+  }
 });
 
 export default styles;
