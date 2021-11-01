@@ -14,6 +14,7 @@ const OmsLabel = withStyles((theme: Theme) =>
       zIndex: 9999999999999
     },
     focused: {
+      top: '0px',
       color: theme.palette.success.main
     },
     formControl: {
