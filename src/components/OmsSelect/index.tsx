@@ -35,7 +35,7 @@ const OmsSelect = withStyles((theme: Theme) =>
   createStyles({
     root: {
       minWidth: 100,
-      // // background: 'white',
+      background: theme.palette.grey.A700,
       color: theme.palette.success.main,
       fontWeight: 200,
       borderStyle: 'none',
@@ -47,7 +47,7 @@ const OmsSelect = withStyles((theme: Theme) =>
       boxShadow: '0px 5px 8px -3px rgba(0,0,0,0.14)',
       '&:focus': {
         borderRadius: 12,
-        background: 'white',
+        background: theme.palette.grey.A700,
         borderColor: theme.palette.success.main
       }
     },

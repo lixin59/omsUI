@@ -12,7 +12,8 @@ import { GroupInfo, IState, TagInfo } from '../../store/interface';
 // import actions from '../../store/action';
 import { connect } from 'react-redux';
 import { hostInfo } from '../Home/typings';
-import { deepPurple } from '@material-ui/core/colors';
+import OmsLabel from '../../components/OmsLabel';
+import OmsMenuItem from '../../components/OmsSelect/OmsMenuItem';
 
 type tDP = {
   // deleteGroup: ActionCreator<any>;
@@ -35,7 +36,7 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
   ...props,
   hostList: state.hostList,
   groupList: state.groupList,
-  tagList: state.tagList,
+  tagList: state.tagList
 });
 const mapDispatch: tDP = {
   // deleteGroup: actions.deleteGroupInfo,
@@ -52,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
-      height: '100%',
+      height: '100%'
     },
     ControlBox: {
       marginBottom: '20px',
@@ -60,17 +61,17 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignContent: 'space-evenly',
       alignItems: 'center',
-      justifyContent: 'space-between',
+      justifyContent: 'space-between'
     },
     Control: {
-      width: '25%',
+      width: '25%'
     },
     shellBox: {
       width: '100%',
       height: '60%',
-      backgroundColor: '#2f2f2f',
-    },
-  }),
+      backgroundColor: '#2f2f2f'
+    }
+  })
 );
 
 type tItem = 'hostList' | 'groupList' | 'tagList' | 'default';
@@ -79,7 +80,7 @@ const itemType = {
   hostList: '请选择主机',
   groupList: '请选择分组',
   tagList: '请选择标签',
-  default: '请选择子选项',
+  default: '请选择子选项'
 };
 
 const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
@@ -111,30 +112,29 @@ const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
     <div className={classes.root}>
       <div className={classes.ControlBox}>
         <FormControl className={classes.Control}>
-          <InputLabel id='type-select-label'>请选择类型</InputLabel>
+          <OmsLabel>请选择类型</OmsLabel>
           <OmsSelect
-            labelId='type-select-label'
             id='type-select'
             value={type}
             onChange={(e) => setType(e.target.value as string)}
           >
-            <MenuItem value={'host'}>主机</MenuItem>
-            <MenuItem value={'group'}>组</MenuItem>
-            <MenuItem value={'tag'}>标签</MenuItem>
+            <OmsMenuItem value={'host'}>主机</OmsMenuItem>
+            <OmsMenuItem value={'group'}>组</OmsMenuItem>
+            <OmsMenuItem value={'tag'}>标签</OmsMenuItem>
           </OmsSelect>
         </FormControl>
         <FormControl className={classes.Control}>
-          <InputLabel id='typeItem-select-label'>{itemType[(selectType(false) as tItem)]}</InputLabel>
-          <Select
+          <OmsLabel>{itemType[(selectType(false) as tItem)]}</OmsLabel>
+          <OmsSelect
             labelId='typeItem-select-label'
             id='typeItem-select-label'
             value={item}
             onChange={handleChange}
           >
             {selectType(true).length > 0 ? (selectType(true) as Array<any>).map((e) => {
-              return (<MenuItem key={e.name} value={e.name}>{e.name}</MenuItem>);
+              return (<OmsMenuItem key={e.name} value={e.name}>{e.name}</OmsMenuItem>);
             }) : null }
-          </Select>
+          </OmsSelect>
         </FormControl>
       </div>
       <div className={classes.ControlBox}>
@@ -156,5 +156,5 @@ const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
 
 export default connect(
   mapStateToProps,
-  mapDispatch,
+  mapDispatch
 )(UploadFile);

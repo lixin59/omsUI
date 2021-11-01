@@ -12,10 +12,11 @@ const themeLight = createTheme({
   palette: {
     type: 'light',
     grey: {
-      A100: '#ffffff', // BodyBox
-      A200: '#eeeeee', // Navigation
-    },
-  },
+      A100: '#f5f5f5', // BodyBox
+      A200: '#d7d7d7', // Navigation
+      A700: '#ffffff' // Select
+    }
+  }
 });
 
 const themeDark = createTheme({
@@ -23,12 +24,12 @@ const themeDark = createTheme({
     type: 'dark',
     grey: {
       A100: '#757575',
-      A200: '#393d49',
+      A200: '#393d49'
     },
     text: {
-      primary: '#ffffff',
-    },
-  },
+      primary: '#ffffff'
+    }
+  }
 });
 
 
@@ -53,7 +54,7 @@ function App() {
               display: 'flex',
               justifyContent: 'space-around',
               alignItems: 'center',
-              width: '100px',
+              width: '100px'
             }}
           >
             <GitHubIcon onClick={openGithub}/>
