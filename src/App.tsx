@@ -4,9 +4,25 @@ import './App.css';
 import Navigation from './views/Navigation';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { ThemeProvider, createTheme } from '@material-ui/core/styles';
+import { ThemeProvider, createTheme, makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import ThemeSwitch from './components/OmsSwitch/ThemeSwitch'; // 4.x.x 版本
 // import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'; // 5.x.x 版本
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    githubIconBox: {
+      position: 'absolute',
+      top: '15px',
+      right: '10vw',
+      display: 'flex',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+      width: '100px',
+      '@media (max-width:940px)': {
+        display: 'none'
+      }}
+  })
+);
 
 const themeLight = createTheme({
   palette: {
@@ -34,6 +50,8 @@ const themeDark = createTheme({
 
 
 function App() {
+  const classes = useStyles();
+
   const [light, setLight] = useState(true);
 
   const openGithub = () => {
@@ -47,14 +65,11 @@ function App() {
           <CssBaseline />
           <Navigation/>
           <div
+            className={classes.githubIconBox}
             style={{
-              position: 'absolute',
-              top: '15px',
-              right: '10vw',
-              display: 'flex',
-              justifyContent: 'space-around',
-              alignItems: 'center',
-              width: '100px'
+              // '@media (min-width:1600px) and (max-width:1600px)': {
+              //   display: 'none'
+              // }
             }}
           >
             <GitHubIcon onClick={openGithub}/>
