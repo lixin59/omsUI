@@ -80,11 +80,11 @@ function HostInfoCard(props: tProps) {
       host,
       port,
       group,
-      tag,
+      tag
     });
     enqueueSnackbar(`主机: ${hostInfo.name} 信息已经修改`, {
       autoHideDuration: 3000,
-      variant: 'success',
+      variant: 'success'
     });
   };
 
@@ -92,7 +92,7 @@ function HostInfoCard(props: tProps) {
     deleteHost(hostInfo.id);
     enqueueSnackbar(`主机: ${hostInfo.name} 已被删除`, {
       autoHideDuration: 3000,
-      variant: 'success',
+      variant: 'success'
     });
   };
 
@@ -129,7 +129,7 @@ function HostInfoCard(props: tProps) {
           <InputAdornment position='start'>
             <AccountCircle />
           </InputAdornment>
-        ),
+        )
       }}
     />
     <TextField
@@ -182,19 +182,16 @@ function HostInfoCard(props: tProps) {
     <>
       <Card className={classes.HostInfoCard}>
         <Typography className={classes.title} color='textSecondary' gutterBottom>
-          <Button className={classes.button} variant='contained'>命令</Button>
+          <Button className={classes.commandButton} variant='contained'>命令</Button>
           <Button
-            className={classes.button}
+            className={classes.editButton}
             variant='contained'
-            color='primary'
             onClick={() => openDialog('edit')}
           >
             编辑
           </Button>
           <Button
-            className={classes.button}
-            variant='contained'
-            color='secondary'
+            className={classes.deleteButton}
             onClick={() => openDialog('delete')}
           >
             删除

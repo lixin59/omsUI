@@ -40,18 +40,18 @@ const columns: Column[] = [
   {
     id: 'pattern',
     label: '模式',
-    minWidth: 170,
+    minWidth: 170
   },
   {
     id: 'size',
     label: '规则',
-    minWidth: 170,
+    minWidth: 170
   },
   {
     id: 'density',
     label: '操作',
-    minWidth: 170,
-  },
+    minWidth: 170
+  }
 ];
 
 export default function GroupTable({ groupList, deleteGroup }: tProps) {
@@ -75,7 +75,7 @@ export default function GroupTable({ groupList, deleteGroup }: tProps) {
     deleteGroup(name);
     enqueueSnackbar(`分组: ${name} 已被删除`, {
       autoHideDuration: 3000,
-      variant: 'success',
+      variant: 'success'
     });
   };
 

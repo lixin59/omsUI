@@ -12,13 +12,13 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
       '& > span': {
         maxWidth: 40,
         width: '100%',
-        backgroundColor: '#4bce21',
-      },
-    },
+        backgroundColor: '#4bce21'
+      }
+    }
   },
   itemPage: {
     width: '100%',
-    height: '100%',
+    height: '100%'
   },
   ControlBox: {
     marginBottom: '20px',
@@ -26,34 +26,40 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
     display: 'flex',
     alignContent: 'space-evenly',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
   },
   Control: {
-    width: '25%',
+    width: '25%'
   },
   shellBox: {
-    width: '100%',
+    width: '100%'
   },
   TabPanel: {
     height: '100%',
-    width: '100%',
+    width: '100%'
   },
   tabs: {
     width: '240px',
-    borderRight: `1px solid ${theme.palette.divider}`,
+    borderRight: `1px solid ${theme.palette.divider}`
   },
   rootTable: {
-    width: '100%',
+    width: '100%'
   },
   container: {
-    maxHeight: 440,
+    maxHeight: 440
   },
   deleteButton: {
-    backgroundColor: theme.palette.error.light,
+    backgroundColor: theme.palette.error[theme.palette.type],
+    '&:hover': {
+      backgroundColor: theme.palette.error.main
+    }
   },
   addButton: {
-    backgroundColor: theme.palette.success.light,
-  },
+    backgroundColor: theme.palette.success[theme.palette.type],
+    '&:hover': {
+      backgroundColor: theme.palette.success.main
+    }
+  }
 });
 
 export default styles;
