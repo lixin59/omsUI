@@ -22,43 +22,43 @@ const menuProps = {
   // },
   anchorOrigin: {
     vertical: 'bottom',
-    horizontal: 'left',
+    horizontal: 'left'
   },
-  transformOrigin: {
-    vertical: 'top',
-    horizontal: 'left',
-  },
-  getContentAnchorEl: null,
+  // transformOrigin: {
+  //   vertical: 'top',
+  //   horizontal: 'left'
+  // },
+  getContentAnchorEl: null
 };
 
 const OmsSelect = withStyles((theme: Theme) =>
   createStyles({
     root: {
       minWidth: 100,
-      background: 'white',
+      // // background: 'white',
       color: theme.palette.success.main,
       fontWeight: 200,
       borderStyle: 'none',
       borderWidth: 2,
       borderRadius: 12,
-      paddingLeft: 24,
-      paddingTop: 14,
-      paddingBottom: 15,
+      paddingLeft: 14,
+      paddingTop: 12,
+      paddingBottom: 14,
       boxShadow: '0px 5px 8px -3px rgba(0,0,0,0.14)',
       '&:focus': {
         borderRadius: 12,
         background: 'white',
-        borderColor: theme.palette.success.main,
-      },
+        borderColor: theme.palette.success.main
+      }
     },
     icon: {
       color: theme.palette.success.main,
       position: 'absolute',
       right: '4px',
       userSelect: 'none',
-      pointerEvents: 'none',
-    },
-  }),
+      pointerEvents: 'none'
+    }
+  })
 )((props: SelectProps) => <Select disableUnderline IconComponent={iconComponent} MenuProps={menuProps}{...props} />);
 
 export default OmsSelect;

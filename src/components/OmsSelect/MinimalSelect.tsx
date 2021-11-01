@@ -1,6 +1,7 @@
 import React, { FC, useState } from 'react';
 import { useMinimalSelectStyles } from './style';
 import FormControl from '@material-ui/core/FormControl';
+import OmsLabel from '../OmsLabel';
 
 import OmsSelect from './index';
 import OmsMenuItem from './OmsMenuItem';
@@ -21,11 +22,12 @@ const MinimalSelect: FC = () => {
 
 
   return (
-    <FormControl>
-      <InputLabel id='type-select-label'>请选择类型</InputLabel>
+    <FormControl
+      style={{
+        height: '50px'
+      }}>
+      <OmsLabel >请选择类型</OmsLabel>
       <OmsSelect
-        labelId='type-select-label'
-        displayEmpty={true}
         value={val}
         onChange={handleChange}
       >
