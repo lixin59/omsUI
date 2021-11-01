@@ -4,13 +4,7 @@ import OmsTabs from '../../components/OmsTabs/Tabs';
 import OmsTab from '../../components/OmsTabs/Tab';
 import TabPanel from '../../components/OmsTabs/TabPanel';
 import UploadFile from './UploadFile';
-
-function a11yProps(index: any) {
-  return {
-    'id': `vertical-tab-${index}`,
-    'aria-controls': `vertical-tabpanel-${index}`,
-  };
-}
+import { a11yProps } from '../../utils/index';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -23,18 +17,18 @@ const useStyles = makeStyles((theme: Theme) => ({
       '& > span': {
         maxWidth: 40,
         width: '100%',
-        backgroundColor: '#4bce21',
-      },
-    },
+        backgroundColor: '#4bce21'
+      }
+    }
   },
   TabPanel: {
     height: '100%',
-    width: '100%',
+    width: '100%'
   },
   tabs: {
     width: '240px',
-    borderRight: `1px solid ${theme.palette.divider}`,
-  },
+    borderRight: `1px solid ${theme.palette.divider}`
+  }
 }));
 
 function ModeTabs() {
@@ -48,22 +42,22 @@ function ModeTabs() {
   return (
     <div className={classes.root}>
       <OmsTabs
-        orientation="vertical"
-        variant="scrollable"
+        orientation='vertical'
+        variant='scrollable'
         value={value}
         // indicatorColor="primary"
         // textColor="primary"
         onChange={handleChange}
-        aria-label="Vertical tabs example"
+        aria-label='Vertical tabs example'
         className={classes.tabs}
       >
-        <OmsTab label="上传文件" {...a11yProps(0)} />
-        <OmsTab label="执行命令" {...a11yProps(1)} />
-        <OmsTab label="Item Three" {...a11yProps(2)} />
-        <OmsTab label="Item Four" {...a11yProps(3)} />
-        <OmsTab label="Item Five" {...a11yProps(4)} />
-        <OmsTab label="Item Six" {...a11yProps(5)} />
-        <OmsTab label="Item Seven" {...a11yProps(6)} />
+        <OmsTab label='上传文件' {...a11yProps(0)} />
+        <OmsTab label='执行命令' {...a11yProps(1)} />
+        <OmsTab label='Item Three' {...a11yProps(2)} />
+        <OmsTab label='Item Four' {...a11yProps(3)} />
+        <OmsTab label='Item Five' {...a11yProps(4)} />
+        <OmsTab label='Item Six' {...a11yProps(5)} />
+        <OmsTab label='Item Seven' {...a11yProps(6)} />
       </OmsTabs>
       <TabPanel className={classes.TabPanel} value={value} index={0}>
         <UploadFile/>
