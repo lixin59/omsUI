@@ -143,7 +143,7 @@ function Home(props: tProps) {
     id = res.id;
     * */
     addHost(data);
-    enqueueSnackbar(`主机: ${name} 已添加`, {
+    enqueueSnackbar(`主机: ${hostInfo.name} 已添加`, {
       autoHideDuration: 3000,
       variant: 'success'
     });
