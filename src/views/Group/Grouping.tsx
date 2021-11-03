@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -29,7 +29,7 @@ type tProps = tSP & tDP;
 const Grouping = (props: tProps) => {
   const classes = makeStyles(styles)();
   const { enqueueSnackbar } = useSnackbar();
-  const [pattern, setPattern] = useState<string>('');
+  const [mode, setPattern] = useState<string | number>('');
   const [rule, setRule] = useState<string>('');
   const [name, setName] = useState<string>('');
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -37,35 +37,35 @@ const Grouping = (props: tProps) => {
   };
 
   const addNewGroup = () => {
-    if (!pattern) {
+    if (mode === '') {
       enqueueSnackbar(`请选择一个模式！`, {
         autoHideDuration: 3000,
-        variant: 'warning',
+        variant: 'warning'
       });
       return;
     }
-    if (pattern === '规则模式' && !rule) {
+    if (mode === 1 && !rule) {
       enqueueSnackbar(`选中规则模式, 匹配的规则不能为空！`, {
         autoHideDuration: 3000,
-        variant: 'warning',
+        variant: 'warning'
       });
       return;
     }
     if (!name) {
       enqueueSnackbar(`分组名称不能为空！`, {
         autoHideDuration: 3000,
-        variant: 'warning',
+        variant: 'warning'
       });
       return;
     }
     if (props.groupList.some((e) => e.name === name)) {
       enqueueSnackbar(`该分组已存在！`, {
         autoHideDuration: 3000,
-        variant: 'warning',
+        variant: 'warning'
       });
       return;
     }
-    props.addGroup({ name, pattern, rule });
+    props.addGroup({ id: new Date().getTime(), name, mode, rule });
   };
 
   return (
@@ -76,11 +76,11 @@ const Grouping = (props: tProps) => {
           <Select
             labelId='pattern-select-label'
             id='pattern-select'
-            value={pattern}
+            value={mode}
             onChange={handleChange}
           >
-            <MenuItem value={'主机模式'}>主机模式</MenuItem>
-            <MenuItem value={'规则模式'}>规则模式</MenuItem>
+            <MenuItem value={0}>主机模式</MenuItem>
+            <MenuItem value={1}>规则模式</MenuItem>
           </Select>
         </FormControl>
         <FormControl className={classes.Control}>

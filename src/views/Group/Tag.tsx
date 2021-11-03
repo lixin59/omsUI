@@ -32,22 +32,22 @@ const Tag = (props: tProps) => {
     if (!tag) {
       enqueueSnackbar(`标签名称不能为空`, {
         autoHideDuration: 3000,
-        variant: 'warning',
+        variant: 'warning'
       });
       return;
     }
     if (props.tagList.some((e) => e.name === tag)) {
       enqueueSnackbar(`该标签已存在！`, {
         autoHideDuration: 3000,
-        variant: 'warning',
+        variant: 'warning'
       });
       return;
     }
-    props.addTag({ name: tag });
+    props.addTag({ id: new Date().getTime(), name: tag });
   };
 
   return (
-    <div className={classes.itemPaage}>
+    <div className={classes.itemPage}>
       <div className={classes.ControlBox}>
         <FormControl className={classes.Control}>
           <TextField

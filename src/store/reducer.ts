@@ -1,8 +1,8 @@
-import { GroupInfo, HostAction, TagInfo } from './interface';
+import { GroupInfo, HostAction, TagInfo, HostInfo } from './interface';
 import { groupActions, hostActions, tagActions } from './action-types';
-import { hostInfo } from '../views/Home/typings';
+// import { hostInfo } from '../views/Home/typings';
 
-const hostList: hostInfo[] = [
+const hostList: HostInfo[] = [
   {
     id: 1,
     name: '1271',
@@ -11,8 +11,16 @@ const hostList: hostInfo[] = [
     password: '1221',
     host: '127.0.0.1',
     port: '22',
-    group: '组1',
-    tag: '',
+    group: {
+      id: 1,
+      name: '分组1',
+      mode: 0,
+      rule: ''
+    },
+    tag: [{
+      id: 1,
+      name: '标签1'
+    }]
   },
   {
     id: 2,
@@ -22,8 +30,16 @@ const hostList: hostInfo[] = [
     password: '1221',
     host: '127.0.0.1',
     port: '22',
-    group: '组2',
-    tag: '',
+    group: {
+      id: 1,
+      name: '分组1',
+      mode: 0,
+      rule: ''
+    },
+    tag: [{
+      id: 1,
+      name: '标签1'
+    }]
   },
   {
     id: 3,
@@ -33,38 +49,50 @@ const hostList: hostInfo[] = [
     password: '1221',
     host: '127.0.0.1',
     port: '22',
-    group: '组1',
-    tag: '',
-  },
+    group: {
+      id: 2,
+      name: '分组2',
+      mode: 1,
+      rule: '121212121'
+    },
+    tag: [{
+      id: 2,
+      name: '标签2'
+    }]
+  }
 ];
 
 const groupList: GroupInfo[] = [
   {
+    id: 1,
     name: '分组1',
-    pattern: '主机模式',
-    rule: '',
+    mode: 0,
+    rule: ''
   },
   {
+    id: 2,
     name: '分组2',
-    pattern: '规则模式',
-    rule: '121212121',
-  },
+    mode: 1,
+    rule: '121212121'
+  }
 ];
 
 const tagList: TagInfo[] = [
   {
-    name: '标签1',
+    id: 1,
+    name: '标签1'
   },
   {
-    name: '标签2',
-  },
+    id: 2,
+    name: '标签2'
+  }
 ];
 
 // 初始化state数据
 const initialState = {
   hostList,
   groupList,
-  tagList,
+  tagList
 };
 
 // 状态处理函数
@@ -73,13 +101,13 @@ const reducer = (state = initialState, action: HostAction) => {
     case hostActions.DELETE_HOST_INFO: {
       return ({
         ...state,
-        hostList: state.hostList.filter((item: hostInfo) => item.id !== action.value),
+        hostList: state.hostList.filter((item: HostInfo) => item.id !== action.value)
       });
     }
     case hostActions.ADD_HOST_INFO: {
       return ({
         ...state,
-        hostList: [...state.hostList, action.value],
+        hostList: [...state.hostList, action.value]
       });
     }
     case hostActions.EDIT_HOST_INFO: {
@@ -90,19 +118,19 @@ const reducer = (state = initialState, action: HostAction) => {
       });
       return ({
         ...state,
-        hostList: [...state.hostList],
+        hostList: [...state.hostList]
       });
     }
     case groupActions.DELETE_GROUP_INFO: {
       return ({
         ...state,
-        groupList: state.groupList.filter((item: GroupInfo) => item.name !== action.value),
+        groupList: state.groupList.filter((item: GroupInfo) => item.name !== action.value)
       });
     }
     case groupActions.ADD_GROUP_INFO: {
       return ({
         ...state,
-        groupList: [...state.groupList, action.value],
+        groupList: [...state.groupList, action.value]
       });
     }
     case groupActions.EDIT_GROUP_INFO: {
@@ -113,19 +141,19 @@ const reducer = (state = initialState, action: HostAction) => {
       });
       return ({
         ...state,
-        groupList: [...state.groupList],
+        groupList: [...state.groupList]
       });
     }
     case tagActions.DELETE_TAG_INFO: {
       return ({
         ...state,
-        tagList: state.tagList.filter((item: TagInfo) => item.name !== action.value),
+        tagList: state.tagList.filter((item: TagInfo) => item.name !== action.value)
       });
     }
     case tagActions.ADD_TAG_INFO: {
       return ({
         ...state,
-        tagList: [...state.tagList, action.value],
+        tagList: [...state.tagList, action.value]
       });
     }
     case tagActions.EDIT_TAG_INFO: {
@@ -136,7 +164,7 @@ const reducer = (state = initialState, action: HostAction) => {
       });
       return ({
         ...state,
-        tagList: [...state.tagList],
+        tagList: [...state.tagList]
       });
     }
     default:

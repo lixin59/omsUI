@@ -38,12 +38,12 @@ interface Column {
 const columns: Column[] = [
   { id: 'name', label: '分组名称', minWidth: 170 },
   {
-    id: 'pattern',
+    id: 'mode',
     label: '模式',
     minWidth: 170
   },
   {
-    id: 'size',
+    id: 'params',
     label: '规则',
     minWidth: 170
   },
@@ -112,8 +112,8 @@ export default function GroupTable({ groupList, deleteGroup }: tProps) {
                   <TableCell key={row.name} align='center'>
                     {row.name}
                   </TableCell>
-                  <TableCell key={row.pattern} align='center'>
-                    {row.pattern}
+                  <TableCell key={row.mode} align='center'>
+                    {row.mode}
                   </TableCell>
                   <TableCell key={row.rule} align='center'>
                     {row.rule}

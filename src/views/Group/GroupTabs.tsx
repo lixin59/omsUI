@@ -31,7 +31,7 @@ type tSP = tOP & {
 const mapStateToProps = (state: IState, props: tOP): tSP => ({
   ...props,
   groupList: state.groupList,
-  tagList: state.tagList,
+  tagList: state.tagList
 });
 const mapDispatch: tDP = {
   deleteGroup: actions.deleteGroupInfo,
@@ -39,13 +39,13 @@ const mapDispatch: tDP = {
   editGroup: actions.editGroupInfo,
   deleteTag: actions.deleteTagInfo,
   addTag: actions.addTagInfo,
-  editTag: actions.editTagInfo,
+  editTag: actions.editTagInfo
 };
 
 type tProps = tSP & tDP;
 
 function ModeTabs({ groupList, tagList, addGroup,
-  addTag, deleteGroup, deleteTag, editTag, editGroup,
+  addTag, deleteGroup, deleteTag, editTag, editGroup
 }: tProps) {
   const classes = makeStyles(styles)();
   const [value, setValue] = React.useState(0);
@@ -81,5 +81,5 @@ function ModeTabs({ groupList, tagList, addGroup,
 
 export default connect(
   mapStateToProps,
-  mapDispatch,
+  mapDispatch
 )(ModeTabs);

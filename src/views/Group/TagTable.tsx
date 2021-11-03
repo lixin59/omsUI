@@ -40,8 +40,8 @@ const columns: Column[] = [
   {
     id: 'operation',
     label: '操作',
-    minWidth: 170,
-  },
+    minWidth: 170
+  }
 ];
 
 export default function TagTable({ deleteTag, tagList }: tProps) {
@@ -65,7 +65,7 @@ export default function TagTable({ deleteTag, tagList }: tProps) {
     deleteTag(name);
     enqueueSnackbar(`标签: ${name} 已被删除`, {
       autoHideDuration: 3000,
-      variant: 'success',
+      variant: 'success'
     });
   };
 

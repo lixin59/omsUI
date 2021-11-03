@@ -10,7 +10,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import PowerIcon from '@material-ui/icons/Power';
 import PowerOffIcon from '@material-ui/icons/PowerOff';
-import { hostInfo } from '../../views/Home/typings';
 import { ActionCreator } from 'redux';
 import { useSnackbar } from 'notistack';
 import TipDialog from '../OmsDialog/TipDialog';
@@ -23,10 +22,13 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import { GroupInfo, TagInfo } from '../../store/interface';
+import { GroupInfo, TagInfo, HostInfo } from '../../store/interface';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 type tProps = {
-  hostInfo: hostInfo;
+  hostInfo: HostInfo;
   deleteHost: ActionCreator<any>;
   editHost: ActionCreator<any>;
   groupList: GroupInfo[];
@@ -47,8 +49,12 @@ function HostInfoCard(props: tProps) {
   const [port, setPort] = useState<string>(hostInfo.password);
   const [user, setUser] = useState<string>(hostInfo.user);
   const [password, setPassword] = useState<string>(hostInfo.password);
-  const [group, setGroup] = useState<string>(hostInfo.group);
-  const [tag, setTag] = useState<string>(hostInfo.tag);
+  const [group, setGroup] = useState< GroupInfo>(hostInfo.group);
+  const tagObj = {};
+  tagList.forEach((e) => {
+    tagObj[e.name] = !!hostInfo.tag.find((item) => item.name === e.name);
+  });
+  const [tagCheck, setTagCheck] = useState(tagObj);
 
   const closeDialog = () => {
     console.log('o', open);
@@ -71,6 +77,12 @@ function HostInfoCard(props: tProps) {
   };
 
   const editNewHost = () => {
+    const tag: TagInfo[] = [];
+    tagList.forEach((e: TagInfo) => {
+      if (tagCheck[e.name]) {
+        tag.push(e);
+      }
+    });
     editHost({
       id: hostInfo.id,
       name,
@@ -155,8 +167,8 @@ function HostInfoCard(props: tProps) {
         <Select
           labelId='group-select-label'
           id='group-select'
-          value={group}
-          onChange={(e) => setGroup(e?.target?.value as string)}
+          value={group.name}
+          onChange={(e) => setGroup(groupList.find((item) => item.name === e?.target?.value as string) as GroupInfo)}
         >
           {groupList.map((e) => {
             return (<MenuItem key={e.name} value={e.name}>{e.name}</MenuItem>);
@@ -164,17 +176,24 @@ function HostInfoCard(props: tProps) {
         </Select></>) : '请在分组页面添加分组才可以选择分组' }
     </FormControl>
     <FormControl className={classes.Select}>
-      { tagList.length > 0 ? (<><InputLabel id='tag-select-label'>选择标签</InputLabel>
-        <Select
-          labelId='tag-select-label'
-          id='tag-select'
-          value={tag}
-          onChange={(e) => setTag(e?.target?.value as string)}
-        >
-          {tagList.map((e) => {
-            return (<MenuItem key={e.name} value={e.name}>{e.name}</MenuItem>);
-          })}
-        </Select></>) : '请在分组页面添加标签才可以选择标签'}
+      <FormGroup row>
+        {tagList && tagList.map((e) => {
+          return (
+            <FormControlLabel
+              key={e.name}
+              control={
+                <Checkbox
+                  checked={tagCheck[e.name]}
+                  onChange={(event) => setTagCheck({ ...tagCheck, [event.target.name]: event.target.checked })}
+                  name={e.name}
+                  color='primary'
+                />
+              }
+              label={e.name}
+            />
+          );
+        })}
+      </FormGroup>
     </FormControl>
   </>);
 
@@ -223,11 +242,11 @@ function HostInfoCard(props: tProps) {
           </ListItem>
           <ListItem className={classes.listItem}>
             <ListItemText className={classes.listItemText} primary='组:' />
-            <ListItemText primary={hostInfo.group || ''} />
+            <ListItemText primary={hostInfo.group.name || ''} />
           </ListItem>
           <ListItem className={classes.listItem}>
             <ListItemText className={classes.listItemText} primary='标签:' />
-            <ListItemText primary={hostInfo.tag || ''} />
+            <ListItemText primary={`${hostInfo.tag.map((e) => { return e.name; })}` || ''} />
           </ListItem>
         </List>
       </Card>
