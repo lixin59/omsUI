@@ -5,3 +5,5 @@ dist-ssr
 *.local
 .idea
 package-lock.json
+
+src/api/http/config.ts
