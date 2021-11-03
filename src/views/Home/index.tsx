@@ -51,10 +51,7 @@ const baseHostInfo: HostInfo = {
     mode: 0,
     rule: ''
   },
-  tag: [{
-    id: 0,
-    name: ''
-  }]
+  tag: []
 };
 
 const mapStateToProps = (state: IState, props: tOP): tSP => ({
@@ -78,11 +75,7 @@ function Home(props: tProps) {
 
   const [open, setOpen] = useState<boolean>(false);
   const [hostInfo, setHostInfo] = useState<HostInfo>(baseHostInfo);
-  const tagObj = {};
-  tagList.forEach((e) => {
-    tagObj[e.name] = false;
-  });
-  const [tagCheck, setTagCheck] = useState(tagObj);
+  const [tlc, setTlc] = useState(tagList.map((e) => ({ ...e, checked: false })));
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -122,8 +115,8 @@ function Home(props: tProps) {
       return;
     }
     const tag: TagInfo[] = [];
-    tagList.forEach((e: TagInfo) => {
-      if (tagCheck[e.name]) {
+    tlc.forEach((e) => {
+      if (e.checked) {
         tag.push(e);
       }
     });
@@ -148,7 +141,7 @@ function Home(props: tProps) {
       variant: 'success'
     });
     setHostInfo(baseHostInfo);
-    setTagCheck(tagObj);
+    setTlc(tagList.map((e) => ({ ...e, checked: false })));
   };
   const title = '添加一个新的主机';
   const content = (<>
@@ -221,14 +214,19 @@ function Home(props: tProps) {
     </FormControl>
     <FormControl className={classes.Select}>
       <FormGroup row>
-        {tagList && tagList.map((e) => {
+        {tlc && tlc.map((e, index) => {
           return (
             <FormControlLabel
               key={e.name}
               control={
                 <Checkbox
-                  checked={tagCheck[e.name]}
-                  onChange={(event) => setTagCheck({ ...tagCheck, [event.target.name]: event.target.checked })}
+                  checked={e.checked}
+                  onChange={(event) => setTlc(tlc.map((x) => {
+                    if (x.name === e.name) {
+                      x.checked = event.target.checked;
+                    }
+                    return x;
+                  }))}
                   name={e.name}
                   color='primary'
                 />

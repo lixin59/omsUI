@@ -50,11 +50,12 @@ function HostInfoCard(props: tProps) {
   const [user, setUser] = useState<string>(hostInfo.user);
   const [password, setPassword] = useState<string>(hostInfo.password);
   const [group, setGroup] = useState< GroupInfo>(hostInfo.group);
-  const tagObj = {};
-  tagList.forEach((e) => {
-    tagObj[e.name] = !!hostInfo.tag.find((item) => item.name === e.name);
-  });
-  const [tagCheck, setTagCheck] = useState(tagObj);
+  const [tlc, setTlc] = useState(tagList.map((e) => ({ ...e, checked: !!hostInfo.tag.find((item) => item.name === e.name) })));
+  // const tagObj = {};
+  // tagList.forEach((e) => {
+  //   tagObj[e.name] = !!hostInfo.tag.find((item) => item.name === e.name);
+  // });
+  // const [tagCheck, setTagCheck] = useState(tagObj);
 
   const closeDialog = () => {
     console.log('o', open);
@@ -78,8 +79,8 @@ function HostInfoCard(props: tProps) {
 
   const editNewHost = () => {
     const tag: TagInfo[] = [];
-    tagList.forEach((e: TagInfo) => {
-      if (tagCheck[e.name]) {
+    tlc.forEach((e) => {
+      if (e.checked) {
         tag.push(e);
       }
     });
@@ -177,14 +178,19 @@ function HostInfoCard(props: tProps) {
     </FormControl>
     <FormControl className={classes.Select}>
       <FormGroup row>
-        {tagList && tagList.map((e) => {
+        {tlc && tlc.map((e) => {
           return (
             <FormControlLabel
               key={e.name}
               control={
                 <Checkbox
-                  checked={tagCheck[e.name]}
-                  onChange={(event) => setTagCheck({ ...tagCheck, [event.target.name]: event.target.checked })}
+                  checked={e.checked}
+                  onChange={(event) => setTlc(tlc.map((x) => {
+                    if (x.name === e.name) {
+                      x.checked = event.target.checked;
+                    }
+                    return x;
+                  }))}
                   name={e.name}
                   color='primary'
                 />

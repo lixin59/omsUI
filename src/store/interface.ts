@@ -20,7 +20,7 @@ export interface HostInfo {
   host: string;
   port: string;
   group: GroupInfo;
-  tag: TagInfo[];
+  tag: TagInfo[] | [];
 }
 
 export interface GroupInfo {

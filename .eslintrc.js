@@ -57,6 +57,7 @@ module.exports = {
       'before': true,
       'after': true
     }], // 强制在关键字前后使用一致的空格
+    'linebreak-style': [0, 'error', 'windows'],
     'max-len': ['error', { code: 150 }],
     // 函数名首行大写必须使用new方式调用，首行小写必须用不带new方式调用
     'new-cap': [2, {
