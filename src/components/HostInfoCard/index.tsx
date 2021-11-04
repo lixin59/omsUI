@@ -14,18 +14,9 @@ import { ActionCreator } from 'redux';
 import { useSnackbar } from 'notistack';
 import TipDialog from '../OmsDialog/TipDialog';
 import FormDialog from '../OmsDialog/FormDialog';
-import TextField from '@material-ui/core/TextField';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import AccountCircle from '@material-ui/icons/AccountCircle';
 import styles from './style';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
 import { GroupInfo, TagInfo, HostInfo } from '../../store/interface';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+import HostInfoForm from './hostInfoForm';
 
 type tProps = {
   hostInfo: HostInfo;
@@ -44,18 +35,12 @@ function HostInfoCard(props: tProps) {
 
   const [open, setOpen] = useState<boolean>(false);
   const [isOpen, setIsoOpen] = useState<boolean>(false);
-  const [name, setHostName] = useState<string>(hostInfo.name);
-  const [host, setHost] = useState<string>(hostInfo.host);
-  const [port, setPort] = useState<string>(hostInfo.password);
-  const [user, setUser] = useState<string>(hostInfo.user);
-  const [password, setPassword] = useState<string>(hostInfo.password);
-  const [group, setGroup] = useState< GroupInfo>(hostInfo.group);
+  const [hosts, setHosts] = useState<HostInfo>(hostInfo);
   const [tlc, setTlc] = useState(tagList.map((e) => ({ ...e, checked: !!hostInfo.tag.find((item) => item.name === e.name) })));
-  // const tagObj = {};
-  // tagList.forEach((e) => {
-  //   tagObj[e.name] = !!hostInfo.tag.find((item) => item.name === e.name);
-  // });
-  // const [tagCheck, setTagCheck] = useState(tagObj);
+
+  const title = '编辑主机信息';
+  const content = HostInfoForm({ hostInfo: hosts, setHostInfo: setHosts, groupList, tlc, setTlc });
+
 
   const closeDialog = () => {
     console.log('o', open);
@@ -85,14 +70,7 @@ function HostInfoCard(props: tProps) {
       }
     });
     editHost({
-      id: hostInfo.id,
-      name,
-      status: hostInfo.status,
-      password,
-      user,
-      host,
-      port,
-      group,
+      ...hosts,
       tag
     });
     enqueueSnackbar(`主机: ${hostInfo.name} 信息已经修改`, {
@@ -108,100 +86,6 @@ function HostInfoCard(props: tProps) {
       variant: 'success'
     });
   };
-
-  const title = '编辑主机信息';
-  const content = (<>
-    <TextField
-      autoFocus
-      margin='dense'
-      id='host-name'
-      label='主机名'
-      fullWidth
-      value={name}
-      onChange={(e) => setHostName(e.target.value)}
-    />
-    <TextField
-      autoFocus
-      margin='dense'
-      id='host-ip'
-      label='主机地址'
-      fullWidth
-      value={host}
-      onChange={(e) => setHost(e.target.value)}
-    />
-    <TextField
-      autoFocus
-      margin='dense'
-      id='user-name'
-      label='用户名'
-      fullWidth
-      value={user}
-      onChange={(e) => setUser(e.target.value)}
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position='start'>
-            <AccountCircle />
-          </InputAdornment>
-        )
-      }}
-    />
-    <TextField
-      autoFocus
-      margin='dense'
-      id='port'
-      label='端口号'
-      fullWidth
-      value={port}
-      onChange={(e) => setPort(e.target.value)}
-    />
-    <TextField
-      autoFocus
-      margin='dense'
-      id='password'
-      label='请输入密码或key'
-      fullWidth
-      value={password}
-      onChange={(e) => setPassword(e.target.value)}
-    />
-    <FormControl className={classes.Select}>
-      {groupList.length > 0 ? (<><InputLabel id='group-select-label'>选择分组</InputLabel>
-        <Select
-          labelId='group-select-label'
-          id='group-select'
-          value={group.name}
-          onChange={(e) => setGroup(groupList.find((item) => item.name === e?.target?.value as string) as GroupInfo)}
-        >
-          {groupList.map((e) => {
-            return (<MenuItem key={e.name} value={e.name}>{e.name}</MenuItem>);
-          })}
-        </Select></>) : '请在分组页面添加分组才可以选择分组' }
-    </FormControl>
-    <FormControl className={classes.Select}>
-      <FormGroup row>
-        {tlc && tlc.map((e) => {
-          return (
-            <FormControlLabel
-              key={e.name}
-              control={
-                <Checkbox
-                  checked={e.checked}
-                  onChange={(event) => setTlc(tlc.map((x) => {
-                    if (x.name === e.name) {
-                      x.checked = event.target.checked;
-                    }
-                    return x;
-                  }))}
-                  name={e.name}
-                  color='primary'
-                />
-              }
-              label={e.name}
-            />
-          );
-        })}
-      </FormGroup>
-    </FormControl>
-  </>);
 
   return (
     <>
