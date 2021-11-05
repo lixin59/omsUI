@@ -2,6 +2,7 @@ import React from 'react';
 import BodyBox from '../../components/Bodybox';
 import Button from '@material-ui/core/Button';
 import Loading from '../../components/OmsSkeleton/Loading';
+import OmsError from '../../components/OmsError';
 
 import { getAllHostInfo, getHostInfoById, addHost, editHost, deleteHost } from '../../api/http/httpRequestApi';
 
@@ -28,7 +29,8 @@ export default function About() {
   return (
     <BodyBox>
       {/* <Button onClick={get}>获取信息</Button>*/}
-      <Loading/>
+      {/* <Loading/>*/}
+      <OmsError errInfo='失败了' errType='server' imgStyle={{ width: '400px', height: '400px' }}/>
     </BodyBox>
   );
 }
