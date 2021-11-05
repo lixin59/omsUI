@@ -39,6 +39,9 @@ instance.interceptors.request.use((config) => {
   if (config.url!.includes('host') && config.method === 'delete') {
     (config.headers!)['Content-Type'] = 'application/x-www-form-urlencoded';
   }
+  if (config.url!.includes('tag')) {
+    (config.headers!)['Content-Type'] = 'application/x-www-form-urlencoded';
+  }
   return config;
 }, (error) => {
   // 对请求错误做些什么
@@ -109,6 +112,22 @@ export const deleteApi = (url: string, config = {}) => {
     instance({
       method: 'delete',
       url,
+      ...config
+    }).then((response) => {
+      resolve(response);
+    }).catch((error) => {
+      reject(error);
+    });
+  });
+};
+
+/* 统一封装put请求  */
+export const putApi = (url: string, data:any, config = {}) => {
+  return new Promise((resolve, reject) => {
+    instance({
+      method: 'put',
+      url,
+      data,
       ...config
     }).then((response) => {
       resolve(response);

@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import Loading from '../../components/OmsSkeleton/Loading';
 import OmsError from '../../components/OmsError';
 
-import { getAllHostInfo, getHostInfoById, addHost, editHost, deleteHost } from '../../api/http/httpRequestApi';
+import { getTags, getTag, addTag, editTag, deleteTag } from '../../api/http/httpRequestApi';
 
 const newHost = {
   hostname: 'centos001',
@@ -22,8 +22,13 @@ export default function About() {
     // const res = await getAllHostInfo();
     // const res1 = await getHostInfoById(1);
     // const res1 = await addHost(newHost);
-    const res1 = await editHost({ id: 1 });
+    // const res1 = await editHost({ id: 1 });
     // const res1 = await deleteHost(1);
+    // const res1 = await getTags();
+    // const res1 = await getTag(1);
+    // const res1 = await addTag('tag1');
+    // const res1 = await editTag({ id: 1, name: 'tag1' });
+    const res1 = await deleteTag(1);
     console.log('get', res1);
   };
   return (

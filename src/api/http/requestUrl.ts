@@ -1,3 +1,4 @@
 export const urlType = {
-  host: '/host'
+  host: '/host',
+  tag: '/tag'
 };

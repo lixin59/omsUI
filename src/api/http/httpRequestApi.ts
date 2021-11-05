@@ -1,4 +1,4 @@
-import { getApi, postApi, deleteApi } from './api';
+import { getApi, postApi, deleteApi, putApi } from './api';
 import { urlType } from './requestUrl';
 
 interface EditHostPost {
@@ -62,4 +62,33 @@ export const editHost = (data: EditHostPost) => {
 
 export const deleteHost = (id: number) => {
   return deleteApi(`${urlType.host}/${id}`, {});
+};
+
+// 获取所有tag
+
+export const getTags = () => {
+  return getApi(urlType.tag);
+};
+
+// 通过id获取tag信息
+export const getTag = (id: number) => {
+  return getApi(`${urlType.tag}/${id}`);
+};
+
+// 新增tag
+export const addTag = (name: string) => {
+  return postApi(urlType.tag, name);
+};
+
+// 修改tag
+export const editTag = (data: {
+  id: number,
+  name: string
+}) => {
+  return putApi(urlType.tag, data);
+};
+
+// 删除tag
+export const deleteTag = (id: number) => {
+  return deleteApi(urlType.tag, id);
 };
