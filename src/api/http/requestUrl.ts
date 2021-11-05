@@ -1,3 +1,3 @@
 export const urlType = {
-  getAllHost: '/host'
+  host: '/host'
 };
