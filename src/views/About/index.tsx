@@ -13,7 +13,7 @@ const newHost = {
   port: 22,
   group: 1,
   password: 'password',
-  keyFile: '',
+  // keyFile: '',
   tags: ['1', '2']
 };
 
@@ -28,9 +28,9 @@ export default function About() {
   };
   return (
     <BodyBox>
-      {/* <Button onClick={get}>获取信息</Button>*/}
+      <Button onClick={get}>获取信息</Button>
       {/* <Loading/>*/}
-      <OmsError errInfo='失败了' errType='server' imgStyle={{ width: '400px', height: '400px' }}/>
+      {/* <OmsError errInfo='失败了' errType='server' imgStyle={{ width: '400px', height: '400px' }}/>*/}
     </BodyBox>
   );
 }

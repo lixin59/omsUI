@@ -36,12 +36,26 @@ export const getHostInfoById = (id: number) => {
 
 // 新增一个主机
 export const addHost = (data: AddHostPost) => {
-  return postApi(urlType.host, data, {});
+  const formData = new FormData();
+  for (const k in data) {
+    if (data.hasOwnProperty(k)) {
+      // @ts-ignore
+      formData.append(k, data[k]);
+    }
+  }
+  return postApi(urlType.host, formData, {});
 };
 
 // 修改主机信息
 export const editHost = (data: EditHostPost) => {
-  return postApi(urlType.host, data, {});
+  const formData = new FormData();
+  for (const k in data) {
+    if (data.hasOwnProperty(k)) {
+      // @ts-ignore
+      formData.append(k, data[k]);
+    }
+  }
+  return postApi(urlType.host, formData, {});
 };
 
 // 删除主机
