@@ -8,10 +8,10 @@ import Select from '@material-ui/core/Select';
 import OmsSelect from '../../components/OmsSelect';
 import TextField from '@material-ui/core/TextField';
 // import { ActionCreator } from 'redux';
-import { GroupInfo, IState, TagInfo } from '../../store/interface';
+import { GroupInfo, HostInfo, IState, TagInfo } from '../../store/interface';
+import OmsTerminal from '../../components/OmsTerminal';
 // import actions from '../../store/action';
 import { connect } from 'react-redux';
-import { hostInfo } from '../Home/typings';
 import OmsLabel from '../../components/OmsLabel';
 import OmsMenuItem from '../../components/OmsSelect/OmsMenuItem';
 
@@ -27,7 +27,7 @@ type tDP = {
 type tOP = {};
 
 type tSP = tOP & {
-  hostList: hostInfo[],
+  hostList: HostInfo[],
   groupList: GroupInfo[],
   tagList: TagInfo[]
 };
@@ -68,8 +68,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     shellBox: {
       width: '100%',
-      height: '60%',
-      backgroundColor: '#2f2f2f'
+      height: '70%'
+      // backgroundColor: '#2f2f2f'
     }
   })
 );
@@ -149,7 +149,9 @@ const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
         />
         <UploadButtons filePath={filePath}/>
       </div>
-      <div className={classes.shellBox}></div>
+      <div className={classes.shellBox}>
+        <OmsTerminal id='terminal'/>
+      </div>
     </div>
   );
 };
