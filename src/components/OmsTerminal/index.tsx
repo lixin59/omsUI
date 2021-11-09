@@ -3,15 +3,22 @@ import { Terminal } from 'xterm';
 import 'xterm/css/xterm.css';
 import { AttachAddon } from 'xterm-addon-attach';
 import { FitAddon } from 'xterm-addon-fit';
+import { useSnackbar } from 'notistack';
 
 type tProps = {
-  id: string
+  id: string;
+  // wsUrl: string;
+  ws: WebSocket,
+  onCloseTodo?: () => any;
 }
 
-const OmsTerminal = ({ id }: tProps) => {
+let timers: NodeJS.Timeout | null = null;
+
+const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:4001');
+    // const ws = new WebSocket(wsUrl);
     const term = new Terminal({
       // rendererType: 'canvas', // 渲染类型
       // rows: Math.ceil((document.getElementById('terminal').clientHeight + 40)), // 行数
@@ -38,18 +45,69 @@ const OmsTerminal = ({ id }: tProps) => {
     term.loadAddon(fitAddon);
 
     term.open(document.getElementById(id) as HTMLElement);
-    term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ');
-    term.writeln('Welcome to xterm.js');
-    term.writeln('This is a local terminal emulation, without a real terminal in the back-end.');
-    term.writeln('Type some keys and commands to play around.');
-    term.writeln('');
+    // term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ');
+    // term.writeln('Welcome to xterm.js');
+    // term.writeln('欢迎使用 oms !!!');
+    // term.writeln('');
     term.focus();
     fitAddon.fit();
 
+    switch (ws.readyState) {
+      case WebSocket.CONNECTING:
+        term.writeln('正在连接服务器...');
+        break;
+      case WebSocket.OPEN:
+        term.writeln('服务器连接成功...');
+        break;
+      case WebSocket.CLOSING:
+        break;
+      case WebSocket.CLOSED:
+        break;
+      default:
+        break;
+    }
+
     term.onResize((event) => {
-      console.log(event);
-      // term.resize(event.cols, event.rows);
+      if (timers) { //  防抖 只发送最后一次resize的值
+        clearTimeout(timers);
+        timers = null;
+      }
+      if (!timers) {
+        timers = setTimeout(function() {
+          // console.log(event);
+          ws.send(JSON.stringify({ cols: event.cols, rows: event.rows }));
+          timers = null;
+        }, 500);
+      }
     });
+
+    ws.onopen = (evt) => {
+      term.writeln('服务器连接成功...');
+      enqueueSnackbar(` WebSocket服务器连接成功: ${evt.type}`, {
+        autoHideDuration: 5000,
+        variant: 'success'
+      });
+    };
+
+    ws.onerror = (evt) => {
+      console.log(evt);
+      enqueueSnackbar(` WebSocket服务器连接失败: ${evt.type}`, {
+        autoHideDuration: 5000,
+        variant: 'error'
+      });
+    };
+
+    ws.onclose = function(evt) {
+      console.log('Connection closed.', evt);
+      enqueueSnackbar(` WebSocket连接已关闭: ${evt.type}`, {
+        autoHideDuration: 5000,
+        variant: 'error'
+      });
+      term.dispose();
+      if (onCloseTodo) {
+        onCloseTodo();
+      }
+    };
     // term.onData((val) => {
     //   term.write(val);
     // });
@@ -69,16 +127,9 @@ const OmsTerminal = ({ id }: tProps) => {
     //     // webSocket.send(e.key);
     //   }
     // });
-    // async function asyncInitSysEnv() {
-    //   const pid = await initSysEnv(term),
-    //     ws = new WebSocket(socketURL + pid),
-    //     attachAddon = new AttachAddon(ws);
-    //   term.loadAddon(attachAddon);
-    // }
-    // asyncInitSysEnv();
 
     const termResize = () => {
-      console.log(document.body.clientWidth);
+      // console.log(document.body.clientWidth);
       // console.log(document.body.clientHeight);
       // const cols = Math.ceil((document.body.clientWidth - 100) / 14);
       // const rows = Math.ceil((document.body.clientHeight / 20) - 10);
@@ -88,7 +139,8 @@ const OmsTerminal = ({ id }: tProps) => {
 
     window.addEventListener('resize', termResize);
     return () => {
-      // 组件卸载，清除 Terminal 实例
+      // 组件卸载，关闭WebSocket连接 清除 Terminal 实例 web
+      ws.close();
       term.dispose();
       window.removeEventListener('resize', termResize);
     };

@@ -5,6 +5,7 @@ import OmsTab from '../../components/OmsTabs/Tab';
 import TabPanel from '../../components/OmsTabs/TabPanel';
 import UploadFile from './UploadFile';
 import { a11yProps } from '../../utils/index';
+import Command from './Command';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -63,7 +64,7 @@ function ModeTabs() {
         <UploadFile/>
       </TabPanel>
       <TabPanel className={classes.TabPanel} value={value} index={1}>
-        Item Two
+        <Command/>
       </TabPanel>
       <TabPanel className={classes.TabPanel} value={value} index={2}>
         Item Three

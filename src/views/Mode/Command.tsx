@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import LinkIcon from '@material-ui/icons/Link';
+import LinkOffIcon from '@material-ui/icons/LinkOff';
 import FormControl from '@material-ui/core/FormControl';
-import UploadButtons from '../../components/Button/UploadButton';
 import OmsSelect from '../../components/OmsSelect';
-import TextField from '@material-ui/core/TextField';
 // import { ActionCreator } from 'redux';
 import { GroupInfo, HostInfo, IState, TagInfo } from '../../store/interface';
-// import actions from '../../store/action';
+import OmsTerminal from '../../components/OmsTerminal';
 import { connect } from 'react-redux';
 import OmsLabel from '../../components/OmsLabel';
 import OmsMenuItem from '../../components/OmsSelect/OmsMenuItem';
+import OmsError from '../../components/OmsError';
+import { useSnackbar } from 'notistack';
 
 type tDP = {
   // deleteGroup: ActionCreator<any>;
@@ -48,7 +51,7 @@ type tProps = tSP & tDP;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: '100%',
+      width: '98%',
       height: '100%'
     },
     ControlBox: {
@@ -62,10 +65,28 @@ const useStyles = makeStyles((theme: Theme) =>
     Control: {
       width: '25%'
     },
+    LinkButton: {
+      marginTop: '12px',
+      height: '45px',
+      width: '90px',
+      backgroundColor: theme.palette.info[theme.palette.type],
+      '&:hover': {
+        backgroundColor: theme.palette.info.main
+      }
+    },
+    LinkOffButton: {
+      marginTop: '12px',
+      height: '45px',
+      width: '90px',
+      backgroundColor: theme.palette.error[theme.palette.type],
+      '&:hover': {
+        backgroundColor: theme.palette.error.main
+      }
+    },
     shellBox: {
+      marginTop: '60px',
       width: '100%',
-      height: '70%',
-      backgroundColor: '#2f2f2f'
+      height: '70%'
     }
   })
 );
@@ -76,14 +97,40 @@ const itemType = {
   hostList: '请选择主机',
   groupList: '请选择分组',
   tagList: '请选择标签',
-  default: '请选择子选项'
+  default: '请先选择类型'
 };
 
-const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
+const Command = ({ hostList, groupList, tagList }: tProps) => {
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [type, setType] = useState<string>('');
   const [item, setItem] = useState<string>('');
-  const [filePath, setFilePath] = useState<string>('');
+  const [ws, setWs] = useState<string | WebSocket>('');
+
+  const connectHost = () => {
+    // console.log(item);
+    if (!item) {
+      enqueueSnackbar(`请先选择一个主机 ${type}`, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
+      return;
+    }
+    // const ws = new WebSocket(`ws://10.1.1.74:9090/ws/ssh/${item}?cols=150&rows=40`);
+    setWs(new WebSocket(`ws://10.1.1.74:9090/ws/ssh/${item}?cols=150&rows=40`));
+  };
+
+  const closeHost = () => {
+    if (!ws) {
+      return;
+    }
+    // enqueueSnackbar('正在关闭WebSocket连接...', {
+    //   autoHideDuration: 3000,
+    //   variant: 'info'
+    // });
+    (ws as WebSocket).close();
+    setWs('');
+  };
 
   const selectType = (flag: boolean): string | Array<any> => {
     if (type === 'host') {
@@ -100,8 +147,8 @@ const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setItem(event.target.value as string);
-    console.log(type);
-    console.log(item);
+    // console.log(type);
+    // console.log(item);
   };
 
   return (
@@ -122,31 +169,37 @@ const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
         <FormControl className={classes.Control}>
           <OmsLabel>{itemType[(selectType(false) as tItem)]}</OmsLabel>
           <OmsSelect
+            disabled={!selectType(true).length}
             labelId='typeItem-select-label'
             id='typeItem-select-label'
             value={item}
             onChange={handleChange}
           >
             {selectType(true).length > 0 ? (selectType(true) as Array<any>).map((e) => {
-              return (<OmsMenuItem key={e.name} value={e.name}>{e.name}</OmsMenuItem>);
+              return (<OmsMenuItem key={e.name} value={e.id}>{e.name}</OmsMenuItem>);
             }) : null }
           </OmsSelect>
         </FormControl>
-      </div>
-      <div className={classes.ControlBox}>
-        <TextField
-          className={classes.Control}
-          size='small'
-          id='outlined-disabled'
-          label='请输入远程端文件存储的路径'
-          variant='outlined'
-          value={filePath}
-          onChange={(e) => setFilePath(e.target.value)}
-        />
-        <UploadButtons filePath={filePath}/>
+        <Button
+          disabled={!!ws}
+          className={classes.LinkButton}
+          startIcon={<LinkIcon />}
+          onClick={connectHost}
+        >
+        连接
+        </Button>
+        <Button
+          disabled={!ws}
+          className={classes.LinkOffButton}
+          startIcon={<LinkOffIcon />}
+          onClick={closeHost}
+        >
+          断开
+        </Button>
       </div>
       <div className={classes.shellBox}>
-        {/* <OmsTerminal id='terminal'/>*/}
+        {ws ? (<OmsTerminal id='terminal' ws={ws as WebSocket} onCloseTodo={() => setWs('')}/>)
+          : (<OmsError errInfo='请选择一个主机进行连接' errType='network' imgStyle={{ width: '400px', height: '400px' }} variant='h4'/>)}
       </div>
     </div>
   );
@@ -155,4 +208,4 @@ const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
 export default connect(
   mapStateToProps,
   mapDispatch
-)(UploadFile);
+)(Command);
