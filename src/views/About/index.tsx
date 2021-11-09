@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import Loading from '../../components/OmsSkeleton/Loading';
 import OmsError from '../../components/OmsError';
 
-import { getTags, getTag, addTag, editTag, deleteTag } from '../../api/http/httpRequestApi';
+import { getTags, getTag, addTag, editTag, deleteTag, addJob } from '../../api/http/httpRequestApi';
 
 const newHost = {
   hostname: 'centos001',
@@ -28,7 +28,14 @@ export default function About() {
     // const res1 = await getTag(1);
     // const res1 = await addTag('tag1');
     // const res1 = await editTag({ id: 1, name: 'tag1' });
-    const res1 = await deleteTag(1);
+    // const res1 = await deleteTag(1);
+    const res1 = await addJob({
+      name: 'test',
+      type: 'cron',
+      spec: '*/1 * * * *',
+      cmd: 'ls -l',
+      host_id: 1
+    });
     console.log('get', res1);
   };
   return (

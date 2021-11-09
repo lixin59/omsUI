@@ -42,6 +42,15 @@ instance.interceptors.request.use((config) => {
   if (config.url!.includes('tag')) {
     (config.headers!)['Content-Type'] = 'application/x-www-form-urlencoded';
   }
+  if (config.url!.includes('group')) {
+    (config.headers!)['Content-Type'] = 'application/x-www-form-urlencoded';
+  }
+  if (config.url!.includes('tunnel')) {
+    (config.headers!)['Content-Type'] = 'application/x-www-form-urlencoded';
+  }
+  if (config.url!.includes('job')) {
+    (config.headers!)['Content-Type'] = 'application/x-www-form-urlencoded';
+  }
   return config;
 }, (error) => {
   // 对请求错误做些什么

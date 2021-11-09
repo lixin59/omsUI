@@ -1,4 +1,7 @@
 export const urlType = {
   host: '/host',
-  tag: '/tag'
+  tag: '/tag',
+  group: '/group',
+  tunnel: '/tunnel',
+  job: '/job'
 };
