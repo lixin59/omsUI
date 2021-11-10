@@ -33,7 +33,8 @@ const baseHostInfo: HostInfo = {
   status: false,
   user: '',
   password: '',
-  host: '',
+  addr: '',
+  private_key_id: 0,
   port: '',
   group: {
     id: 0,
@@ -41,7 +42,9 @@ const baseHostInfo: HostInfo = {
     mode: 0,
     rule: ''
   },
-  tag: []
+  tags: [],
+  tunnels: [],
+  jobs: []
 };
 
 const mapStateToProps = (state: IState, props: tOP): tSP => ({
@@ -79,7 +82,7 @@ function Home(props: tProps) {
   };
 
   const addNewHost = () => {
-    if (!hostInfo.host) {
+    if (!hostInfo.addr) {
       enqueueSnackbar(`主机地址不能为空`, {
         autoHideDuration: 3000,
         variant: 'error'
@@ -100,23 +103,23 @@ function Home(props: tProps) {
       });
       return;
     }
-    if (hostList.some((e) => e.host === hostInfo.host)) {
+    if (hostList.some((e) => e.addr === hostInfo.addr)) {
       enqueueSnackbar(`该主机已存在`, {
         autoHideDuration: 3000,
         variant: 'error'
       });
       return;
     }
-    const tag: TagInfo[] = [];
+    const tags: TagInfo[] = [];
     tlc.forEach((e) => {
       if (e.checked) {
-        tag.push(e);
+        tags.push(e);
       }
     });
     const data: HostInfo = {
       ...hostInfo,
       id: new Date().getTime(),
-      tag
+      tags
     };
     /* const res = api();
     if(code !==200) {

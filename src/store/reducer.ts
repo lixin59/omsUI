@@ -2,66 +2,6 @@ import { GroupInfo, HostAction, TagInfo, HostInfo, TunnelInfo, JobInfo } from '.
 import { groupActions, hostActions, tagActions, tunnelActions, jobActions } from './action-types';
 // import { hostInfo } from '../views/Home/typings';
 
-const hostList: HostInfo[] = [
-  {
-    id: 1,
-    name: '1271',
-    status: false,
-    user: 'xm',
-    password: '1221',
-    host: '127.0.0.1',
-    port: '22',
-    group: {
-      id: 1,
-      name: '分组1',
-      mode: 0,
-      rule: ''
-    },
-    tag: [{
-      id: 1,
-      name: '标签1'
-    }]
-  },
-  {
-    id: 2,
-    name: '1272',
-    status: true,
-    user: 'xm',
-    password: '1221',
-    host: '127.0.0.1',
-    port: '22',
-    group: {
-      id: 1,
-      name: '分组1',
-      mode: 0,
-      rule: ''
-    },
-    tag: [{
-      id: 1,
-      name: '标签1'
-    }]
-  },
-  {
-    id: 3,
-    name: '1273',
-    status: false,
-    user: 'xm',
-    password: '1221',
-    host: '127.0.0.1',
-    port: '22',
-    group: {
-      id: 2,
-      name: '分组2',
-      mode: 1,
-      rule: '121212121'
-    },
-    tag: [{
-      id: 2,
-      name: '标签2'
-    }]
-  }
-];
-
 const groupList: GroupInfo[] = [
   {
     id: 1,
@@ -124,6 +64,76 @@ const jobList: JobInfo[] = [
     cmd: 'ls',
     status: 'sss',
     host_id: 2
+  }
+];
+
+const hostList: HostInfo[] = [
+  {
+    id: 1,
+    name: '1271',
+    status: false,
+    user: 'xm',
+    password: '1221',
+    addr: '127.0.0.1',
+    port: '22',
+    private_key_id: 0,
+    group: {
+      id: 1,
+      name: '分组1',
+      mode: 0,
+      rule: ''
+    },
+    tags: [{
+      id: 1,
+      name: '标签1'
+    }],
+    tunnels: tunnelList,
+    jobs: jobList
+  },
+  {
+    id: 2,
+    name: '1272',
+    status: true,
+    user: 'xm',
+    password: '1221',
+    addr: '127.0.0.1',
+    private_key_id: 0,
+    port: '22',
+    group: {
+      id: 1,
+      name: '分组1',
+      mode: 0,
+      rule: ''
+    },
+    tags: [{
+      id: 1,
+      name: '标签1'
+    }],
+    tunnels: tunnelList,
+    jobs: jobList
+  },
+  {
+    id: 3,
+    name: '1273',
+    status: false,
+    user: 'xm',
+    password: '1221',
+    addr: '127.0.0.1',
+    private_key_id: 0,
+    port: '22',
+    group: {
+      id: 2,
+      name: '分组2',
+      mode: 1,
+      rule: '121212121'
+    },
+    tags: [{
+      id: 2,
+      name: '标签2'
+    }],
+    tunnels: tunnelList,
+    jobs: jobList
+
   }
 ];
 

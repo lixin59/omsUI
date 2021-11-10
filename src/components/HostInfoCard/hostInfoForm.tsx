@@ -38,8 +38,8 @@ const HostInfoForm = ({ hostInfo, setHostInfo, groupList, tlc, setTlc }: tProps)
         id='host-ip'
         label='主机地址'
         fullWidth
-        value={hostInfo.host}
-        onChange={(e) => setHostInfo({ ...hostInfo, host: e.target.value })}
+        value={hostInfo.addr}
+        onChange={(e) => setHostInfo({ ...hostInfo, addr: e.target.value })}
       />
       <TextField
         autoFocus

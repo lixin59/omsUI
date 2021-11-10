@@ -14,15 +14,19 @@ export interface IState {
 }
 
 export interface HostInfo {
-  id: number;
-  name: string;
-  status: boolean;
-  user: string;
-  password: string;
-  host: string;
-  port: string;
-  group: GroupInfo;
-  tag: TagInfo[] | [];
+  id: number,
+  name: string,
+  status: boolean,
+  user: string,
+  password: string,
+  addr: string,
+  port: string,
+  group: GroupInfo,
+  private_key_id: number,
+  tags: TagInfo[] | [],
+  tunnels: TunnelInfo[] | [],
+  jobs: JobInfo[] | [],
+
 }
 
 export interface GroupInfo {

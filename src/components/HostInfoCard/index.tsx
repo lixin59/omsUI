@@ -36,7 +36,7 @@ function HostInfoCard(props: tProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [isOpen, setIsoOpen] = useState<boolean>(false);
   const [hosts, setHosts] = useState<HostInfo>(hostInfo);
-  const [tlc, setTlc] = useState(tagList.map((e) => ({ ...e, checked: !!hostInfo.tag.find((item) => item.name === e.name) })));
+  const [tlc, setTlc] = useState(tagList.map((e) => ({ ...e, checked: !!hostInfo.tags.find((item) => item.name === e.name) })));
 
   const title = '编辑主机信息';
   const content = HostInfoForm({ hostInfo: hosts, setHostInfo: setHosts, groupList, tlc, setTlc });
@@ -124,7 +124,7 @@ function HostInfoCard(props: tProps) {
           </ListItem>
           <ListItem className={classes.listItem}>
             <ListItemText className={classes.listItemText} primary='地址:' />
-            <ListItemText primary={hostInfo.host || ''} />
+            <ListItemText primary={hostInfo.addr || ''} />
           </ListItem>
           <ListItem className={classes.listItem}>
             <ListItemText className={classes.listItemText} primary='端口:' />
@@ -136,7 +136,7 @@ function HostInfoCard(props: tProps) {
           </ListItem>
           <ListItem className={classes.listItem}>
             <ListItemText className={classes.listItemText} primary='标签:' />
-            <ListItemText primary={`${hostInfo.tag.map((e) => { return e.name; })}` || ''} />
+            <ListItemText primary={`${hostInfo.tags.map((e) => { return e.name; })}` || ''} />
           </ListItem>
         </List>
       </Card>
