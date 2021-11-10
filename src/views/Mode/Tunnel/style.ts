@@ -48,6 +48,13 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
   container: {
     maxHeight: 440
   },
+  editBtn: {
+    marginRight: '14px',
+    backgroundColor: theme.palette.warning[theme.palette.type],
+    '&:hover': {
+      backgroundColor: theme.palette.warning.main
+    }
+  },
   deleteButton: {
     backgroundColor: theme.palette.error[theme.palette.type],
     '&:hover': {

@@ -14,6 +14,8 @@ import { ActionCreator } from 'redux';
 import TipDialog from '../../../components/OmsDialog/TipDialog';
 import { useSnackbar } from 'notistack';
 import { JobInfo } from '../../../store/interface';
+import FormDialog from '../../../components/OmsDialog/FormDialog';
+import JobInfoForm from './JobInfoForm';
 
 type tDP = {
   deleteJob: ActionCreator<any>;
@@ -38,50 +40,67 @@ const columns: Column[] = [
   {
     id: 'name',
     label: 'job名称',
-    minWidth: 50
+    minWidth: 100
   },
   {
     id: 'type',
     label: 'job类型',
-    minWidth: 50
+    minWidth: 100
   },
   {
     id: 'spec',
     label: 'cron表达式',
-    minWidth: 50
+    minWidth: 100
   },
   {
     id: 'cmd',
     label: '命令',
-    minWidth: 50
+    minWidth: 100
   },
   {
     id: 'status',
     label: '状态',
-    minWidth: 50
+    minWidth: 100
   },
-  {
-    id: 'id',
-    label: '主机id',
-    minWidth: 50
-  },
+  // {
+  //   id: 'id',
+  //   label: '主机id',
+  //   minWidth: 50
+  // },
   {
     id: 'density',
     label: '操作',
-    minWidth: 170
+    minWidth: 100
   }
 ];
 
-export default function JobTable({ deleteJob, jobList }: tProps) {
+export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
   const classes = makeStyles(styles)();
   const { enqueueSnackbar } = useSnackbar();
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [open, setOpen] = useState<boolean>(false);
+  const [openEdit, setOpenEdit] = useState<boolean>(false);
   const [name, setName] = useState<string>('');
+  const [Info, setInfo] = useState<JobInfo>({
+    id: 0,
+    name: '',
+    type: 'cron',
+    spec: '',
+    cmd: '',
+    status: '',
+    host_id: 0
+  });
 
   const title: string = '确定要删除这个任务吗？';
   const text: string = '如果不想删除可以点击取消';
+
+  const content = JobInfoForm({ Info, setInfo });
+
+  const toEdit = () => {
+    editJob(Info);
+  };
+
   const dltButtonClick = (name: string) => {
     setName(name);
     setOpen(true);
@@ -142,13 +161,10 @@ export default function JobTable({ deleteJob, jobList }: tProps) {
                   <TableCell key={row.status} align='center'>
                     {row.status}
                   </TableCell>
-                  <TableCell key={row.host_id} align='center'>
-                    {row.host_id}
-                  </TableCell>
                   <TableCell align='center'>
                     <Button
-                      className={classes.deleteButton}
-                      onClick={() => dltButtonClick(row.name)}
+                      className={classes.editBtn}
+                      onClick={() => { setInfo(row); setOpenEdit(true); }}
                     >
                       编辑
                     </Button>
@@ -159,19 +175,19 @@ export default function JobTable({ deleteJob, jobList }: tProps) {
                       删除
                     </Button>
                     <Button
-                      className={classes.deleteButton}
+                      className={classes.starBtn}
                       onClick={() => dltButtonClick(row.name)}
                     >
                       启动
                     </Button>
                     <Button
-                      className={classes.deleteButton}
+                      className={classes.stopBtn}
                       onClick={() => dltButtonClick(row.name)}
                     >
                       停止
                     </Button>
                     <Button
-                      className={classes.deleteButton}
+                      className={classes.reStarBtn}
                       onClick={() => dltButtonClick(row.name)}
                     >
                       重启
@@ -198,6 +214,13 @@ export default function JobTable({ deleteJob, jobList }: tProps) {
         text={text}
         toClose={closeDialog}
         todo={toDelete}
+      />
+      <FormDialog
+        open={openEdit}
+        content={content}
+        toClose={() => setOpenEdit(false)}
+        title={'编辑Job信息'}
+        todo={toEdit}
       />
     </Paper>
   );

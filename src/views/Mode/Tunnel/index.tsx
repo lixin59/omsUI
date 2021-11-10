@@ -129,7 +129,7 @@ const TunnelPage = ({ hostList, tunnelList, addTunnel, editTunnel, deleteTunnel 
         </Button>
       </div>
       <div className={classes.shellBox}>
-        <TunnelTable deleteTunnel={deleteTunnel} tunnelList={tunnelList} editTunnel={editTunnel}/>
+        <TunnelTable deleteTunnel={deleteTunnel} tunnelList={tunnelList} editTunnel={editTunnel} hostList={hostList}/>
       </div>
     </div>
   );

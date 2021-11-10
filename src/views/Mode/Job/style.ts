@@ -49,9 +49,38 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
     maxHeight: 440
   },
   deleteButton: {
+    marginRight: '14px',
     backgroundColor: theme.palette.error[theme.palette.type],
     '&:hover': {
       backgroundColor: theme.palette.error.main
+    }
+  },
+  editBtn: {
+    marginRight: '14px',
+    backgroundColor: theme.palette.warning[theme.palette.type],
+    '&:hover': {
+      backgroundColor: theme.palette.warning.main
+    }
+  },
+  starBtn: {
+    marginRight: '14px',
+    backgroundColor: theme.palette.primary[theme.palette.type],
+    '&:hover': {
+      backgroundColor: theme.palette.primary.main
+    }
+  },
+  reStarBtn: {
+    marginRight: '14px',
+    backgroundColor: theme.palette.info[theme.palette.type],
+    '&:hover': {
+      backgroundColor: theme.palette.info.main
+    }
+  },
+  stopBtn: {
+    marginRight: '14px',
+    backgroundColor: theme.palette.secondary[theme.palette.type],
+    '&:hover': {
+      backgroundColor: theme.palette.secondary.main
     }
   },
   addButton: {

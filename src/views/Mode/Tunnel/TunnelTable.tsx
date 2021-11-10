@@ -13,8 +13,9 @@ import styles from './style';
 import { ActionCreator } from 'redux';
 import TipDialog from '../../../components/OmsDialog/TipDialog';
 import { useSnackbar } from 'notistack';
-import { TunnelInfo } from '../../../store/interface';
-
+import { HostInfo, TunnelInfo } from '../../../store/interface';
+import FormDialog from '../../../components/OmsDialog/FormDialog';
+import TunnelInfoForm from './TunnelInfoForm';
 type tDP = {
   deleteTunnel: ActionCreator<any>;
   editTunnel: ActionCreator<any>;
@@ -23,7 +24,8 @@ type tDP = {
 type tOP = {};
 
 type tSP = tOP & {
-  tunnelList: TunnelInfo[]
+  tunnelList: TunnelInfo[],
+  hostList: HostInfo[],
 };
 
 type tProps = tSP & tDP;
@@ -60,25 +62,41 @@ const columns: Column[] = [
     label: '信息',
     minWidth: 50
   },
-  {
-    id: 'hostID',
-    label: '主机ID',
-    minWidth: 50
-  },
+  // {
+  //   id: 'hostID',
+  //   label: '主机ID',
+  //   minWidth: 50
+  // },
   {
     id: 'density',
     label: '操作',
-    minWidth: 170
+    minWidth: 100
   }
 ];
 
-export default function JobTable({ deleteTunnel, tunnelList }: tProps) {
+export default function JobTable({ deleteTunnel, tunnelList, hostList, editTunnel }: tProps) {
   const classes = makeStyles(styles)();
   const { enqueueSnackbar } = useSnackbar();
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [open, setOpen] = useState<boolean>(false);
   const [id, setId] = useState<string|number>('');
+  const [openEdit, setOpenEdit] = useState<boolean>(false);
+  const [Info, setInfo] = useState<TunnelInfo>({
+    id: 0,
+    mode: 'local',
+    source: '',
+    destination: '',
+    error_msg: '',
+    status: false,
+    host_id: 0
+  });
+
+  const content = TunnelInfoForm({ Info, setInfo, hostList });
+
+  const toEdit = () => {
+    editTunnel(Info);
+  };
 
   const title: string = '确定要删除这个隧道吗？';
   const text: string = '如果不想删除可以点击取消';
@@ -142,13 +160,10 @@ export default function JobTable({ deleteTunnel, tunnelList }: tProps) {
                   <TableCell key={row.error_msg} align='center'>
                     {row.error_msg}
                   </TableCell>
-                  <TableCell key={row.host_id} align='center'>
-                    {row.host_id}
-                  </TableCell>
                   <TableCell align='center'>
                     <Button
-                      className={classes.deleteButton}
-                      onClick={() => dltButtonClick(row.id)}
+                      className={classes.editBtn}
+                      onClick={() => { setInfo(row); setOpenEdit(true); }}
                     >
                       编辑
                     </Button>
@@ -180,6 +195,13 @@ export default function JobTable({ deleteTunnel, tunnelList }: tProps) {
         text={text}
         toClose={closeDialog}
         todo={toDelete}
+      />
+      <FormDialog
+        open={openEdit}
+        content={content}
+        toClose={() => setOpenEdit(false)}
+        title={'编辑Tunnel信息'}
+        todo={toEdit}
       />
     </Paper>
   );
