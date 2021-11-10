@@ -63,15 +63,15 @@ function HostInfoCard(props: tProps) {
   };
 
   const editNewHost = () => {
-    const tag: TagInfo[] = [];
+    const tags: TagInfo[] = [];
     tlc.forEach((e) => {
       if (e.checked) {
-        tag.push(e);
+        tags.push(e);
       }
     });
     editHost({
       ...hosts,
-      tag
+      tags
     });
     enqueueSnackbar(`主机: ${hostInfo.name} 信息已经修改`, {
       autoHideDuration: 3000,
