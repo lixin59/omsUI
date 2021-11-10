@@ -9,6 +9,8 @@ export interface IState {
   hostList: HostInfo[];
   groupList: GroupInfo[];
   tagList: TagInfo[];
+  tunnelList: TunnelInfo[];
+  jobList: JobInfo[];
 }
 
 export interface HostInfo {
@@ -33,4 +35,24 @@ export interface GroupInfo {
 export interface TagInfo {
   id: number;
   name: string;
+}
+
+export interface TunnelInfo {
+  id: number,
+  mode: 'local' | 'remote',
+  source: string,
+  destination: string,
+  status: boolean,
+  error_msg: string,
+  host_id: number,
+}
+
+export interface JobInfo {
+  id: number,
+  name: string,
+  type: 'cron' | 'task',
+  spec: string,
+  cmd: string,
+  status: string,
+  host_id: number,
 }
