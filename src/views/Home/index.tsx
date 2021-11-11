@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import HTTP from '../../components/HTTP/index';
+import { AddHostPost, getHostsApi, addHostApi, HTTPResult } from '../../api/http/httpRequestApi';
+import Loading from '../../components/OmsSkeleton/Loading';
+import OmsError from '../../components/OmsError';
 import { ActionCreator } from 'redux';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
@@ -12,11 +16,11 @@ import { GroupInfo, IState, TagInfo, HostInfo } from '../../store/interface';
 import homeStyle from './homStyle';
 import FormDialog from '../../components/OmsDialog/FormDialog';
 import { useSnackbar } from 'notistack';
-
 type tDP = {
   deleteHost: ActionCreator<any>;
   addHost: ActionCreator<any>;
   editHost: ActionCreator<any>;
+  initStore: ActionCreator<any>;
 };
 
 type tOP = {};
@@ -35,7 +39,7 @@ const baseHostInfo: HostInfo = {
   password: '',
   addr: '',
   private_key_id: 0,
-  port: '',
+  port: 0,
   group: {
     id: 0,
     name: '',
@@ -56,19 +60,20 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
 const mapDispatch: tDP = {
   deleteHost: actions.deleteHostInfo,
   addHost: actions.addHostInfo,
-  editHost: actions.editHostInfo
+  editHost: actions.editHostInfo,
+  initStore: actions.initHostInfo
 };
 
 type tProps = tSP & tDP;
 
 function Home(props: tProps) {
-  const { hostList, deleteHost, addHost, editHost, groupList, tagList } = props;
+  const { hostList, deleteHost, addHost, editHost, groupList, tagList, initStore } = props;
   const classes = makeStyles(homeStyle)();
   const { enqueueSnackbar } = useSnackbar();
 
   const [open, setOpen] = useState<boolean>(false);
   const [hostInfo, setHostInfo] = useState<HostInfo>(baseHostInfo);
-  const [tlc, setTlc] = useState(tagList.map((e) => ({ ...e, checked: false })));
+  const [tlc, setTlc] = useState(tagList?.map((e) => ({ ...e, checked: false })));
 
   const title = '添加一个新的主机';
   const content = HostInfoForm({ hostInfo, setHostInfo, groupList, tlc, setTlc });
@@ -81,7 +86,7 @@ function Home(props: tProps) {
     setOpen(false);
   };
 
-  const addNewHost = () => {
+  const addNewHost = async() => {
     if (!hostInfo.addr) {
       enqueueSnackbar(`主机地址不能为空`, {
         autoHideDuration: 3000,
@@ -121,41 +126,79 @@ function Home(props: tProps) {
       id: new Date().getTime(),
       tags
     };
-    /* const res = api();
-    if(code !==200) {
-      enqueueSnackbar(`主机添加失败: res.mes`, {
-       autoHideDuration: 3000,
-       variant: 'success'
+    const resData: AddHostPost = {
+      hostname: data.name,
+      user: data.user,
+      addr: data.addr,
+      port: data.port,
+      group: data.group.id,
+      password: data.password,
+      keyFile: '',
+      tags: data.tags?.map((e) => e.name)
+    };
+
+    const res = (await addHostApi(resData)) as HTTPResult;
+    if (res.code !== '200') {
+      enqueueSnackbar(`主机添加失败: ${res.msg}`, {
+        autoHideDuration: 3000,
+        variant: 'error'
       });
       return;
     }
-    id = res.id;
-    * */
-    addHost(data);
-    enqueueSnackbar(`主机: ${hostInfo.name} 已添加`, {
+    addHost(res.data);
+    enqueueSnackbar(`主机: ${res.data.name} 已添加`, {
       autoHideDuration: 3000,
       variant: 'success'
     });
     setHostInfo(baseHostInfo);
-    setTlc(tagList.map((e) => ({ ...e, checked: false })));
+    setTlc(tagList?.map((e) => ({ ...e, checked: false })));
   };
 
   return (
     <BodyBox>
-      <div className={classes.home}>
-        {hostList.map((i: HostInfo) => {
-          return (
-            <HostInfoCard
-              hostInfo={i}
-              key={i.id}
-              deleteHost={deleteHost}
-              editHost={editHost}
-              groupList={groupList}
-              tagList={tagList}
-            />
-          );
-        })}
-      </div>
+      <HTTP.Get
+        data={hostList}
+        initStore={initStore}
+        apiFn={getHostsApi}
+        delay={0}
+        loading={<Loading/>}
+        error={
+          <div style={{ marginTop: '100px' }}>
+            <OmsError errInfo='请求数据失败，网络异常' variant='h3' errType='server' imgStyle={{ width: '400px', height: '400px' }}/>
+          </div>
+        }
+      >
+        {
+          <div
+            style={{
+              width: '90%',
+              margin: '0 auto',
+              paddingTop: '20px',
+              paddingBottom: '20px',
+              display: 'grid',
+              alignContent: 'space-evenly',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              justifyItems: 'center',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))',
+              gridGap: '20px 20px'
+            }}
+          >
+            {hostList.map((i: HostInfo) => {
+              return (
+                <HostInfoCard
+                  hostInfo={i}
+                  key={i.id}
+                  deleteHost={deleteHost}
+                  editHost={editHost}
+                  groupList={groupList}
+                  tagList={tagList}
+                />
+              );
+            })}
+          </div>
+        }
+      </HTTP.Get>
       <Fab
         variant='extended'
         size='medium'

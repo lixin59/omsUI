@@ -1,3 +1,4 @@
+export const WILL_INIT_HOST = 'WILL_INIT_HOST';
 export const WILL_DELETE = 'WILL_DELETE';
 export const WILL_ADD = 'WILL_ADD';// 更新数据
 export const WILL_EDIT_HOST = 'WILL_EDIT_HOST'; // 编辑主机信息
@@ -19,6 +20,7 @@ export const WILL_ADD_Job = 'WILL_ADD_Job';// 更新数据
 export const WILL_EDIT_Job = 'WILL_EDIT_Job'; // 编辑标签信息
 
 export enum hostActions{
+  INIT = 'INIT_HOST_INFO',
   DELETE_HOST_INFO = 'DELETE_HOST_INFO',
   ADD_HOST_INFO = 'ADD_HOST_INFO',
   EDIT_HOST_INFO = 'EDIT_HOST_INFO',

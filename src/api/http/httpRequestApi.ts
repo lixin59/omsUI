@@ -1,7 +1,13 @@
 import { getApi, postApi, deleteApi, putApi } from './api';
 import { urlType } from './requestUrl';
 
-interface EditHostPut {
+export interface HTTPResult {
+  code:string,
+  msg:string,
+  data: any | any[]
+}
+
+export interface EditHostPut {
   id: number,
   hostname?: string,
   user?: string,
@@ -13,7 +19,7 @@ interface EditHostPut {
   tags?: string[],
 }
 
-interface AddHostPost {
+export interface AddHostPost {
   hostname: string,
   user: string,
   addr: string,
@@ -24,13 +30,13 @@ interface AddHostPost {
   tags?: string[],
 }
 
-interface AddGroupPost {
+export interface AddGroupPost {
   name: string,
   mode: 0 | 1,
   params?: string,
 }
 
-interface EditGroupPut {
+export interface EditGroupPut {
   id: number,
   name?: string,
   mode?: 0 | 1,
@@ -38,14 +44,14 @@ interface EditGroupPut {
 };
 
 
-interface AddTunnelPost {
+export interface AddTunnelPost {
   mode: 'local' | 'remote',
   src: string,
   dest: string,
   host_id: number,
 }
 
-interface EditTunnelPut {
+export interface EditTunnelPut {
   id: string
   mode?: 'local' | 'remote',
   src?: string,
@@ -53,7 +59,7 @@ interface EditTunnelPut {
   host_id?: number,
 };
 
-interface AddJobPost {
+export interface AddJobPost {
   name: string,
   type: 'cron' | 'task',
   spec: string,
@@ -61,7 +67,7 @@ interface AddJobPost {
   host_id: number,
 }
 
-interface EditJobPut {
+export interface EditJobPut {
   id: number,
   name?: string,
   type?: 'cron' | 'task',
@@ -70,17 +76,17 @@ interface EditJobPut {
 };
 
 // 获取所有主机信息
-export const getAllHostInfo = (config: any = {}) => {
+export const getHostsApi = (config: any = {}) => {
   return getApi(urlType.host, config);
 };
 
 // 通过id获取主机信息
-export const getHostInfoById = (id: number) => {
+export const getHostApi = (id: number) => {
   return getApi(`${urlType.host}/${id}`, {});
 };
 
 // 新增一个主机
-export const addHost = (data: AddHostPost) => {
+export const addHostApi = (data: AddHostPost) => {
   const formData = new FormData();
   for (const k in data) {
     if (data.hasOwnProperty(k)) {
@@ -92,7 +98,7 @@ export const addHost = (data: AddHostPost) => {
 };
 
 // 修改主机信息
-export const editHost = (data: EditHostPut) => {
+export const editHostApi = (data: EditHostPut) => {
   const formData = new FormData();
   for (const k in data) {
     if (data.hasOwnProperty(k)) {
@@ -105,7 +111,7 @@ export const editHost = (data: EditHostPut) => {
 
 // 删除主机
 
-export const deleteHost = (id: number) => {
+export const deleteHostApi = (id: number) => {
   return deleteApi(`${urlType.host}/${id}`, {});
 };
 

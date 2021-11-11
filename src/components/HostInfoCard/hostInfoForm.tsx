@@ -64,7 +64,7 @@ const HostInfoForm = ({ hostInfo, setHostInfo, groupList, tlc, setTlc }: tProps)
         label='端口号'
         fullWidth
         value={hostInfo.port}
-        onChange={(e) => setHostInfo({ ...hostInfo, port: e.target.value })}
+        onChange={(e) => setHostInfo({ ...hostInfo, port: Number(e.target.value) })}
       />
       <TextField
         autoFocus

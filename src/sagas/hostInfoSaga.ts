@@ -5,11 +5,15 @@ import { hostActions } from '../store/action-types';
 export default function* hostInfoSaga() {
   try {
     while (true) {
-      const { addHost, deleteHost, editHost } = yield race({
+      const { init, addHost, deleteHost, editHost } = yield race({
+        init: take(actionType.WILL_INIT_HOST),
         addHost: take(actionType.WILL_ADD),
         deleteHost: take(actionType.WILL_DELETE),
-        editHost: take(actionType.WILL_EDIT_HOST),
+        editHost: take(actionType.WILL_EDIT_HOST)
       });
+      if (init) {
+        yield put({ type: hostActions.INIT, value: init.value });
+      }
       if (addHost) {
         console.log(addHost);
         yield put({ type: hostActions.ADD_HOST_INFO, value: addHost.value });

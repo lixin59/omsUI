@@ -20,7 +20,7 @@ export interface HostInfo {
   user: string,
   password: string,
   addr: string,
-  port: string,
+  port: number,
   group: GroupInfo,
   private_key_id: number,
   tags: TagInfo[] | [],

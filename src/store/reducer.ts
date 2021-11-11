@@ -67,79 +67,79 @@ const jobList: JobInfo[] = [
   }
 ];
 
-const hostList: HostInfo[] = [
-  {
-    id: 1,
-    name: '1271',
-    status: false,
-    user: 'xm',
-    password: '1221',
-    addr: '127.0.0.1',
-    port: '22',
-    private_key_id: 0,
-    group: {
-      id: 1,
-      name: '分组1',
-      mode: 0,
-      rule: ''
-    },
-    tags: [{
-      id: 1,
-      name: '标签1'
-    }],
-    tunnels: tunnelList,
-    jobs: jobList
-  },
-  {
-    id: 2,
-    name: '1272',
-    status: true,
-    user: 'xm',
-    password: '1221',
-    addr: '127.0.0.1',
-    private_key_id: 0,
-    port: '22',
-    group: {
-      id: 1,
-      name: '分组1',
-      mode: 0,
-      rule: ''
-    },
-    tags: [{
-      id: 1,
-      name: '标签1'
-    }],
-    tunnels: tunnelList,
-    jobs: jobList
-  },
-  {
-    id: 3,
-    name: '1273',
-    status: false,
-    user: 'xm',
-    password: '1221',
-    addr: '127.0.0.1',
-    private_key_id: 0,
-    port: '22',
-    group: {
-      id: 2,
-      name: '分组2',
-      mode: 1,
-      rule: '121212121'
-    },
-    tags: [{
-      id: 2,
-      name: '标签2'
-    }],
-    tunnels: tunnelList,
-    jobs: jobList
-
-  }
-];
+// const hostList: HostInfo[] = [
+//   {
+//     id: 1,
+//     name: '1271',
+//     status: false,
+//     user: 'xm',
+//     password: '1221',
+//     addr: '127.0.0.1',
+//     port: '22',
+//     private_key_id: 0,
+//     group: {
+//       id: 1,
+//       name: '分组1',
+//       mode: 0,
+//       rule: ''
+//     },
+//     tags: [{
+//       id: 1,
+//       name: '标签1'
+//     }],
+//     tunnels: tunnelList,
+//     jobs: jobList
+//   },
+//   {
+//     id: 2,
+//     name: '1272',
+//     status: true,
+//     user: 'xm',
+//     password: '1221',
+//     addr: '127.0.0.1',
+//     private_key_id: 0,
+//     port: '22',
+//     group: {
+//       id: 1,
+//       name: '分组1',
+//       mode: 0,
+//       rule: ''
+//     },
+//     tags: [{
+//       id: 1,
+//       name: '标签1'
+//     }],
+//     tunnels: tunnelList,
+//     jobs: jobList
+//   },
+//   {
+//     id: 3,
+//     name: '1273',
+//     status: false,
+//     user: 'xm',
+//     password: '1221',
+//     addr: '127.0.0.1',
+//     private_key_id: 0,
+//     port: '22',
+//     group: {
+//       id: 2,
+//       name: '分组2',
+//       mode: 1,
+//       rule: '121212121'
+//     },
+//     tags: [{
+//       id: 2,
+//       name: '标签2'
+//     }],
+//     tunnels: tunnelList,
+//     jobs: jobList
+//
+//   }
+// ];
 
 // 初始化state数据
 const initialState = {
-  hostList,
+  hostList: [],
   groupList,
   tagList,
   tunnelList,
@@ -149,6 +149,12 @@ const initialState = {
 // 状态处理函数
 const reducer = (state = initialState, action: HostAction) => {
   switch (action.type) {
+    case hostActions.INIT: {
+      return ({
+        ...state,
+        hostList: action.value
+      });
+    }
     case hostActions.DELETE_HOST_INFO: {
       return ({
         ...state,
@@ -162,7 +168,7 @@ const reducer = (state = initialState, action: HostAction) => {
       });
     }
     case hostActions.EDIT_HOST_INFO: {
-      state.hostList.forEach((e, i, arr) => {
+      state.hostList.forEach((e: HostInfo, i, arr:HostInfo[]) => {
         if (e.id === action.value.id) {
           arr[i] = action.value;
         }

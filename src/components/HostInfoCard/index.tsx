@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import { editHostApi, deleteHostApi, HTTPResult, EditHostPut } from '../../api/http/httpRequestApi';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Typography from '@material-ui/core/Typography';
@@ -36,20 +37,18 @@ function HostInfoCard(props: tProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [isOpen, setIsoOpen] = useState<boolean>(false);
   const [hosts, setHosts] = useState<HostInfo>(hostInfo);
-  const [tlc, setTlc] = useState(tagList.map((e) => ({ ...e, checked: !!hostInfo.tags.find((item) => item.name === e.name) })));
+  const [tlc, setTlc] = useState(tagList?.map((e) => ({ ...e, checked: !!hostInfo.tags?.find((item) => item.name === e.name) })));
 
   const title = '编辑主机信息';
   const content = HostInfoForm({ hostInfo: hosts, setHostInfo: setHosts, groupList, tlc, setTlc });
 
 
   const closeDialog = () => {
-    console.log('o', open);
     setOpen(false);
     // setIsoOpen(false);
   };
 
   const closeEditDialog = () => {
-    console.log('Is44', isOpen);
     setIsoOpen(false);
   };
 
@@ -62,24 +61,47 @@ function HostInfoCard(props: tProps) {
     }
   };
 
-  const editNewHost = () => {
+  const editNewHost = async() => {
     const tags: TagInfo[] = [];
     tlc.forEach((e) => {
       if (e.checked) {
         tags.push(e);
       }
     });
-    editHost({
+    const resData: EditHostPut = {
       ...hosts,
-      tags
-    });
+      group: hosts?.group?.id,
+      tags: tags?.map((e) => e.name)
+    };
+    const res = (await editHostApi(resData)) as HTTPResult;
+    // editHost({
+    //   ...hosts,
+    //   tags
+    // });
+    if (res.code !== '200') {
+      enqueueSnackbar(`主机修改失败: ${res.msg}`, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
+      return;
+    }
+    editHost(res.data);
     enqueueSnackbar(`主机: ${hostInfo.name} 信息已经修改`, {
       autoHideDuration: 3000,
       variant: 'success'
     });
   };
 
-  const onDelete = () => {
+  const onDelete = async() => {
+    const res = (await deleteHostApi(hostInfo.id) as HTTPResult);
+    // console.log(res);
+    if (res.code !== '200') {
+      enqueueSnackbar(`主机${hostInfo.name}删除失败: ${res.msg}`, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
+      return;
+    }
     deleteHost(hostInfo.id);
     enqueueSnackbar(`主机: ${hostInfo.name} 已被删除`, {
       autoHideDuration: 3000,
@@ -136,7 +158,7 @@ function HostInfoCard(props: tProps) {
           </ListItem>
           <ListItem className={classes.listItem}>
             <ListItemText className={classes.listItemText} primary='标签:' />
-            <ListItemText primary={`${hostInfo.tags.map((e) => { return e.name; })}` || ''} />
+            <ListItemText primary={`${hostInfo.tags?.map((e) => { return e.name; }) || ''}`} />
           </ListItem>
         </List>
       </Card>

@@ -1,15 +1,17 @@
 import * as actionType from './action-types';
-import { hostInfo } from '../views/Home/typings';
-import { GroupInfo, JobInfo, TagInfo, TunnelInfo } from './interface';
+import { GroupInfo, HostInfo, JobInfo, TagInfo, TunnelInfo } from './interface';
 
 const actions = {
+  initHostInfo(value:HostInfo[]) {
+    return { type: actionType.WILL_INIT_HOST, value };
+  },
   deleteHostInfo(value: number) {
     return { type: actionType.WILL_DELETE, value };
   },
-  addHostInfo(value: hostInfo) {
+  addHostInfo(value: HostInfo) {
     return { type: actionType.WILL_ADD, value };
   },
-  editHostInfo(value: hostInfo) {
+  editHostInfo(value: HostInfo) {
     return { type: actionType.WILL_EDIT_HOST, value };
   },
   deleteGroupInfo(value: GroupInfo) {
