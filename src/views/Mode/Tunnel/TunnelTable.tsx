@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -16,6 +16,7 @@ import { useSnackbar } from 'notistack';
 import { HostInfo, TunnelInfo } from '../../../store/interface';
 import FormDialog from '../../../components/OmsDialog/FormDialog';
 import TunnelInfoForm from './TunnelInfoForm';
+import { deleteJobApi, editTunnelApi, HTTPResult } from '../../../api/http/httpRequestApi';
 type tDP = {
   deleteTunnel: ActionCreator<any>;
   editTunnel: ActionCreator<any>;
@@ -80,7 +81,6 @@ export default function JobTable({ deleteTunnel, tunnelList, hostList, editTunne
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [open, setOpen] = useState<boolean>(false);
-  const [id, setId] = useState<string|number>('');
   const [openEdit, setOpenEdit] = useState<boolean>(false);
   const [Info, setInfo] = useState<TunnelInfo>({
     id: 0,
@@ -94,26 +94,50 @@ export default function JobTable({ deleteTunnel, tunnelList, hostList, editTunne
 
   const content = TunnelInfoForm({ Info, setInfo, hostList });
 
-  const toEdit = () => {
-    editTunnel(Info);
-  };
-
-  const title: string = '确定要删除这个隧道吗？';
-  const text: string = '如果不想删除可以点击取消';
-  const dltButtonClick = (id: number) => {
-    setId(id);
-    setOpen(true);
-  };
-  const closeDialog = () => {
-    setOpen(false);
-  };
-  const toDelete = () => {
-    deleteTunnel(id);
-    enqueueSnackbar(`隧道: ${id} 已被删除`, {
+  const toEdit = useCallback(async() => {
+    const res = (await editTunnelApi(Info)) as HTTPResult;
+    if (res.code !== '200') {
+      enqueueSnackbar(`修改失败${res.msg}`, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
+      return;
+    }
+    // console.log('res', res);
+    editTunnel(res.data);
+    enqueueSnackbar(`修改成功${res.msg}`, {
       autoHideDuration: 3000,
       variant: 'success'
     });
+  }, [Info]);
+
+  const title: string = '确定要删除这个隧道吗？';
+  const text: string = '如果不想删除可以点击取消';
+
+  const dltButtonClick = (info: TunnelInfo) => {
+    setInfo(info);
+    setOpen(true);
   };
+
+  const closeDialog = () => {
+    setOpen(false);
+  };
+  const toDelete = useCallback(async() => {
+    const res = (await deleteJobApi(Info.id)) as HTTPResult;
+    if (res.code !== '200') {
+      enqueueSnackbar(`隧道id: ${Info.id}删除失败${res.msg}`, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
+      return;
+    }
+    // console.log('res', res);
+    deleteTunnel(Info.id);
+    enqueueSnackbar(`隧道id: ${Info.id} 已被删除`, {
+      autoHideDuration: 3000,
+      variant: 'success'
+    });
+  }, [Info]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -169,7 +193,7 @@ export default function JobTable({ deleteTunnel, tunnelList, hostList, editTunne
                     </Button>
                     <Button
                       className={classes.deleteButton}
-                      onClick={() => dltButtonClick(row.id)}
+                      onClick={() => dltButtonClick(row)}
                     >
                       删除
                     </Button>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TunnelTable from './TunnelTable';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -13,8 +13,10 @@ import { useSnackbar } from 'notistack';
 import { connect } from 'react-redux';
 import { HostInfo, IState, TunnelInfo } from '../../../store/interface';
 import actions from '../../../store/action';
+import { addTunnelApi, getTunnelsApi, HTTPResult } from '../../../api/http/httpRequestApi';
 
 type tDP = {
+  toInit: ActionCreator<any>;
   deleteTunnel: ActionCreator<any>;
   addTunnel: ActionCreator<any>;
   editTunnel: ActionCreator<any>;
@@ -33,6 +35,7 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
   hostList: state.hostList
 });
 const mapDispatch: tDP = {
+  toInit: actions.initTunnelInfo,
   deleteTunnel: actions.deleteTunnelInfo,
   addTunnel: actions.addTunnelInfo,
   editTunnel: actions.editTunnelInfo
@@ -40,15 +43,27 @@ const mapDispatch: tDP = {
 
 type tProps = tSP & tDP;
 
-const TunnelPage = ({ hostList, tunnelList, addTunnel, editTunnel, deleteTunnel }: tProps) => {
+const TunnelPage = ({ hostList, tunnelList, addTunnel, editTunnel, deleteTunnel, toInit }: tProps) => {
+
+  useEffect(() => {
+    (async() => {
+      // console.log('tunnelEff');
+      const res = (await getTunnelsApi()) as HTTPResult;
+      if (res.code !== '200') {
+        return;
+      }
+      toInit(res.data);
+    })();
+  }, []);
+
   const classes = makeStyles(styles)();
   const { enqueueSnackbar } = useSnackbar();
-  const [mode, setMode] = useState<string | number>('');
-  const [hostId, setHost] = useState<string | number>('');
-  const [src, setSrc] = useState<string>('');
-  const [dest, setDest] = useState<string>('');
+  const [mode, setMode] = useState<string>('');
+  const [hostId, setHost] = useState<string|number>('');
+  const [source, setSrc] = useState<string>('');
+  const [destination, setDest] = useState<string>('');
 
-  const addNew = () => {
+  const addNew = async() => {
     if (mode === '') {
       enqueueSnackbar(`请选择一个模式！`, {
         autoHideDuration: 3000,
@@ -56,21 +71,29 @@ const TunnelPage = ({ hostList, tunnelList, addTunnel, editTunnel, deleteTunnel 
       });
       return;
     }
-    if (!dest) {
+    if (!destination) {
       enqueueSnackbar(`监听地址不能为空！`, {
         autoHideDuration: 3000,
         variant: 'warning'
       });
       return;
     }
-    if (tunnelList.some((e) => e.destination === dest)) {
+    if (tunnelList.some((e) => e.destination === destination)) {
       enqueueSnackbar(`该Tunnel已存在！`, {
         autoHideDuration: 3000,
         variant: 'warning'
       });
       return;
     }
-    addTunnel({ id: new Date().getTime(), mode, source: src, destination: dest, status: false, error_msg: 'success', host_id: hostId });
+    const res = (await addTunnelApi({ mode: mode as 'local' | 'remote', source, destination, host_id: hostId as number })) as HTTPResult;
+    if (res.code !== '200') {
+      enqueueSnackbar(`添加任务失败${res.msg}`, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
+      return;
+    }
+    addTunnel(res.data);
   };
 
   return (
@@ -94,7 +117,7 @@ const TunnelPage = ({ hostList, tunnelList, addTunnel, editTunnel, deleteTunnel 
             labelId='hostid-select-label'
             id='hostid-select-tunnel'
             value={hostId}
-            onChange={(e) => setHost(e.target.value as string)}
+            onChange={(e) => setHost(e.target.value as number)}
           >
             {hostList.map((e) => {
               return (<MenuItem key={e.id} value={e.id}>{e.name}</MenuItem>);
@@ -107,7 +130,7 @@ const TunnelPage = ({ hostList, tunnelList, addTunnel, editTunnel, deleteTunnel 
             id='src-tunnel'
             label='目标地址'
             variant='outlined'
-            value={src}
+            value={source}
             onChange={(e) => setSrc(e.target.value)}
           />
         </FormControl>
@@ -117,7 +140,7 @@ const TunnelPage = ({ hostList, tunnelList, addTunnel, editTunnel, deleteTunnel 
             label='监听地址'
             id='dest-tunnel'
             variant='outlined'
-            value={dest}
+            value={destination}
             onChange={(e) => setDest(e.target.value)}
           />
         </FormControl>

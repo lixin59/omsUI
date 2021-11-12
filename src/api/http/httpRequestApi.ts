@@ -46,16 +46,16 @@ export interface EditGroupPut {
 
 export interface AddTunnelPost {
   mode: 'local' | 'remote',
-  src: string,
-  dest: string,
+  source: string,
+  destination: string,
   host_id: number,
 }
 
 export interface EditTunnelPut {
-  id: string
+  id: number,
   mode?: 'local' | 'remote',
-  src?: string,
-  dest?: string,
+  source?: string,
+  destination?: string,
   host_id?: number,
 };
 
@@ -219,6 +219,6 @@ export const editJobApi = (data: EditJobPut) => {
 
 // 删除 job
 export const deleteJobApi = (id: number) => {
-  return deleteApi(urlType.job, id);
+  return deleteApi(`${urlType.job}/${id}`);
 };
 

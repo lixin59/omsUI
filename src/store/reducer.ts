@@ -1,6 +1,6 @@
 import { GroupInfo, HostAction, TagInfo, HostInfo, TunnelInfo, JobInfo } from './interface';
 import { groupActions, hostActions, tagActions, tunnelActions, jobActions } from './action-types';
-import { getGroupsApi, getTagsApi, HTTPResult } from '../api/http/httpRequestApi';
+import { getGroupsApi, getJobsApi, getTagsApi, getTunnelsApi, HTTPResult } from '../api/http/httpRequestApi';
 // import { hostInfo } from '../views/Home/typings';
 
 // const groupList: GroupInfo[] = [
@@ -29,44 +29,44 @@ import { getGroupsApi, getTagsApi, HTTPResult } from '../api/http/httpRequestApi
 //   }
 // ];
 
-const tunnelList: TunnelInfo[] = [
-  {
-    id: 1,
-    mode: 'local',
-    source: '12121',
-    destination: '111',
-    status: true,
-    error_msg: 'msg',
-    host_id: 1
-  }, {
-    id: 2,
-    mode: 'remote',
-    source: '12121e',
-    destination: '1121',
-    status: false,
-    error_msg: 'msg',
-    host_id: 2
-  }];
-
-const jobList: JobInfo[] = [
-  {
-    id: 1,
-    name: 'job1',
-    type: 'cron',
-    spec: '*/1 * * * *',
-    cmd: 'ls -l',
-    status: 'fff',
-    host_id: 1
-  }, {
-    id: 2,
-    name: 'job2',
-    type: 'task',
-    spec: '*/1 * * * *',
-    cmd: 'ls',
-    status: 'sss',
-    host_id: 2
-  }
-];
+// const tunnelList: TunnelInfo[] = [
+//   {
+//     id: 1,
+//     mode: 'local',
+//     source: '12121',
+//     destination: '111',
+//     status: true,
+//     error_msg: 'msg',
+//     host_id: 1
+//   }, {
+//     id: 4,
+//     mode: 'remote',
+//     source: '12121e',
+//     destination: '1121',
+//     status: false,
+//     error_msg: 'msg',
+//     host_id: 2
+//   }];
+//
+// const jobList: JobInfo[] = [
+//   {
+//     id: 1,
+//     name: 'job1',
+//     type: 'cron',
+//     spec: '*/1 * * * *',
+//     cmd: 'ls -l',
+//     status: 'fff',
+//     host_id: 1
+//   }, {
+//     id: 2,
+//     name: 'job2',
+//     type: 'task',
+//     spec: '*/1 * * * *',
+//     cmd: 'ls',
+//     status: 'sss',
+//     host_id: 2
+//   }
+// ];
 
 // const hostList: HostInfo[] = [
 //   {
@@ -140,14 +140,16 @@ const jobList: JobInfo[] = [
 
 const res = (await getGroupsApi()) as HTTPResult; // ES 2021 新特性: Top-level await
 const rest = (await getTagsApi()) as HTTPResult;
+const job = (await getJobsApi()) as HTTPResult;
+const tunnel = (await getTunnelsApi()) as HTTPResult;
 
 // 初始化state数据
 const initialState = {
   hostList: [],
   groupList: res.data || [],
   tagList: rest.data || [],
-  tunnelList,
-  jobList
+  tunnelList: tunnel.data || [],
+  jobList: job.data || []
 };
 
 // 状态处理函数
@@ -240,10 +242,16 @@ const reducer = (state = initialState, action: HostAction) => {
         tagList: [...state.tagList]
       });
     }
+    case tunnelActions.INIT: {
+      return ({
+        ...state,
+        tunnelList: action.value
+      });
+    }
     case tunnelActions.DELETE: {
       return ({
         ...state,
-        tunnelList: state.tunnelList.filter((item) => item.id !== action.value)
+        tunnelList: state.tunnelList.filter((item: TunnelInfo) => item.id !== action.value)
       });
     }
     case tunnelActions.ADD: {
@@ -253,7 +261,7 @@ const reducer = (state = initialState, action: HostAction) => {
       });
     }
     case tunnelActions.EDIT: {
-      state.tunnelList.forEach((e, i, arr) => {
+      state.tunnelList.forEach((e:TunnelInfo, i:number, arr: TunnelInfo[]) => {
         if (e.id === action.value.id) {
           arr[i] = action.value;
         }
@@ -263,11 +271,16 @@ const reducer = (state = initialState, action: HostAction) => {
         tunnelList: [...state.tunnelList]
       });
     }
-    case jobActions.DELETE: {
-      console.log('22222');
+    case jobActions.INIT: {
       return ({
         ...state,
-        jobList: state.jobList.filter((item) => item.name !== action.value)
+        jobList: action.value
+      });
+    }
+    case jobActions.DELETE: {
+      return ({
+        ...state,
+        jobList: state.jobList.filter((item: JobInfo) => item.id !== action.value)
       });
     }
     case jobActions.ADD: {
@@ -277,7 +290,7 @@ const reducer = (state = initialState, action: HostAction) => {
       });
     }
     case jobActions.EDIT: {
-      state.jobList.forEach((e, i, arr) => {
+      state.jobList.forEach((e:JobInfo, i:number, arr:JobInfo[]) => {
         if (e.id === action.value.id) {
           arr[i] = action.value;
         }

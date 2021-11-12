@@ -11,6 +11,12 @@ const actions = {
   initTagInfo(value:TagInfo[]) {
     return { type: actionType.tagActions.INIT, value };
   },
+  initJobInfo(value:JobInfo[]) {
+    return { type: actionType.jobActions.INIT, value };
+  },
+  initTunnelInfo(value:TunnelInfo[]) {
+    return { type: actionType.tunnelActions.INIT, value };
+  },
   deleteHostInfo(value: number) {
     return { type: actionType.WILL_DELETE, value };
   },

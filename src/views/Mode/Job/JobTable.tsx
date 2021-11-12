@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -16,6 +16,7 @@ import { useSnackbar } from 'notistack';
 import { JobInfo } from '../../../store/interface';
 import FormDialog from '../../../components/OmsDialog/FormDialog';
 import JobInfoForm from './JobInfoForm';
+import { deleteJobApi, editJobApi, HTTPResult } from '../../../api/http/httpRequestApi';
 
 type tDP = {
   deleteJob: ActionCreator<any>;
@@ -81,7 +82,6 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [open, setOpen] = useState<boolean>(false);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
-  const [name, setName] = useState<string>('');
   const [Info, setInfo] = useState<JobInfo>({
     id: 0,
     name: '',
@@ -97,24 +97,47 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
 
   const content = JobInfoForm({ Info, setInfo });
 
-  const toEdit = () => {
-    editJob(Info);
-  };
+  const toEdit = useCallback(async() => {
+    const res = (await editJobApi(Info)) as HTTPResult;
+    if (res.code !== '200') {
+      enqueueSnackbar(`任务: ${Info.name}修改失败${res.msg}`, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
+      return;
+    }
+    // console.log('res', res);
+    editJob(res.data);
+    enqueueSnackbar(`任务: ${Info.name} 修改成功${res.msg}`, {
+      autoHideDuration: 3000,
+      variant: 'success'
+    });
+  }, [Info]);
 
-  const dltButtonClick = (name: string) => {
-    setName(name);
+  const dltButtonClick = (info: JobInfo) => {
+    setInfo(info);
     setOpen(true);
   };
   const closeDialog = () => {
     setOpen(false);
   };
-  const toDelete = () => {
-    deleteJob(name);
-    enqueueSnackbar(`任务: ${name} 已被删除`, {
+
+  const toDelete = useCallback(async() => {
+    const res = (await deleteJobApi(Info.id)) as HTTPResult;
+    if (res.code !== '200') {
+      enqueueSnackbar(`任务: ${Info.name}删除失败${res.msg}`, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
+      return;
+    }
+    // console.log('res', res);
+    deleteJob(Info.id);
+    enqueueSnackbar(`任务: ${Info.name} 已被删除`, {
       autoHideDuration: 3000,
       variant: 'success'
     });
-  };
+  }, [Info]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -170,25 +193,22 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
                     </Button>
                     <Button
                       className={classes.deleteButton}
-                      onClick={() => dltButtonClick(row.name)}
+                      onClick={() => dltButtonClick(row)}
                     >
                       删除
                     </Button>
                     <Button
                       className={classes.starBtn}
-                      onClick={() => dltButtonClick(row.name)}
                     >
                       启动
                     </Button>
                     <Button
                       className={classes.stopBtn}
-                      onClick={() => dltButtonClick(row.name)}
                     >
                       停止
                     </Button>
                     <Button
                       className={classes.reStarBtn}
-                      onClick={() => dltButtonClick(row.name)}
                     >
                       日志
                     </Button>

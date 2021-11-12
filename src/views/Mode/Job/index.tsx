@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -13,8 +13,10 @@ import { connect } from 'react-redux';
 import JobTable from './JobTable';
 import { HostInfo, IState, JobInfo } from '../../../store/interface';
 import actions from '../../../store/action';
+import { addJobApi, getJobsApi, HTTPResult } from '../../../api/http/httpRequestApi';
 
 type tDP = {
+  toInit: ActionCreator<any>;
   deleteJob: ActionCreator<any>;
   addJob: ActionCreator<any>;
   editJob: ActionCreator<any>;
@@ -33,6 +35,7 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
   hostList: state.hostList
 });
 const mapDispatch: tDP = {
+  toInit: actions.initJobInfo,
   deleteJob: actions.deleteJobInfo,
   addJob: actions.addJobInfo,
   editJob: actions.editJobInfo
@@ -40,7 +43,19 @@ const mapDispatch: tDP = {
 
 type tProps = tSP & tDP;
 
-const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob }: tProps) => {
+const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob, toInit }: tProps) => {
+
+  useEffect(() => {
+    (async() => {
+      // console.log('jobeff');
+      const res = (await getJobsApi()) as HTTPResult;
+      if (res.code !== '200') {
+        return;
+      }
+      toInit(res.data);
+    })();
+  }, []);
+
   const classes = makeStyles(styles)();
   const { enqueueSnackbar } = useSnackbar();
   const [type, setType] = useState<string | number>('');
@@ -49,7 +64,7 @@ const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob }: tProps) => {
   const [cmd, setCmd] = useState<string>('');
   const [name, setName] = useState<string>('');
 
-  const addNewJob = () => {
+  const addNewJob = async() => {
     if (type === '') {
       enqueueSnackbar(`请选择一个类型！`, {
         autoHideDuration: 3000,
@@ -65,7 +80,7 @@ const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob }: tProps) => {
       return;
     }
     if (!name) {
-      enqueueSnackbar(`分组名称不能为空！`, {
+      enqueueSnackbar(`job名称不能为空！`, {
         autoHideDuration: 3000,
         variant: 'warning'
       });
@@ -78,7 +93,19 @@ const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob }: tProps) => {
       });
       return;
     }
-    addJob({ id: new Date().getTime(), name, type, spec, cmd, status: 'ee', host_id: hostId });
+    const res = (await addJobApi({ name, type: type as 'cron' | 'task', spec, cmd, host_id: hostId as number })) as HTTPResult;
+    if (res.code !== '200') {
+      enqueueSnackbar(`添加任务失败${res.msg}`, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
+      return;
+    }
+    addJob(res.data);
+    enqueueSnackbar(`任务：${res.data.name} 添加成功${res.msg}`, {
+      autoHideDuration: 3000,
+      variant: 'success'
+    });
   };
 
   return (

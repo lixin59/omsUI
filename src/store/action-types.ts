@@ -41,12 +41,14 @@ export enum tagActions{
 }
 
 export enum tunnelActions{
+  INIT = 'INIT_JOB_TUNNEL_INFO',
   DELETE = 'DELETE_TUNNEL_INFO',
   ADD = 'ADD_TUNNEL_INFO',
   EDIT = 'EDIT_TUNNELINFO',
 }
 
 export enum jobActions{
+  INIT = 'INIT_JOB_INFO',
   DELETE = 'DELETE_JOB_INFO',
   ADD = 'ADD_JOB_INFO',
   EDIT = 'EDIT_JOB_INFO',
