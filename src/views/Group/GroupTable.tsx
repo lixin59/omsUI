@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -14,6 +14,9 @@ import { ActionCreator } from 'redux';
 import { GroupInfo } from '../../store/interface';
 import TipDialog from '../../components/OmsDialog/TipDialog';
 import { useSnackbar } from 'notistack';
+import FormDialog from '../../components/OmsDialog/FormDialog';
+import GroupForm from './Form/GroupFrom';
+import { editGroupApi, deleteGroupApi, HTTPResult } from '../../api/http/httpRequestApi';
 
 type tDP = {
   deleteGroup: ActionCreator<any>;
@@ -54,30 +57,62 @@ const columns: Column[] = [
   }
 ];
 
-export default function GroupTable({ groupList, deleteGroup }: tProps) {
+export default function GroupTable({ groupList, deleteGroup, editGroup }: tProps) {
   const classes = makeStyles(styles)();
   const { enqueueSnackbar } = useSnackbar();
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [open, setOpen] = useState<boolean>(false);
-  const [name, setName] = useState<string>('');
+  const [openEdit, setOpenEdit] = useState<boolean>(false);
+  const [Info, setInfo] = useState<GroupInfo>({
+    id: 0,
+    name: '',
+    mode: 0,
+    params: ''
+  });
+
+  const content = GroupForm({ Info, setInfo });
+
+  const toEdit = useCallback(async() => {
+    const res = (await editGroupApi(Info)) as HTTPResult;
+    if (res.code !== '200') {
+      enqueueSnackbar(`分组: ${Info.name}修改失败${res.msg}`, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
+      return;
+    }
+    editGroup(res.data);
+    enqueueSnackbar(`分组: ${Info.name} 修改成功${res.msg}`, {
+      autoHideDuration: 3000,
+      variant: 'success'
+    });
+  }, [Info]);
 
   const title: string = '确定要删除这个分组吗？';
   const text: string = '如果不想删除可以点击取消';
-  const dltButtonClick = (name: string) => {
-    setName(name);
+  const dltButtonClick = (info: GroupInfo) => {
+    setInfo(info);
     setOpen(true);
   };
   const closeDialog = () => {
     setOpen(false);
   };
-  const toDelete = () => {
-    deleteGroup(name);
-    enqueueSnackbar(`分组: ${name} 已被删除`, {
+  const toDelete = useCallback(async() => {
+    const res = (await deleteGroupApi(Info.id)) as HTTPResult;
+    if (res.code !== '200') {
+      enqueueSnackbar(`分组: ${Info.name}删除失败${res.msg}`, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
+      return;
+    }
+    deleteGroup(Info.id);
+    enqueueSnackbar(`分组: ${Info.name} 已被删除`, {
       autoHideDuration: 3000,
       variant: 'success'
     });
-  };
+  }, [Info]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -115,13 +150,19 @@ export default function GroupTable({ groupList, deleteGroup }: tProps) {
                   <TableCell key={row.mode} align='center'>
                     {row.mode}
                   </TableCell>
-                  <TableCell key={row.rule} align='center'>
-                    {row.rule}
+                  <TableCell key={row.params} align='center'>
+                    {row.params}
                   </TableCell>
                   <TableCell align='center'>
                     <Button
+                      className={classes.editBtn}
+                      onClick={() => { setInfo(row); setOpenEdit(true); }}
+                    >
+                      编辑
+                    </Button>
+                    <Button
                       className={classes.deleteButton}
-                      onClick={() => dltButtonClick(row.name)}
+                      onClick={() => dltButtonClick(row)}
                     >
                       删除
                     </Button>
@@ -147,6 +188,13 @@ export default function GroupTable({ groupList, deleteGroup }: tProps) {
         text={text}
         toClose={closeDialog}
         todo={toDelete}
+      />
+      <FormDialog
+        open={openEdit}
+        content={content}
+        toClose={() => setOpenEdit(false)}
+        title={'编辑分组信息'}
+        todo={toEdit}
       />
     </Paper>
   );

@@ -5,6 +5,12 @@ const actions = {
   initHostInfo(value:HostInfo[]) {
     return { type: actionType.WILL_INIT_HOST, value };
   },
+  initGroupInfo(value:GroupInfo[]) {
+    return { type: actionType.groupActions.INIT, value };
+  },
+  initTagInfo(value:TagInfo[]) {
+    return { type: actionType.tagActions.INIT, value };
+  },
   deleteHostInfo(value: number) {
     return { type: actionType.WILL_DELETE, value };
   },
@@ -14,16 +20,16 @@ const actions = {
   editHostInfo(value: HostInfo) {
     return { type: actionType.WILL_EDIT_HOST, value };
   },
-  deleteGroupInfo(value: GroupInfo) {
+  deleteGroupInfo(value: number) {
     return { type: actionType.WILL_DELETE_GROUP, value };
   },
-  addGroupInfo(value: string) {
+  addGroupInfo(value: GroupInfo) {
     return { type: actionType.WILL_ADD_GROUP, value };
   },
   editGroupInfo(value: GroupInfo) {
     return { type: actionType.WILL_EDIT_GROUP, value };
   },
-  deleteTagInfo(value: string) {
+  deleteTagInfo(value: number) {
     return { type: actionType.WILL_DELETE_TAG, value };
   },
   addTagInfo(value: TagInfo) {

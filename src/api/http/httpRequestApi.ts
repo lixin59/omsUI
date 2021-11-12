@@ -117,22 +117,22 @@ export const deleteHostApi = (id: number) => {
 
 
 // 获取所有 tag
-export const getTags = () => {
+export const getTagsApi = () => {
   return getApi(urlType.tag);
 };
 
 // 通过id获取tag信息
-export const getTag = (id: number) => {
+export const getTagApi = (id: number) => {
   return getApi(`${urlType.tag}/${id}`);
 };
 
 // 新增tag
-export const addTag = (name: string) => {
+export const addTagApi = (name: string) => {
   return postApi(urlType.tag, name);
 };
 
 // 修改tag
-export const editTag = (data: {
+export const editTagApi = (data: {
   id: number,
   name: string
 }) => {
@@ -140,85 +140,85 @@ export const editTag = (data: {
 };
 
 // 删除tag
-export const deleteTag = (id: number) => {
-  return deleteApi(urlType.tag, id);
+export const deleteTagApi = (id: number) => {
+  return deleteApi(`${urlType.tag}/${id}`);
 };
 
 
 // 获取所有 Group
-export const getGroups = () => {
+export const getGroupsApi = () => {
   return getApi(urlType.group);
 };
 
 // 通过id获取 group 信息
-export const getGroup = (id: number) => {
+export const getGroupApi = (id: number) => {
   return getApi(`${urlType.group}/${id}`);
 };
 
 // 新增 group
-export const addGroup = (data: AddGroupPost) => {
+export const addGroupApi = (data: AddGroupPost) => {
   return postApi(urlType.group, data);
 };
 
 // 修改 group
-export const editGroup = (data: EditGroupPut) => {
+export const editGroupApi = (data: EditGroupPut) => {
   return putApi(urlType.group, data);
 };
 
 // 删除 group
-export const deleteGroup = (id: number) => {
-  return deleteApi(urlType.group, id);
+export const deleteGroupApi = (id: number) => {
+  return deleteApi(`${urlType.group}/${id}`);
 };
 
 
 // 获取所有 tunnel
-export const getTunnels = () => {
+export const getTunnelsApi = () => {
   return getApi(urlType.tunnel);
 };
 
 // 通过id获取 tunnel 信息
-export const getTunnel = (id: number) => {
+export const getTunnelApi = (id: number) => {
   return getApi(`${urlType.tunnel}/${id}`);
 };
 
 // 新增 tunnel
-export const addTunnel = (data: AddTunnelPost) => {
+export const addTunnelApi = (data: AddTunnelPost) => {
   return postApi(urlType.tunnel, data);
 };
 
 // 修改 tunnel
-export const editTunnel = (data: EditTunnelPut) => {
+export const editTunnelApi = (data: EditTunnelPut) => {
   return putApi(urlType.tunnel, data);
 };
 
 // 删除 tunnel
-export const deleteTunnel = (id: number) => {
+export const deleteTunnelApi = (id: number) => {
   return deleteApi(urlType.tunnel, id);
 };
 
 
 // 获取所有 job
-export const getJobs = () => {
+export const getJobsApi = () => {
   return getApi(urlType.job);
 };
 
 // 通过id获取 job 信息
-export const getJob = (id: number) => {
+export const getJobApi = (id: number) => {
   return getApi(`${urlType.job}/${id}`);
 };
 
 // 新增 job
-export const addJob = (data: AddJobPost) => {
+export const addJobApi = (data: AddJobPost) => {
   return postApi(urlType.job, data);
 };
 
 // 修改 job
-export const editJob = (data: EditJobPut) => {
+export const editJobApi = (data: EditJobPut) => {
   return putApi(urlType.job, data);
 };
 
 // 删除 job
-export const deleteJob = (id: number) => {
+export const deleteJobApi = (id: number) => {
   return deleteApi(urlType.job, id);
 };
 

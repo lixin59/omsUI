@@ -11,6 +11,7 @@ import styles from './style';
 import { ActionCreator } from 'redux';
 import { GroupInfo } from '../../store/interface';
 import { useSnackbar } from 'notistack';
+import { addGroupApi, HTTPResult } from '../../api/http/httpRequestApi';
 
 type tDP = {
   deleteGroup: ActionCreator<any>;
@@ -30,13 +31,13 @@ const Grouping = (props: tProps) => {
   const classes = makeStyles(styles)();
   const { enqueueSnackbar } = useSnackbar();
   const [mode, setPattern] = useState<string | number>('');
-  const [rule, setRule] = useState<string>('');
+  const [params, setParams] = useState<string>('');
   const [name, setName] = useState<string>('');
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setPattern(event.target.value as string);
   };
 
-  const addNewGroup = () => {
+  const addNewGroup = async() => {
     if (mode === '') {
       enqueueSnackbar(`请选择一个模式！`, {
         autoHideDuration: 3000,
@@ -44,7 +45,7 @@ const Grouping = (props: tProps) => {
       });
       return;
     }
-    if (mode === 1 && !rule) {
+    if (mode === 1 && !params) {
       enqueueSnackbar(`选中规则模式, 匹配的规则不能为空！`, {
         autoHideDuration: 3000,
         variant: 'warning'
@@ -65,7 +66,19 @@ const Grouping = (props: tProps) => {
       });
       return;
     }
-    props.addGroup({ id: new Date().getTime(), name, mode, rule });
+    const res = (await addGroupApi({ name, mode: mode as 0 | 1, params })) as HTTPResult;
+    if (res.code !== '200') {
+      enqueueSnackbar(`分组添加失败${res.msg}`, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
+      return;
+    }
+    props.addGroup(res.data);
+    enqueueSnackbar(`分组: ${res.data.name}添加成功！`, {
+      autoHideDuration: 3000,
+      variant: 'success'
+    });
   };
 
   return (
@@ -89,9 +102,9 @@ const Grouping = (props: tProps) => {
             id='Matching-rules'
             label='匹配规则'
             variant='outlined'
-            value={rule}
+            value={params}
             placeholder='主机模式不用添加规则'
-            onChange={(e) => setRule(e.target.value)}
+            onChange={(e) => setParams(e.target.value)}
           />
         </FormControl>
         <FormControl className={classes.Control}>

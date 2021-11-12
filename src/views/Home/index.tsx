@@ -44,7 +44,7 @@ const baseHostInfo: HostInfo = {
     id: 0,
     name: '',
     mode: 0,
-    rule: ''
+    params: ''
   },
   tags: [],
   tunnels: [],

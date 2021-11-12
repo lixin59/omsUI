@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import OmsTabs from '../../components/OmsTabs/Tabs';
 import OmsTab from '../../components/OmsTabs/Tab';
@@ -11,8 +11,11 @@ import { ActionCreator } from 'redux';
 import { GroupInfo, IState, TagInfo } from '../../store/interface';
 import actions from '../../store/action';
 import { connect } from 'react-redux';
+import { getGroupsApi, getTagsApi, HTTPResult } from '../../api/http/httpRequestApi';
 
 type tDP = {
+  initGroup: ActionCreator<any>;
+  initTag: ActionCreator<any>;
   deleteGroup: ActionCreator<any>;
   addGroup: ActionCreator<any>;
   editGroup: ActionCreator<any>;
@@ -34,6 +37,8 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
   tagList: state.tagList
 });
 const mapDispatch: tDP = {
+  initGroup: actions.initGroupInfo,
+  initTag: actions.initTagInfo,
   deleteGroup: actions.deleteGroupInfo,
   addGroup: actions.addGroupInfo,
   editGroup: actions.editGroupInfo,
@@ -44,11 +49,27 @@ const mapDispatch: tDP = {
 
 type tProps = tSP & tDP;
 
-function ModeTabs({ groupList, tagList, addGroup,
+function ModeTabs({ groupList, tagList, addGroup, initGroup, initTag,
   addTag, deleteGroup, deleteTag, editTag, editGroup
 }: tProps) {
+
+  useEffect(() => {
+    (async() => {
+      const res = (await getGroupsApi()) as HTTPResult;
+      const res1 = (await getTagsApi()) as HTTPResult;
+      if (res.code !== '200') {
+        return;
+      }
+      if (res1.code !== '200') {
+        return;
+      }
+      initGroup(res.data);
+      initTag(res1.data);
+    })();
+  }, []);
+
   const classes = makeStyles(styles)();
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);

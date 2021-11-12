@@ -190,7 +190,7 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
                       className={classes.reStarBtn}
                       onClick={() => dltButtonClick(row.name)}
                     >
-                      重启
+                      日志
                     </Button>
                   </TableCell>
                 </TableRow>

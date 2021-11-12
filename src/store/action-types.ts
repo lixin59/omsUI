@@ -27,12 +27,14 @@ export enum hostActions{
 }
 
 export enum groupActions{
+  INIT = 'INIT_GROUP_INFO',
   DELETE_GROUP_INFO = 'DELETE_GROUP_INFO',
   ADD_GROUP_INFO = 'ADD_GROUP_INFO',
   EDIT_GROUP_INFO = 'EDIT_GROUP_INFO',
 }
 
 export enum tagActions{
+  INIT = 'INIT_TAG_INFO',
   DELETE_TAG_INFO = 'DELETE_TAG_INFO',
   ADD_TAG_INFO = 'ADD_TAG_INFO',
   EDIT_TAG_INFO = 'EDIT_TAG_INFO',

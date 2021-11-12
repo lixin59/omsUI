@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -14,6 +14,9 @@ import styles from './style';
 import { ActionCreator } from 'redux';
 import { TagInfo } from '../../store/interface';
 import { useSnackbar } from 'notistack';
+import { deleteTagApi, editTagApi, HTTPResult } from '../../api/http/httpRequestApi';
+import FormDialog from '../../components/OmsDialog/FormDialog';
+import TagForm from './Form/TagForm';
 
 type tDP = {
   deleteTag: ActionCreator<any>;
@@ -44,30 +47,61 @@ const columns: Column[] = [
   }
 ];
 
-export default function TagTable({ deleteTag, tagList }: tProps) {
+export default function TagTable({ deleteTag, tagList, editTag }: tProps) {
   const classes = makeStyles(styles)();
   const { enqueueSnackbar } = useSnackbar();
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [open, setOpen] = useState<boolean>(false);
-  const [name, setName] = useState<string>('');
+  const [openEdit, setOpenEdit] = useState<boolean>(false);
+  const [Info, setInfo] = useState<TagInfo>({
+    id: 0,
+    name: ''
+  });
 
+  const content = TagForm({ Info, setInfo });
   const title: string = '确定要删除这个标签吗？';
   const text: string = '如果不想删除可以点击取消';
-  const dltButtonClick = (name: string) => {
-    setName(name);
+
+  const dltButtonClick = (info: TagInfo) => {
+    setInfo(info);
     setOpen(true);
   };
   const closeDialog = () => {
     setOpen(false);
   };
-  const toDelete = () => {
-    deleteTag(name);
-    enqueueSnackbar(`标签: ${name} 已被删除`, {
+
+  const toEdit = useCallback(async() => {
+    const res = (await editTagApi(Info)) as HTTPResult;
+    if (res.code !== '200') {
+      enqueueSnackbar(`标签: ${Info.name}修改失败${res.msg}`, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
+      return;
+    }
+    editTag(res.data);
+    enqueueSnackbar(`标签: ${Info.name} 修改成功${res.msg}`, {
       autoHideDuration: 3000,
       variant: 'success'
     });
-  };
+  }, [Info]);
+
+  const toDelete = useCallback(async() => {
+    const res = (await deleteTagApi(Info.id)) as HTTPResult;
+    if (res.code !== '200') {
+      enqueueSnackbar(`标签: ${Info.name}删除失败${res.msg}`, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
+      return;
+    }
+    deleteTag(Info.id);
+    enqueueSnackbar(`标签: ${Info.name} 已被删除`, {
+      autoHideDuration: 3000,
+      variant: 'success'
+    });
+  }, [Info]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -104,8 +138,14 @@ export default function TagTable({ deleteTag, tagList }: tProps) {
                   </TableCell>
                   <TableCell align='center'>
                     <Button
+                      className={classes.editBtn}
+                      onClick={() => { setInfo(row); setOpenEdit(true); }}
+                    >
+                      编辑
+                    </Button>
+                    <Button
                       className={classes.deleteButton}
-                      onClick={ () => dltButtonClick(row.name)}
+                      onClick={ () => dltButtonClick(row)}
                     >
                       删除
                     </Button>
@@ -131,6 +171,13 @@ export default function TagTable({ deleteTag, tagList }: tProps) {
         text={text}
         toClose={closeDialog}
         todo={toDelete}
+      />
+      <FormDialog
+        open={openEdit}
+        content={content}
+        toClose={() => setOpenEdit(false)}
+        title={'编辑分组信息'}
+        todo={toEdit}
       />
     </Paper>
   );

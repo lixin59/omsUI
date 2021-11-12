@@ -1,32 +1,33 @@
 import { GroupInfo, HostAction, TagInfo, HostInfo, TunnelInfo, JobInfo } from './interface';
 import { groupActions, hostActions, tagActions, tunnelActions, jobActions } from './action-types';
+import { getGroupsApi, getTagsApi, HTTPResult } from '../api/http/httpRequestApi';
 // import { hostInfo } from '../views/Home/typings';
 
-const groupList: GroupInfo[] = [
-  {
-    id: 1,
-    name: '分组1',
-    mode: 0,
-    rule: ''
-  },
-  {
-    id: 2,
-    name: '分组2',
-    mode: 1,
-    rule: '121212121'
-  }
-];
+// const groupList: GroupInfo[] = [
+//   {
+//     id: 1,
+//     name: '分组1',
+//     mode: 0,
+//     rule: ''
+//   },
+//   {
+//     id: 2,
+//     name: '分组2',
+//     mode: 1,
+//     rule: '121212121'
+//   }
+// ];
 
-const tagList: TagInfo[] = [
-  {
-    id: 1,
-    name: '标签1'
-  },
-  {
-    id: 2,
-    name: '标签2'
-  }
-];
+// const tagList: TagInfo[] = [
+//   {
+//     id: 1,
+//     name: '标签1'
+//   },
+//   {
+//     id: 2,
+//     name: '标签2'
+//   }
+// ];
 
 const tunnelList: TunnelInfo[] = [
   {
@@ -137,11 +138,14 @@ const jobList: JobInfo[] = [
 //   }
 // ];
 
+const res = (await getGroupsApi()) as HTTPResult; // ES 2021 新特性: Top-level await
+const rest = (await getTagsApi()) as HTTPResult;
+
 // 初始化state数据
 const initialState = {
   hostList: [],
-  groupList,
-  tagList,
+  groupList: res.data || [],
+  tagList: rest.data || [],
   tunnelList,
   jobList
 };
@@ -178,10 +182,16 @@ const reducer = (state = initialState, action: HostAction) => {
         hostList: [...state.hostList]
       });
     }
+    case groupActions.INIT: {
+      return ({
+        ...state,
+        groupList: action.value
+      });
+    }
     case groupActions.DELETE_GROUP_INFO: {
       return ({
         ...state,
-        groupList: state.groupList.filter((item: GroupInfo) => item.name !== action.value)
+        groupList: state.groupList.filter((item: GroupInfo) => item.id !== action.value)
       });
     }
     case groupActions.ADD_GROUP_INFO: {
@@ -191,8 +201,8 @@ const reducer = (state = initialState, action: HostAction) => {
       });
     }
     case groupActions.EDIT_GROUP_INFO: {
-      state.groupList.forEach((e, i, arr) => {
-        if (e.name === action.value.name) {
+      state.groupList.forEach((e:GroupInfo, i:number, arr:GroupInfo[]) => {
+        if (e.id === action.value.id) {
           arr[i] = action.value;
         }
       });
@@ -201,10 +211,16 @@ const reducer = (state = initialState, action: HostAction) => {
         groupList: [...state.groupList]
       });
     }
+    case tagActions.INIT: {
+      return ({
+        ...state,
+        tagList: action.value
+      });
+    }
     case tagActions.DELETE_TAG_INFO: {
       return ({
         ...state,
-        tagList: state.tagList.filter((item: TagInfo) => item.name !== action.value)
+        tagList: state.tagList.filter((item: TagInfo) => item.id !== action.value)
       });
     }
     case tagActions.ADD_TAG_INFO: {
@@ -214,8 +230,8 @@ const reducer = (state = initialState, action: HostAction) => {
       });
     }
     case tagActions.EDIT_TAG_INFO: {
-      state.tagList.forEach((e, i, arr) => {
-        if (e.name === action.value.name) {
+      state.tagList.forEach((e:TagInfo, i:number, arr:TagInfo[]) => {
+        if (e.id === action.value.id) {
           arr[i] = action.value;
         }
       });

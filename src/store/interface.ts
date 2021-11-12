@@ -32,8 +32,8 @@ export interface HostInfo {
 export interface GroupInfo {
   id: number;
   name: string;
-  mode: number;
-  rule: string;
+  mode: 0 | 1;
+  params: string;
 }
 
 export interface TagInfo {

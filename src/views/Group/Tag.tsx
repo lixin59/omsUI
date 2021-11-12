@@ -8,6 +8,7 @@ import styles from './style';
 import { ActionCreator } from 'redux';
 import { TagInfo } from '../../store/interface';
 import { useSnackbar } from 'notistack';
+import { addTagApi, HTTPResult } from '../../api/http/httpRequestApi';
 
 type tDP = {
   deleteTag: ActionCreator<any>;
@@ -28,7 +29,7 @@ const Tag = (props: tProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const [tag, setTag] = useState<string>('');
 
-  const addNewTag = () => {
+  const addNewTag = async() => {
     if (!tag) {
       enqueueSnackbar(`标签名称不能为空`, {
         autoHideDuration: 3000,
@@ -43,7 +44,19 @@ const Tag = (props: tProps) => {
       });
       return;
     }
-    props.addTag({ id: new Date().getTime(), name: tag });
+    const res = (await addTagApi(tag)) as HTTPResult;
+    if (res.code !== '200') {
+      enqueueSnackbar(`标签添加失败${res.msg}`, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
+      return;
+    }
+    props.addTag(res.data);
+    enqueueSnackbar(`标签: ${res.data.name}添加成功！`, {
+      autoHideDuration: 3000,
+      variant: 'success'
+    });
   };
 
   return (
