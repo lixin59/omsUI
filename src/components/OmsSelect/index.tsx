@@ -20,10 +20,10 @@ const menuProps = {
   //   paper: minimalSelectClasses.paper,
   //   list: minimalSelectClasses.list,
   // },
-  anchorOrigin: {
-    vertical: 'bottom',
-    horizontal: 'left'
-  },
+  // anchorOrigin: {
+  //   vertical: 'bottom',
+  //   horizontal: 'left'
+  // },
   // transformOrigin: {
   //   vertical: 'top',
   //   horizontal: 'left'

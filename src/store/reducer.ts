@@ -1,6 +1,6 @@
 import { GroupInfo, HostAction, TagInfo, HostInfo, TunnelInfo, JobInfo } from './interface';
 import { groupActions, hostActions, tagActions, tunnelActions, jobActions } from './action-types';
-import { getGroupsApi, getJobsApi, getTagsApi, getTunnelsApi, HTTPResult } from '../api/http/httpRequestApi';
+// import { getGroupsApi, getJobsApi, getTagsApi, getTunnelsApi, HTTPResult } from '../api/http/httpRequestApi';
 // import { hostInfo } from '../views/Home/typings';
 
 // const groupList: GroupInfo[] = [
@@ -138,18 +138,22 @@ import { getGroupsApi, getJobsApi, getTagsApi, getTunnelsApi, HTTPResult } from 
 //   }
 // ];
 
-const res = (await getGroupsApi()) as HTTPResult; // ES 2021 新特性: Top-level await
-const rest = (await getTagsApi()) as HTTPResult;
-const job = (await getJobsApi()) as HTTPResult;
-const tunnel = (await getTunnelsApi()) as HTTPResult;
+// const res = (await getGroupsApi()) as HTTPResult; // ES 2021 新特性: Top-level await
+// const rest = (await getTagsApi()) as HTTPResult;
+// const job = (await getJobsApi()) as HTTPResult;
+// const tunnel = (await getTunnelsApi()) as HTTPResult;
 
 // 初始化state数据
 const initialState = {
   hostList: [],
-  groupList: res.data || [],
-  tagList: rest.data || [],
-  tunnelList: tunnel.data || [],
-  jobList: job.data || []
+  // groupList: res.data || [],
+  // tagList: rest.data || [],
+  // tunnelList: tunnel.data || [],
+  // jobList: job.data || []
+  groupList: [],
+  tagList: [],
+  tunnelList: [],
+  jobList: []
 };
 
 // 状态处理函数
