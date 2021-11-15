@@ -11,7 +11,7 @@ const OmsTab = withStyles((theme: Theme) =>
       'minWidth': 72,
       marginTop: '4px',
       marginBottom: '4px',
-      'fontWeight': theme.typography.fontWeightRegular,
+      'fontWeight': 400,
       'marginLeft': theme.spacing(2),
       'marginRight': theme.spacing(2),
       'borderRadius': '8px',
