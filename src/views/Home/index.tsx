@@ -134,7 +134,7 @@ function Home(props: tProps) {
       group: data.group.id,
       password: data.password,
       keyFile: '',
-      tags: data.tags?.map((e) => e.name)
+      tags: data.tags?.map((e: TagInfo) => e.name)
     };
 
     const res = (await addHostApi(resData)) as HTTPResult;

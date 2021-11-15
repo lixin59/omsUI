@@ -23,9 +23,9 @@ export interface HostInfo {
   port: number,
   group: GroupInfo,
   private_key_id: number,
-  tags: TagInfo[] | [],
-  tunnels: TunnelInfo[] | [],
-  jobs: JobInfo[] | [],
+  tags: TagInfo[],
+  tunnels: TunnelInfo[],
+  jobs: JobInfo[],
 
 }
 

@@ -4,7 +4,7 @@
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": false,
-    "skipLibCheck": false,
+    "skipLibCheck": false, // 编译时声明文件报错 这里需要改成true
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,

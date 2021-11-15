@@ -74,6 +74,16 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type tItem = 'hostList' | 'groupList' | 'tagList' | 'default';
 
+type tUploadFile = {
+  current: string,
+  dest: string,
+  file: string,
+  percent: number,
+  speed: string,
+  status: 'running' | 'done' | 'failed' | string,
+  total: string
+}
+
 const itemType = {
   hostList: '请选择主机',
   groupList: '请选择分组',
@@ -87,15 +97,7 @@ const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
   const [item, setItem] = useState<number| string>('');
   const [filePath, setFilePath] = useState<string>('');
   // const [ws, setWs] = useState<'' | WebSocket>('');
-  const [uploadList, setUploadList] = useState([{
-    current: '40.81mb',
-    dest: '192.168.50.102:22',
-    file: 'ControlPanel-SA Setup 2.4.19-TS013.exe',
-    percent: 50.1744,
-    speed: '1.71mb/s',
-    status: 'running',
-    total: '202.28mb'
-  }]);
+  const [uploadList, setUploadList] = useState<tUploadFile[]>([]);
 
   useEffect(() => {
     const webSocket = new WebSocket(`${baseUrl}${url.index}`);
