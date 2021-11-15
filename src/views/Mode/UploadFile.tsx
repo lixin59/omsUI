@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import UploadButtons from '../../components/Button/UploadButton';
 import OmsSelect from '../../components/OmsSelect';
 import TextField from '@material-ui/core/TextField';
+import LinearProgressWithLabel from '../../components/UploadFileProgress/Linear';
 // import { ActionCreator } from 'redux';
 import { GroupInfo, HostInfo, IState, TagInfo } from '../../store/interface';
 // import actions from '../../store/action';
 import { connect } from 'react-redux';
 import OmsLabel from '../../components/OmsLabel';
 import OmsMenuItem from '../../components/OmsSelect/OmsMenuItem';
+import { baseUrl, url } from '../../api/websocket/url';
 
 type tDP = {
   // deleteGroup: ActionCreator<any>;
@@ -64,8 +66,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     shellBox: {
       width: '100%',
-      height: '70%',
-      backgroundColor: '#2f2f2f'
+      height: '70%'
+      // backgroundColor: '#2f2f2f'
     }
   })
 );
@@ -82,8 +84,35 @@ const itemType = {
 const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
   const classes = useStyles();
   const [type, setType] = useState<string>('');
-  const [item, setItem] = useState<string>('');
+  const [item, setItem] = useState<number| string>('');
   const [filePath, setFilePath] = useState<string>('');
+  // const [ws, setWs] = useState<'' | WebSocket>('');
+  const [uploadList, setUploadList] = useState([{
+    current: '40.81mb',
+    dest: '192.168.50.102:22',
+    file: 'ControlPanel-SA Setup 2.4.19-TS013.exe',
+    percent: 50.1744,
+    speed: '1.71mb/s',
+    status: 'running',
+    total: '202.28mb'
+  }]);
+
+  useEffect(() => {
+    const webSocket = new WebSocket(`${baseUrl}${url.index}`);
+    // setWs(webSocket);
+    webSocket.onopen = (evt) => {
+      console.log('WebSocket服务器连接成功');
+      webSocket.send(JSON.stringify({ type: 'FILE_STATUS' }));
+    };
+    webSocket.onmessage = (evt) => {
+      console.log('收到消息');
+      console.log(JSON.parse(evt.data));
+      setUploadList(JSON.parse(evt.data).data);
+    };
+    return () => {
+      webSocket.close();
+    };
+  }, []);
 
   const selectType = (flag: boolean): string | Array<any> => {
     if (type === 'host') {
@@ -127,8 +156,8 @@ const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
             value={item}
             onChange={handleChange}
           >
-            {selectType(true).length > 0 ? (selectType(true) as Array<any>).map((e) => {
-              return (<OmsMenuItem key={e.name} value={e.name}>{e.name}</OmsMenuItem>);
+            {selectType(true).length > 0 ? (selectType(true) as Array<TagInfo | GroupInfo | HostInfo>).map((e) => {
+              return (<OmsMenuItem key={e.name} value={e.id}>{e.name}</OmsMenuItem>);
             }) : null }
           </OmsSelect>
         </FormControl>
@@ -143,10 +172,21 @@ const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
           value={filePath}
           onChange={(e) => setFilePath(e.target.value)}
         />
-        <UploadButtons filePath={filePath}/>
+        <UploadButtons filePath={filePath} typeId={item as number} type={type as 'host' | 'group' | 'tag'}/>
       </div>
       <div className={classes.shellBox}>
-        {/* <OmsTerminal id='terminal'/>*/}
+        {uploadList && uploadList.map((e) => {
+          return (
+            <LinearProgressWithLabel
+              key={e.dest}
+              dest={e.dest}
+              total={e.total}
+              value={e.percent}
+              file={e.file}
+              speed={e.speed}
+              status={e.status}
+            />);
+        })}
       </div>
     </div>
   );

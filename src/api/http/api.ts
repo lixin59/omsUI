@@ -51,6 +51,9 @@ instance.interceptors.request.use((config) => {
   if (config.url!.includes('job')) {
     (config.headers!)['Content-Type'] = 'application/x-www-form-urlencoded';
   }
+  if (config.url!.includes('upload_file')) {
+    config.timeout = 600000;
+  }
   return config;
 }, (error) => {
   // 对请求错误做些什么

@@ -13,6 +13,7 @@ import OmsLabel from '../../components/OmsLabel';
 import OmsMenuItem from '../../components/OmsSelect/OmsMenuItem';
 import OmsError from '../../components/OmsError';
 import { useSnackbar } from 'notistack';
+import { baseUrl } from '../../api/websocket/url';
 
 type tDP = {
   // deleteGroup: ActionCreator<any>;
@@ -105,7 +106,7 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
   const classes = useStyles();
   const [type, setType] = useState<string>('');
   const [item, setItem] = useState<string>('');
-  const [ws, setWs] = useState<string | WebSocket>('');
+  const [ws, setWs] = useState<'' | WebSocket>('');
 
   const connectHost = () => {
     // console.log(item);
@@ -117,7 +118,7 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
       return;
     }
     // const ws = new WebSocket(`ws://10.1.1.74:9090/ws/ssh/${item}?cols=150&rows=40`);
-    setWs(new WebSocket(`ws://10.1.1.74:9090/ws/ssh/${item}?cols=150&rows=40`));
+    setWs(new WebSocket(`${baseUrl}ssh/${item}?cols=150&rows=40`));
   };
 
   const closeHost = () => {

@@ -3,5 +3,6 @@ export const urlType = {
   tag: '/tag',
   group: '/group',
   tunnel: '/tunnel',
-  job: '/job'
+  job: '/job',
+  upload_file: '/tools/upload_file'
 };

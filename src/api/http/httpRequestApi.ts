@@ -75,6 +75,13 @@ export interface EditJobPut {
   cmd?: string,
 };
 
+export interface UploadFilePost {
+  id: number, // host | group | tag的id,
+  type: 'host' | 'group' | 'tag',
+  remote: string, // 远端路径
+  files: any;
+}
+
 // 获取所有主机信息
 export const getHostsApi = (config: any = {}) => {
   return getApi(urlType.host, config);
@@ -222,3 +229,14 @@ export const deleteJobApi = (id: number) => {
   return deleteApi(`${urlType.job}/${id}`);
 };
 
+// 文件分发 上传文件
+export const uploadFileApi = (data: UploadFilePost) => {
+  const formData = new FormData();
+  for (const k in data) {
+    if (data.hasOwnProperty(k)) {
+      // @ts-ignore
+      formData.append(k, data[k]);
+    }
+  }
+  return postApi(`${urlType.upload_file}`, formData);
+};
