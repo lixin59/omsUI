@@ -1,10 +1,10 @@
 import React from 'react';
 import BodyBox from '../../components/Bodybox';
 import Button from '@material-ui/core/Button';
-import Loading from '../../components/OmsSkeleton/Loading';
-import OmsError from '../../components/OmsError';
+// import Loading from '../../components/OmsSkeleton/Loading';
+// import OmsError from '../../components/OmsError';
 
-import { getTagsApi, addJobApi } from '../../api/http/httpRequestApi';
+import { addJobApi } from '../../api/http/httpRequestApi';
 
 const newHost = {
   hostname: 'centos001',
