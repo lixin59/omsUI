@@ -22,8 +22,8 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
     const term = new Terminal({
       // rendererType: 'canvas', // 渲染类型
       // rows: Math.ceil((document.getElementById('terminal').clientHeight + 40)), // 行数
-      rows: 46,
-      // cols: 200,
+      rows: 40,
+      cols: 150,
       convertEol: true, // 启用时，光标将设置为下一行的开头
       // scrollback: 1000, // 终端中的回滚量
       // disableStdin: false, // 是否应禁用输入。

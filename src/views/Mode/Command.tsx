@@ -85,7 +85,7 @@ const useStyles = makeStyles((theme: Theme) =>
       }
     },
     shellBox: {
-      marginTop: '60px',
+      marginTop: '20px',
       width: '100%',
       height: '70%'
     }

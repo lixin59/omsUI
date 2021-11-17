@@ -1,1 +1,5 @@
-export const baseUrl = 'http://127.0.0.1:9090/api/v1';
+const testHost = '';
+
+const localhost = testHost || window.location.origin;
+
+export const baseUrl = `${localhost}/api/v1`;
