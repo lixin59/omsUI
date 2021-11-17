@@ -135,7 +135,17 @@ export const getTagApi = (id: number) => {
 
 // 新增tag
 export const addTagApi = (name: string) => {
-  return postApi(urlType.tag, name);
+  const data = {
+    name
+  };
+  const formData = new FormData();
+  for (const k in data) {
+    if (data.hasOwnProperty(k)) {
+      // @ts-ignore
+      formData.append(k, data[k]);
+    }
+  }
+  return postApi(urlType.tag, formData);
 };
 
 // 修改tag
@@ -143,7 +153,14 @@ export const editTagApi = (data: {
   id: number,
   name: string
 }) => {
-  return putApi(urlType.tag, data);
+  const formData = new FormData();
+  for (const k in data) {
+    if (data.hasOwnProperty(k)) {
+      // @ts-ignore
+      formData.append(k, data[k]);
+    }
+  }
+  return putApi(urlType.tag, formData);
 };
 
 // 删除tag
@@ -164,12 +181,26 @@ export const getGroupApi = (id: number) => {
 
 // 新增 group
 export const addGroupApi = (data: AddGroupPost) => {
-  return postApi(urlType.group, data);
+  const formData = new FormData();
+  for (const k in data) {
+    if (data.hasOwnProperty(k)) {
+      // @ts-ignore
+      formData.append(k, data[k]);
+    }
+  }
+  return postApi(urlType.group, formData);
 };
 
 // 修改 group
 export const editGroupApi = (data: EditGroupPut) => {
-  return putApi(urlType.group, data);
+  const formData = new FormData();
+  for (const k in data) {
+    if (data.hasOwnProperty(k)) {
+      // @ts-ignore
+      formData.append(k, data[k]);
+    }
+  }
+  return putApi(urlType.group, formData);
 };
 
 // 删除 group
@@ -190,12 +221,26 @@ export const getTunnelApi = (id: number) => {
 
 // 新增 tunnel
 export const addTunnelApi = (data: AddTunnelPost) => {
-  return postApi(urlType.tunnel, data);
+  const formData = new FormData();
+  for (const k in data) {
+    if (data.hasOwnProperty(k)) {
+      // @ts-ignore
+      formData.append(k, data[k]);
+    }
+  }
+  return postApi(urlType.tunnel, formData);
 };
 
 // 修改 tunnel
 export const editTunnelApi = (data: EditTunnelPut) => {
-  return putApi(urlType.tunnel, data);
+  const formData = new FormData();
+  for (const k in data) {
+    if (data.hasOwnProperty(k)) {
+      // @ts-ignore
+      formData.append(k, data[k]);
+    }
+  }
+  return putApi(urlType.tunnel, formData);
 };
 
 // 删除 tunnel
@@ -216,12 +261,26 @@ export const getJobApi = (id: number) => {
 
 // 新增 job
 export const addJobApi = (data: AddJobPost) => {
-  return postApi(urlType.job, data);
+  const formData = new FormData();
+  for (const k in data) {
+    if (data.hasOwnProperty(k)) {
+      // @ts-ignore
+      formData.append(k, data[k]);
+    }
+  }
+  return postApi(urlType.job, formData);
 };
 
 // 修改 job
 export const editJobApi = (data: EditJobPut) => {
-  return putApi(urlType.job, data);
+  const formData = new FormData();
+  for (const k in data) {
+    if (data.hasOwnProperty(k)) {
+      // @ts-ignore
+      formData.append(k, data[k]);
+    }
+  }
+  return putApi(urlType.job, formData);
 };
 
 // 删除 job
