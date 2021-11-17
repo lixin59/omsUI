@@ -16,7 +16,7 @@ import { useSnackbar } from 'notistack';
 import { HostInfo, TunnelInfo } from '../../../store/interface';
 import FormDialog from '../../../components/OmsDialog/FormDialog';
 import TunnelInfoForm from './TunnelInfoForm';
-import { deleteJobApi, editTunnelApi, HTTPResult } from '../../../api/http/httpRequestApi';
+import { deleteTunnelApi, editTunnelApi, HTTPResult } from '../../../api/http/httpRequestApi';
 type tDP = {
   deleteTunnel: ActionCreator<any>;
   editTunnel: ActionCreator<any>;
@@ -123,7 +123,7 @@ export default function JobTable({ deleteTunnel, tunnelList, hostList, editTunne
     setOpen(false);
   };
   const toDelete = useCallback(async() => {
-    const res = (await deleteJobApi(Info.id)) as HTTPResult;
+    const res = (await deleteTunnelApi(Info.id)) as HTTPResult;
     if (res.code !== '200') {
       enqueueSnackbar(`隧道id: ${Info.id}删除失败${res.msg}`, {
         autoHideDuration: 3000,

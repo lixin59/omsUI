@@ -1,6 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import HTTP from '../../components/HTTP/index';
-import { AddHostPost, getHostsApi, addHostApi, HTTPResult } from '../../api/http/httpRequestApi';
+import {
+  AddHostPost,
+  getHostsApi,
+  addHostApi,
+  HTTPResult,
+  getGroupsApi,
+  getTagsApi
+} from '../../api/http/httpRequestApi';
 import Loading from '../../components/OmsSkeleton/Loading';
 import OmsError from '../../components/OmsError';
 import { ActionCreator } from 'redux';
@@ -17,6 +24,8 @@ import homeStyle from './homStyle';
 import FormDialog from '../../components/OmsDialog/FormDialog';
 import { useSnackbar } from 'notistack';
 type tDP = {
+  initGroup: ActionCreator<any>;
+  initTag: ActionCreator<any>;
   deleteHost: ActionCreator<any>;
   addHost: ActionCreator<any>;
   editHost: ActionCreator<any>;
@@ -58,6 +67,8 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
   tagList: state.tagList
 });
 const mapDispatch: tDP = {
+  initGroup: actions.initGroupInfo,
+  initTag: actions.initTagInfo,
   deleteHost: actions.deleteHostInfo,
   addHost: actions.addHostInfo,
   editHost: actions.editHostInfo,
@@ -67,7 +78,23 @@ const mapDispatch: tDP = {
 type tProps = tSP & tDP;
 
 function Home(props: tProps) {
-  const { hostList, deleteHost, addHost, editHost, groupList, tagList, initStore } = props;
+  const { hostList, deleteHost, addHost, initTag, initGroup,
+    editHost, groupList, tagList, initStore } = props;
+
+  useEffect(() => {
+    (async() => {
+      const res = (await getGroupsApi()) as HTTPResult;
+      const res1 = (await getTagsApi()) as HTTPResult;
+      if (res.code !== '200') {
+        return;
+      }
+      if (res1.code !== '200') {
+        return;
+      }
+      initGroup(res.data);
+      initTag(res1.data);
+    })();
+  }, []);
   const classes = makeStyles(homeStyle)();
   const { enqueueSnackbar } = useSnackbar();
 
