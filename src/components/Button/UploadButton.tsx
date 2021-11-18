@@ -51,13 +51,13 @@ export default function UploadButtons(props: tProps) {
     // console.log(type);
     // console.log(filePath);
     // console.log(fileInfo);
-    if (!filePath) {
-      enqueueSnackbar('远程文件路径地址不能为空！！！', {
-        autoHideDuration: 3000,
-        variant: 'warning'
-      });
-      return;
-    }
+    // if (!filePath) {
+    //   enqueueSnackbar('远程文件路径地址不能为空！！！', {
+    //     autoHideDuration: 3000,
+    //     variant: 'warning'
+    //   });
+    //   return;
+    // }
     if (!fileInfo) {
       enqueueSnackbar('请选择需要上传的文件！！！', {
         autoHideDuration: 3000,
