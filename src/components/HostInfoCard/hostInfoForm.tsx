@@ -72,7 +72,7 @@ const HostInfoForm = ({ hostInfo, setHostInfo, groupList, tlc, setTlc }: tProps)
         id='password'
         label='请输入密码或key'
         fullWidth
-        value={hostInfo.password}
+        value={hostInfo.password || ''}
         onChange={(e) => setHostInfo({ ...hostInfo, password: e.target.value })}
       />
       <FormControl style={{ width: '100%' }}>

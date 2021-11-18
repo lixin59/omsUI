@@ -1,6 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import actions from '../../store/action';
 
-import { editHostApi, deleteHostApi, HTTPResult, EditHostPut } from '../../api/http/httpRequestApi';
+import {
+  editHostApi,
+  deleteHostApi,
+  HTTPResult,
+  EditHostPut
+} from '../../api/http/httpRequestApi';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Typography from '@material-ui/core/Typography';
@@ -16,16 +23,53 @@ import { useSnackbar } from 'notistack';
 import TipDialog from '../OmsDialog/TipDialog';
 import FormDialog from '../OmsDialog/FormDialog';
 import styles from './style';
-import { GroupInfo, TagInfo, HostInfo } from '../../store/interface';
+import { GroupInfo, TagInfo, HostInfo, IState } from '../../store/interface';
 import HostInfoForm from './hostInfoForm';
 
-type tProps = {
-  hostInfo: HostInfo;
+// type tProps = {
+//   hostInfo: HostInfo;
+//   deleteHost: ActionCreator<any>;
+//   editHost: ActionCreator<any>;
+//   groupList: GroupInfo[];
+//   tagList: TagInfo[];
+// }
+
+type tDP = {
+  initGroup: ActionCreator<any>;
+  initTag: ActionCreator<any>;
   deleteHost: ActionCreator<any>;
+  addHost: ActionCreator<any>;
   editHost: ActionCreator<any>;
-  groupList: GroupInfo[];
-  tagList: TagInfo[];
-}
+  initStore: ActionCreator<any>;
+};
+
+type tOP = {};
+
+type tSP = tOP & {
+  hostList: HostInfo[],
+  groupList: GroupInfo[],
+  tagList: TagInfo[]
+};
+
+const mapStateToProps = (state: IState, props: tOP): tSP => ({
+  ...props,
+  hostList: state.hostList,
+  groupList: state.groupList,
+  tagList: state.tagList
+});
+const mapDispatch: tDP = {
+  initGroup: actions.initGroupInfo,
+  initTag: actions.initTagInfo,
+  deleteHost: actions.deleteHostInfo,
+  addHost: actions.addHostInfo,
+  editHost: actions.editHostInfo,
+  initStore: actions.initHostInfo
+};
+
+type tProps = tSP & tDP & {
+  hostInfo: HostInfo;
+};
+
 
 function HostInfoCard(props: tProps) {
   const { hostInfo, deleteHost, editHost, groupList, tagList } = props;
@@ -38,6 +82,10 @@ function HostInfoCard(props: tProps) {
   const [isOpen, setIsoOpen] = useState<boolean>(false);
   const [hosts, setHosts] = useState<HostInfo>(hostInfo);
   const [tlc, setTlc] = useState(tagList?.map((e) => ({ ...e, checked: !!hostInfo.tags?.find((item) => item.name === e.name) })));
+
+  useEffect(() => {
+    setTlc(tagList?.map((e) => ({ ...e, checked: !!hostInfo.tags?.find((item) => item.name === e.name) })));
+  }, [tagList]);
 
   const title = '编辑主机信息';
   const content = HostInfoForm({ hostInfo: hosts, setHostInfo: setHosts, groupList, tlc, setTlc });
@@ -69,15 +117,18 @@ function HostInfoCard(props: tProps) {
       }
     });
     const resData: EditHostPut = {
-      ...hosts,
+      id: hosts.id,
+      hostname: hosts.name,
+      user: hosts.user,
+      addr: hosts.addr,
+      port: hosts.port,
+      password: hosts.password || '',
+      keyFile: '',
       group: hosts?.group?.id,
-      tags: tags?.map((e) => e.name)
+      tags: JSON.stringify((tags?.map((e) => e.id)))
     };
     const res = (await editHostApi(resData)) as HTTPResult;
-    // editHost({
-    //   ...hosts,
-    //   tags
-    // });
+
     if (res.code !== '200') {
       enqueueSnackbar(`主机修改失败: ${res.msg}`, {
         autoHideDuration: 3000,
@@ -179,5 +230,10 @@ function HostInfoCard(props: tProps) {
     </>
   );
 }
+//
+// export default HostInfoCard;
 
-export default HostInfoCard;
+export default connect(
+  mapStateToProps, // 把仓库的状态映射为组件的属性对象
+  mapDispatch
+)(HostInfoCard);

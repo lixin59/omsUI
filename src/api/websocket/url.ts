@@ -1,4 +1,4 @@
-const testHost = '';
+import { testHost } from './config';
 
 const localhost = testHost || window.location.host;
 

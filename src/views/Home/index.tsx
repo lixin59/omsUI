@@ -93,6 +93,7 @@ function Home(props: tProps) {
       }
       initGroup(res.data);
       initTag(res1.data);
+      setTlc(res1.data?.map((e: TagInfo) => ({ ...e, checked: false })));
     })();
   }, []);
   const classes = makeStyles(homeStyle)();
@@ -161,7 +162,7 @@ function Home(props: tProps) {
       group: data.group.id,
       password: data.password,
       keyFile: '',
-      tags: data.tags?.map((e: TagInfo) => e.name)
+      tags: JSON.stringify(data.tags?.map((e: TagInfo) => e.id))
     };
 
     const res = (await addHostApi(resData)) as HTTPResult;
@@ -216,10 +217,6 @@ function Home(props: tProps) {
                 <HostInfoCard
                   hostInfo={i}
                   key={i.id}
-                  deleteHost={deleteHost}
-                  editHost={editHost}
-                  groupList={groupList}
-                  tagList={tagList}
                 />
               );
             })}

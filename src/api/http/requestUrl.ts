@@ -1,3 +1,9 @@
+import { testHost } from './config';
+
+const localhost = testHost || window.location.origin;
+
+export const baseUrl = `${localhost}/api/v1`;
+
 export const urlType = {
   host: '/host',
   tag: '/tag',

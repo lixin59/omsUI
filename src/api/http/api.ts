@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { baseUrl } from './config';
+import { baseUrl } from './requestUrl';
 // const hide = null;
 const instance = axios.create({ // 创建axios实例，在这里可以设置请求的默认配置
   timeout: 10000, // 设置超时时间10s

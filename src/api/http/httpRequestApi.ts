@@ -1,6 +1,5 @@
 import { getApi, postApi, deleteApi, putApi } from './api';
-import { urlType } from './requestUrl';
-import { baseUrl } from './config';
+import { urlType, baseUrl } from './requestUrl';
 
 export interface HTTPResult {
   code:string,
@@ -17,7 +16,7 @@ export interface EditHostPut {
   group?: number,
   password?: string,
   keyFile?: any,
-  tags?: string[],
+  tags?: string, // "[1,2]"
 }
 
 export interface AddHostPost {
@@ -28,7 +27,7 @@ export interface AddHostPost {
   group: number,
   password: string,
   keyFile?: any,
-  tags?: string[],
+  tags?: string, // "[1,2]",
 }
 
 export interface AddGroupPost {

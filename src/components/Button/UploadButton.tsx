@@ -97,7 +97,6 @@ export default function UploadButtons(props: tProps) {
         value={fileName}
       />
       <input
-        accept='image/*'
         className={classes.input}
         id='contained-button-file'
         multiple
