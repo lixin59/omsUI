@@ -123,7 +123,7 @@ function HostInfoCard(props: tProps) {
       addr: hosts.addr,
       port: hosts.port,
       password: hosts.password || '',
-      keyFile: '',
+      keyFile: hosts.keyFile,
       group: hosts?.group?.id,
       tags: JSON.stringify((tags?.map((e) => e.id)))
     };

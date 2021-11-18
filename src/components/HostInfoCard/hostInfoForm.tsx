@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import AccountCircle from '@material-ui/icons/AccountCircle';
@@ -10,6 +10,26 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import Button from '@material-ui/core/Button';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    keyFile: {
+      'display': 'flex',
+      'alignContent': 'space-evenly',
+      'alignItems': 'center',
+      'justifyContent': 'space-between'
+      // '& > *': {
+      //   margin: theme.spacing(1)
+      // }
+    },
+    input: {
+      display: 'none'
+    }
+  })
+);
 
 type tProps = {
   hostInfo: HostInfo,
@@ -21,6 +41,9 @@ type tProps = {
 
 
 const HostInfoForm = ({ hostInfo, setHostInfo, groupList, tlc, setTlc }: tProps) => {
+  const classes = useStyles();
+  const [fileName, setFileName] = useState<string>('未选择任何文件');
+
   return (
     <>
       <TextField
@@ -114,6 +137,36 @@ const HostInfoForm = ({ hostInfo, setHostInfo, groupList, tlc, setTlc }: tProps)
           })}
         </FormGroup>
       </FormControl>
+      <div className={classes.keyFile}>
+        <TextField
+          size='small'
+          disabled
+          id='select-file'
+          variant='outlined'
+          value={fileName}
+        />
+        <input
+          className={classes.input}
+          id='contained-button-file'
+          multiple
+          type='file'
+          onChange={(e) => {
+            // @ts-ignore
+            if (!e.target!.files[0]!.name) {
+              return;
+            }
+            // @ts-ignore
+            setHostInfo({ ...hostInfo, keyFile: e.target?.files[0] });
+            // @ts-ignore
+            setFileName(e.target?.files[0]?.name);
+          }}
+        />
+        <label htmlFor='contained-button-file'>
+          <Button variant='contained' color='primary' component='span'>
+            选择秘钥文件
+          </Button>
+        </label>
+      </div>
     </>);
 };
 

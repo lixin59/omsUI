@@ -47,6 +47,7 @@ const baseHostInfo: HostInfo = {
   user: '',
   password: '',
   addr: '',
+  keyFile: '',
   private_key_id: 0,
   port: 0,
   group: {
@@ -151,7 +152,6 @@ function Home(props: tProps) {
     });
     const data: HostInfo = {
       ...hostInfo,
-      id: new Date().getTime(),
       tags
     };
     const resData: AddHostPost = {
@@ -161,9 +161,11 @@ function Home(props: tProps) {
       port: data.port,
       group: data.group.id,
       password: data.password,
-      keyFile: '',
+      keyFile: data.keyFile,
       tags: JSON.stringify(data.tags?.map((e: TagInfo) => e.id))
     };
+
+    console.log(resData);
 
     const res = (await addHostApi(resData)) as HTTPResult;
     if (res.code !== '200') {

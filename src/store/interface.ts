@@ -26,6 +26,7 @@ export interface HostInfo {
   tags: TagInfo[],
   tunnels: TunnelInfo[],
   jobs: JobInfo[],
+  keyFile?: any,
 
 }
 
