@@ -1,5 +1,6 @@
 import { getApi, postApi, deleteApi, putApi } from './api';
 import { urlType } from './requestUrl';
+import { baseUrl } from './config';
 
 export interface HTTPResult {
   code:string,
@@ -287,6 +288,44 @@ export const editJobApi = (data: EditJobPut) => {
 export const deleteJobApi = (id: number) => {
   return deleteApi(`${urlType.job}/${id}`);
 };
+
+// 启动job
+export const jobStartApi = (id: number) => {
+  const data = { id };
+  const formData = new FormData();
+  for (const k in data) {
+    if (data.hasOwnProperty(k)) {
+      // @ts-ignore
+      formData.append(k, data[k]);
+    }
+  }
+  return postApi(`${urlType.jobStart}`, formData);
+};
+
+// 停止job
+export const jobStopApi = (id: number) => {
+  const data = { id };
+  const formData = new FormData();
+  for (const k in data) {
+    if (data.hasOwnProperty(k)) {
+      // @ts-ignore
+      formData.append(k, data[k]);
+    }
+  }
+  return postApi(`${urlType.jobStop}`, formData);
+};
+
+// 查看job日志
+export const jobLogsApi = (id: number) => {
+  return getApi(`${urlType.jobLogs}`, { id });
+  // return `${baseUrl}${urlType.jobLogs}?id=${id}`;
+};
+
+export const jobLogsUrlApi = (id: number) => {
+  // return getApi(`${urlType.jobLogs}`, { id });
+  return `${baseUrl}/${urlType.jobLogs}?id=${id}`;
+};
+
 
 // 文件分发 上传文件
 export const uploadFileApi = (data: UploadFilePost) => {

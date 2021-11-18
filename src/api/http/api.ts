@@ -88,11 +88,12 @@ instance.interceptors.response.use((response) => {
 });
 
 /* 统一封装get请求 */
-export const getApi = (url:string, config = {}) => {
+export const getApi = (url:string, params = {}, config = {}) => {
   return new Promise((resolve, reject) => {
     instance({
       method: 'get',
       url,
+      params,
       ...config
     }).then((response) => {
       resolve(response);

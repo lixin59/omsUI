@@ -11,12 +11,22 @@ import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import styles from './style';
 import { ActionCreator } from 'redux';
+import LogDialog from '../../../components/OmsDialog/LogDialog';
 import TipDialog from '../../../components/OmsDialog/TipDialog';
 import { useSnackbar } from 'notistack';
 import { JobInfo } from '../../../store/interface';
 import FormDialog from '../../../components/OmsDialog/FormDialog';
 import JobInfoForm from './JobInfoForm';
-import { deleteJobApi, editJobApi, HTTPResult } from '../../../api/http/httpRequestApi';
+import {
+  deleteJobApi,
+  editJobApi,
+  jobStartApi,
+  jobStopApi,
+  // jobLogsApi,
+  HTTPResult,
+  jobLogsUrlApi
+} from '../../../api/http/httpRequestApi';
+import axios from 'axios';
 
 type tDP = {
   deleteJob: ActionCreator<any>;
@@ -92,10 +102,75 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
     host_id: 0
   });
 
+  const [openLog, setOpenLog] = useState<boolean>(false);
+  const [data, setData] = useState<any>('');
+
   const title: string = '确定要删除这个任务吗？';
   const text: string = '如果不想删除可以点击取消';
 
   const content = JobInfoForm({ Info, setInfo });
+
+  const startJob = async(info: JobInfo) => {
+    const { id, name } = info;
+    const res = (await jobStartApi(id)) as HTTPResult;
+    if (res.code !== '200') {
+      enqueueSnackbar(`任务: ${name} 启动失败${res.msg}`, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
+      return;
+    }
+    enqueueSnackbar(`任务: ${name} 启动成功${res.msg}`, {
+      autoHideDuration: 3000,
+      variant: 'success'
+    });
+  };
+
+  const stopJob = async(info: JobInfo) => {
+    const { id, name } = info;
+    const res = (await jobStopApi(id)) as HTTPResult;
+    if (res.code !== '200') {
+      enqueueSnackbar(`任务: ${name} 停止失败${res.msg}`, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
+      return;
+    }
+    enqueueSnackbar(`任务: ${name} 停止成功${res.msg}`, {
+      autoHideDuration: 3000,
+      variant: 'success'
+    });
+  };
+
+  const jobLogs = async(info: JobInfo) => {
+    function getDataFromStream(data: string): Promise<any> {
+      return axios({
+        url: data,
+        method: 'GET',
+        onDownloadProgress: (progressEvent) => {
+          const dataChunk = progressEvent.currentTarget.response;
+          setData(dataChunk);
+          console.log(dataChunk);
+        }
+      });
+    }
+    const { id } = info;
+    // const resd = (await jobLogsApi(id)) as HTTPResult;
+    // jobLogsApi(id);
+    const res = jobLogsUrlApi(id);
+    // window.open(res);
+    getDataFromStream(res);
+    setOpenLog(true);
+    // const a = document.createElement('a');
+    // a.setAttribute('href', res);
+    // a.setAttribute('target', '_blank');
+    // a.setAttribute('id', 'js_a');
+    // if (document.getElementById('js_a')) {
+    //   document.body.removeChild(document.getElementById('js_a'));
+    // }
+    // document.body.appendChild(a);
+    // a.click();
+  };
 
   const toEdit = useCallback(async() => {
     const res = (await editJobApi(Info)) as HTTPResult;
@@ -199,16 +274,19 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
                     </Button>
                     <Button
                       className={classes.starBtn}
+                      onClick={() => startJob(row)}
                     >
                       启动
                     </Button>
                     <Button
                       className={classes.stopBtn}
+                      onClick={() => stopJob(row)}
                     >
                       停止
                     </Button>
                     <Button
                       className={classes.reStarBtn}
+                      onClick={() => jobLogs(row)}
                     >
                       日志
                     </Button>
@@ -227,6 +305,12 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+      <LogDialog
+        open={openLog}
+        title={'查看日志'}
+        text={data}
+        toClose={() => setOpenLog(false)}
       />
       <TipDialog
         open={open}
