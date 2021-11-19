@@ -1,8 +1,8 @@
-const testHost = import.meta.env.VITE_TEST_URL;
+const testHost = import.meta.env.VITE_TEST_HOST;
 
-const localhost = testHost || window.location.origin;
+const localhost = testHost || window.location.host;
 
-export const baseUrl = `${localhost}/api/v1`;
+export const baseUrl = `http://${localhost}/api/v1`;
 
 export const urlType = {
   host: '/host',
