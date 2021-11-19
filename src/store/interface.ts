@@ -47,7 +47,7 @@ export interface TunnelInfo {
   mode: 'local' | 'remote',
   source: string,
   destination: string,
-  status: boolean,
+  status: number,
   error_msg: string,
   host_id: number,
 }

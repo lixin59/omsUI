@@ -113,6 +113,7 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
   const startJob = async(info: JobInfo) => {
     const { id, name } = info;
     const res = (await jobStartApi(id)) as HTTPResult;
+    editJob(res.data);
     if (res.code !== '200') {
       enqueueSnackbar(`任务: ${name} 启动失败${res.msg}`, {
         autoHideDuration: 3000,
@@ -136,6 +137,7 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
       });
       return;
     }
+    editJob(res.data);
     enqueueSnackbar(`任务: ${name} 停止成功${res.msg}`, {
       autoHideDuration: 3000,
       variant: 'success'

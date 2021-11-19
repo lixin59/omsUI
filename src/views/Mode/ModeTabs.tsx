@@ -8,6 +8,7 @@ import { a11yProps } from '../../utils/index';
 import Command from './Command';
 import JobPage from './Job';
 import TunnelPage from './Tunnel';
+import WebSSH from './WebSSH';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -54,28 +55,28 @@ function ModeTabs() {
         aria-label='Vertical tabs example'
         className={classes.tabs}
       >
-        <OmsTab label='上传文件' {...a11yProps(0)} />
-        <OmsTab label='执行命令' {...a11yProps(1)} />
-        <OmsTab label='任务管理' {...a11yProps(2)} />
-        <OmsTab label='隧道管理' {...a11yProps(3)} />
-        <OmsTab label='Item Five' {...a11yProps(4)} />
+        <OmsTab label='任务管理' {...a11yProps(0)} />
+        <OmsTab label='隧道管理' {...a11yProps(1)} />
+        <OmsTab label='上传文件' {...a11yProps(2)} />
+        <OmsTab label='web SSH' {...a11yProps(3)} />
+        <OmsTab label='执行命令' {...a11yProps(4)} />
         <OmsTab label='Item Six' {...a11yProps(5)} />
         <OmsTab label='Item Seven' {...a11yProps(6)} />
       </OmsTabs>
       <TabPanel className={classes.TabPanel} value={value} index={0}>
-        <UploadFile/>
-      </TabPanel>
-      <TabPanel className={classes.TabPanel} value={value} index={1}>
-        <Command/>
-      </TabPanel>
-      <TabPanel className={classes.TabPanel} value={value} index={2}>
         <JobPage/>
       </TabPanel>
-      <TabPanel className={classes.TabPanel} value={value} index={3}>
+      <TabPanel className={classes.TabPanel} value={value} index={1}>
         <TunnelPage/>
       </TabPanel>
-      <TabPanel value={value} index={4}>
-        Item Five
+      <TabPanel className={classes.TabPanel} value={value} index={2}>
+        <UploadFile/>
+      </TabPanel>
+      <TabPanel className={classes.TabPanel} value={value} index={3}>
+        <WebSSH/>
+      </TabPanel>
+      <TabPanel className={classes.TabPanel} value={value} index={4}>
+        <Command/>
       </TabPanel>
       <TabPanel value={value} index={5}>
         Item Six

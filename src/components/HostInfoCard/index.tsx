@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Chip from '@material-ui/core/Chip';
 import { connect } from 'react-redux';
 import actions from '../../store/action';
 
@@ -209,7 +210,15 @@ function HostInfoCard(props: tProps) {
           </ListItem>
           <ListItem className={classes.listItem}>
             <ListItemText className={classes.listItemText} primary='标签:' />
-            <ListItemText primary={`${hostInfo.tags?.map((e) => { return e.name; }) || ''}`} />
+            <ListItemText
+              primary={hostInfo.tags?.map((e) => (
+                <Chip
+                  className={classes.tag}
+                  size='small'
+                  key={e.id}
+                  label={e.name}
+                />))}
+            />
           </ListItem>
         </List>
       </Card>

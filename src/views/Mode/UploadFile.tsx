@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import OmsLabel from '../../components/OmsLabel';
 import OmsMenuItem from '../../components/OmsSelect/OmsMenuItem';
 import { baseUrl, url } from '../../api/websocket/url';
+import { useSnackbar } from 'notistack';
 
 type tDP = {
   // deleteGroup: ActionCreator<any>;
@@ -92,6 +93,7 @@ const itemType = {
 };
 
 const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [type, setType] = useState<string>('');
   const [item, setItem] = useState<number| string>('');
@@ -103,13 +105,27 @@ const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
     const webSocket = new WebSocket(`${baseUrl}${url.index}`);
     // setWs(webSocket);
     webSocket.onopen = (evt) => {
-      console.log('WebSocket服务器连接成功');
+      console.log('WebSocket服务器连接成功上传文件');
       webSocket.send(JSON.stringify({ type: 'FILE_STATUS' }));
     };
     webSocket.onmessage = (evt) => {
-      console.log('收到消息');
-      console.log(JSON.parse(evt.data));
+      // console.log('收到消息');
+      // console.log(JSON.parse(evt.data));
       setUploadList(JSON.parse(evt.data).data);
+    };
+    webSocket.onerror = (evt) => {
+      console.warn(evt);
+      enqueueSnackbar(` WebSocket服务器连接失败: ${evt.type}`, {
+        autoHideDuration: 2000,
+        variant: 'error'
+      });
+    };
+    webSocket.onclose = function(evt) {
+      console.log('Connection closed.', evt);
+      enqueueSnackbar(` WebSocket连接已关闭 上传文件: ${evt.type}`, {
+        autoHideDuration: 2000,
+        variant: 'error'
+      });
     };
     return () => {
       webSocket.close();
@@ -131,8 +147,8 @@ const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setItem(event.target.value as string);
-    console.log(type);
-    console.log(item);
+    // console.log(type);
+    // console.log(item);
   };
 
   return (
@@ -153,6 +169,7 @@ const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
         <FormControl className={classes.Control}>
           <OmsLabel>{itemType[(selectType(false) as tItem)]}</OmsLabel>
           <OmsSelect
+            disabled={!type}
             labelId='typeItem-select-label'
             id='typeItem-select-label'
             value={item}

@@ -88,7 +88,7 @@ export default function JobTable({ deleteTunnel, tunnelList, hostList, editTunne
     source: '',
     destination: '',
     error_msg: '',
-    status: false,
+    status: 0,
     host_id: 0
   });
 

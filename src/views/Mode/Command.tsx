@@ -1,19 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useReducer } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import LinkIcon from '@material-ui/icons/Link';
-import LinkOffIcon from '@material-ui/icons/LinkOff';
+import SendIcon from '@material-ui/icons/Send';
+import ClearIcon from '@material-ui/icons/Clear';
 import FormControl from '@material-ui/core/FormControl';
 import OmsSelect from '../../components/OmsSelect';
 // import { ActionCreator } from 'redux';
 import { GroupInfo, HostInfo, IState, TagInfo } from '../../store/interface';
-import OmsTerminal from '../../components/OmsTerminal';
 import { connect } from 'react-redux';
 import OmsLabel from '../../components/OmsLabel';
 import OmsMenuItem from '../../components/OmsSelect/OmsMenuItem';
-import OmsError from '../../components/OmsError';
 import { useSnackbar } from 'notistack';
-import { baseUrl } from '../../api/websocket/url';
+import { baseUrl, url } from '../../api/websocket/url';
+import TextField from '@material-ui/core/TextField';
 
 type tDP = {
   // deleteGroup: ActionCreator<any>;
@@ -64,21 +63,21 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'space-between'
     },
     Control: {
-      width: '25%'
+      width: '20%'
     },
-    LinkButton: {
+    sendButton: {
       marginTop: '12px',
       height: '45px',
-      width: '90px',
-      backgroundColor: theme.palette.info[theme.palette.type],
+      width: '140px',
+      backgroundColor: theme.palette.success[theme.palette.type],
       '&:hover': {
-        backgroundColor: theme.palette.info.main
+        backgroundColor: theme.palette.success.main
       }
     },
-    LinkOffButton: {
+    clearButton: {
       marginTop: '12px',
       height: '45px',
-      width: '90px',
+      width: '80px',
       backgroundColor: theme.palette.error[theme.palette.type],
       '&:hover': {
         backgroundColor: theme.palette.error.main
@@ -86,8 +85,26 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     shellBox: {
       marginTop: '20px',
+      padding: '20px',
       width: '100%',
-      height: '70%'
+      height: '70%',
+      overflow: 'auto',
+      backgroundColor: '#000000'
+    },
+    hostname: {
+      width: '100%',
+      color: '#fce700',
+      whiteSpace: 'pre-line',
+      wordWrap: 'break-word',
+      wordBreak: 'break-all'
+    },
+    shellMsg: {
+      width: '100%',
+      color: '#fff',
+      marginBottom: '20px',
+      whiteSpace: 'pre-line',
+      wordWrap: 'break-word',
+      wordBreak: 'break-all'
     }
   })
 );
@@ -101,36 +118,77 @@ const itemType = {
   default: '请先选择类型'
 };
 
+interface WSdata {
+  host_id: number
+  hostname: string,
+  msg: string,
+  status: boolean
+}
+
+function init() {
+  return [{
+    host_id: 0,
+    hostname: '',
+    msg: '',
+    status: false
+  }];
+}
+
+function reducer(state: WSdata[], action: any) {
+  switch (action.type) {
+    case 'add':
+      return [...state, action.payload];
+    case 'reset':
+      return init();
+    default:
+      throw new Error();
+  }
+}
+
 const Command = ({ hostList, groupList, tagList }: tProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [type, setType] = useState<string>('');
-  const [item, setItem] = useState<string>('');
+  const [id, setId] = useState<string>('');
+  const [cmd, setCmd] = useState<string>('');
   const [ws, setWs] = useState<'' | WebSocket>('');
 
-  const connectHost = () => {
-    // console.log(item);
-    if (!item) {
-      enqueueSnackbar(`请先选择一个主机 ${type}`, {
-        autoHideDuration: 3000,
+  const [msgList, dispatch] = useReducer(reducer, init(), init);
+
+  useEffect(() => {
+    const webSocket = new WebSocket(`${baseUrl}${url.index}`);
+    setWs(webSocket);
+    webSocket.onopen = (evt) => {
+      console.log('WebSocket服务器连接成功执行命令');
+      // webSocket.send(JSON.stringify({ type: '"WS_CMD' }));
+    };
+    webSocket.onmessage = (evt) => {
+      // console.log('收到消息');
+      // console.log(JSON.parse(evt.data));
+      const { data } = JSON.parse(evt.data);
+      dispatch({ type: 'add', payload: data });
+    };
+    webSocket.onerror = (evt) => {
+      console.warn(evt);
+      enqueueSnackbar(` WebSocket服务器连接失败: ${evt.type}`, {
+        autoHideDuration: 2000,
         variant: 'error'
       });
-      return;
-    }
-    // const ws = new WebSocket(`ws://10.1.1.74:9090/ws/ssh/${item}?cols=150&rows=40`);
-    setWs(new WebSocket(`${baseUrl}ssh/${item}?cols=150&rows=40`));
-  };
+    };
+    webSocket.onclose = function(evt) {
+      console.log('Connection closed.', evt);
+      enqueueSnackbar(` WebSocket连接已关闭 执行命令: ${evt.type}`, {
+        autoHideDuration: 2000,
+        variant: 'error'
+      });
+    };
+    return () => {
+      webSocket.close();
+    };
+  }, []);
 
-  const closeHost = () => {
-    if (!ws) {
-      return;
-    }
-    // enqueueSnackbar('正在关闭WebSocket连接...', {
-    //   autoHideDuration: 3000,
-    //   variant: 'info'
-    // });
-    (ws as WebSocket).close();
-    setWs('');
+  const sendCommand = () => {
+    (ws as WebSocket).send(JSON.stringify({ type: 'WS_CMD', data: { type, id, cmd }}));
   };
 
   const selectType = (flag: boolean): string | Array<any> => {
@@ -147,9 +205,7 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
   };
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setItem(event.target.value as string);
-    // console.log(type);
-    // console.log(item);
+    setId(event.target.value as string);
   };
 
   return (
@@ -170,10 +226,10 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
         <FormControl className={classes.Control}>
           <OmsLabel>{itemType[(selectType(false) as tItem)]}</OmsLabel>
           <OmsSelect
-            disabled={!selectType(true).length}
+            disabled={!type}
             labelId='typeItem-select-label'
             id='typeItem-select-label'
-            value={item}
+            value={id}
             onChange={handleChange}
           >
             {selectType(true).length > 0 ? (selectType(true) as Array<any>).map((e) => {
@@ -181,26 +237,43 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
             }) : null }
           </OmsSelect>
         </FormControl>
+        <TextField
+          style={{ marginTop: '12px' }}
+          className={classes.Control}
+          size='small'
+          id='cmd-disabled'
+          label='请输入执行的命令'
+          variant='outlined'
+          value={cmd}
+          onChange={(e) => setCmd(e.target.value)}
+        />
         <Button
-          disabled={!!ws}
-          className={classes.LinkButton}
-          startIcon={<LinkIcon />}
-          onClick={connectHost}
+          disabled={!(!!type && !!id && !!cmd)}
+          className={classes.sendButton}
+          startIcon={<SendIcon />}
+          onClick={sendCommand}
         >
-        连接
+        下发命令
         </Button>
         <Button
-          disabled={!ws}
-          className={classes.LinkOffButton}
-          startIcon={<LinkOffIcon />}
-          onClick={closeHost}
+          className={classes.clearButton}
+          startIcon={<ClearIcon />}
+          onClick={() => { dispatch({ type: 'reset' }); }}
         >
-          断开
+          清屏
         </Button>
       </div>
       <div className={classes.shellBox}>
-        {ws ? (<OmsTerminal id='terminal' ws={ws as WebSocket} onCloseTodo={() => setWs('')}/>)
-          : (<OmsError errInfo='请选择一个主机进行连接' errType='network' imgStyle={{ width: '400px', height: '400px' }} variant='h4'/>)}
+        {msgList.length > 0 ? msgList.map((e: WSdata) => (
+          <>
+            <div key={new Date().getTime() + 1} className={classes.hostname}>
+              {e.hostname}
+            </div>
+            <div key={new Date().getTime() - 1} className={classes.shellMsg}>
+              {e.msg}
+            </div>
+          </>
+        )) : null}
       </div>
     </div>
   );

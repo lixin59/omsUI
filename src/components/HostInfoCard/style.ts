@@ -46,6 +46,9 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
   },
   Select: {
     width: '100%'
+  },
+  tag: {
+    marginRight: '4px'
   }
 });
 
