@@ -9,3 +9,4 @@ package-lock.json
 #src/api/http/config.ts
 #
 #src/api/websocket/config.ts
+.env

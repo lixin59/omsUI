@@ -1,4 +1,4 @@
-import { testHost } from './config';
+const testHost = import.meta.env.VITE_TEST_HOST;
 
 const localhost = testHost || window.location.host;
 
