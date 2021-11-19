@@ -148,7 +148,7 @@ export default function GroupTable({ groupList, deleteGroup, editGroup }: tProps
                     {row.name}
                   </TableCell>
                   <TableCell key={row.mode} align='center'>
-                    {row.mode}
+                    {row.mode ? '规则模式' : '主机模式'}
                   </TableCell>
                   <TableCell key={row.params} align='center'>
                     {row.params}

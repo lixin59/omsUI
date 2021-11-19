@@ -11,12 +11,18 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
+import Divider from '@material-ui/core/Divider';
+import IconButton from '@material-ui/core/IconButton';
+import Input from '@material-ui/core/Input';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     keyFile: {
+      marginTop: '10px',
       'display': 'flex',
       'alignContent': 'space-evenly',
       'alignItems': 'center',
@@ -39,11 +45,26 @@ type tProps = {
   setTlc: Dispatch<SetStateAction<Array<TagInfo & { checked: boolean }>>>
 }
 
+interface PassWordState {
+  amount: string;
+  password: string;
+  weight: string;
+  weightRange: string;
+  showPassword: boolean;
+}
 
 const HostInfoForm = ({ hostInfo, setHostInfo, groupList, tlc, setTlc }: tProps) => {
   const classes = useStyles();
   const [fileName, setFileName] = useState<string>('未选择任何文件');
+  const [values, setValues] = React.useState<PassWordState>({
+    amount: '',
+    password: '',
+    weight: '',
+    weightRange: '',
+    showPassword: false
+  });
 
+  const groupArr = [{ id: 0, name: '无', mode: 1, params: '' }, ...groupList];
   return (
     <>
       <TextField
@@ -89,25 +110,45 @@ const HostInfoForm = ({ hostInfo, setHostInfo, groupList, tlc, setTlc }: tProps)
         value={hostInfo.port}
         onChange={(e) => setHostInfo({ ...hostInfo, port: Number(e.target.value) })}
       />
-      <TextField
-        autoFocus
-        margin='dense'
-        id='password'
-        label='请输入密码或key'
-        fullWidth
-        value={hostInfo.password || ''}
-        onChange={(e) => setHostInfo({ ...hostInfo, password: e.target.value })}
-      />
+      {/* <TextField*/}
+      {/*  autoFocus*/}
+      {/*  margin='dense'*/}
+      {/*  id='password'*/}
+      {/*  label='请输入密码'*/}
+      {/*  fullWidth*/}
+      {/*  value={hostInfo.password || ''}*/}
+      {/*  onChange={(e) => setHostInfo({ ...hostInfo, password: e.target.value })}*/}
+      {/* />*/}
       <FormControl style={{ width: '100%' }}>
-        {groupList.length > 0 ? (<>
+        <InputLabel htmlFor='standard-adornment-password'>Password</InputLabel>
+        <Input
+          id='standard-adornment-password'
+          type={values.showPassword ? 'text' : 'password'}
+          value={hostInfo.password || ''}
+          onChange={(e) => setHostInfo({ ...hostInfo, password: e.target.value })}
+          endAdornment={
+            <InputAdornment position='end'>
+              <IconButton
+                aria-label='toggle password visibility'
+                onClick={() => setValues({ ...values, showPassword: !values.showPassword }) }
+                onMouseDown={(event) => event.preventDefault()}
+              >
+                {values.showPassword ? <Visibility /> : <VisibilityOff />}
+              </IconButton>
+            </InputAdornment>
+          }
+        />
+      </FormControl>
+      <FormControl style={{ width: '100%' }}>
+        {groupArr.length > 0 ? (<>
           <InputLabel id='group-select-label'>选择分组</InputLabel>
           <Select
             labelId='group-select-label'
             id='group-select'
             value={hostInfo.group.name}
-            onChange={(e) => setHostInfo({ ...hostInfo, group: groupList.find((item) => item.name === e?.target?.value as string) as GroupInfo })}
+            onChange={(e) => setHostInfo({ ...hostInfo, group: groupArr.find((item) => item.name === e?.target?.value as string) as GroupInfo })}
           >
-            {groupList.map((e) => {
+            {groupArr.map((e) => {
               return (<MenuItem key={e.name} value={e.name}>{e.name}</MenuItem>);
             })}
           </Select>
@@ -137,6 +178,7 @@ const HostInfoForm = ({ hostInfo, setHostInfo, groupList, tlc, setTlc }: tProps)
           })}
         </FormGroup>
       </FormControl>
+      <Divider/>
       <div className={classes.keyFile}>
         <TextField
           size='small'

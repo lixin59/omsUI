@@ -49,7 +49,7 @@ const baseHostInfo: HostInfo = {
   addr: '',
   keyFile: '',
   private_key_id: 0,
-  port: 0,
+  port: 22,
   group: {
     id: 0,
     name: '',
