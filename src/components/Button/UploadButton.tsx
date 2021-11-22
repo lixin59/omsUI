@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function UploadButtons(props: tProps) {
   const { filePath = '', typeId, type } = props;
   const classes = useStyles();
-  const [fileInfo, setFileInfo] = useState<null | object>(null);
+  const [fileList, setFileList] = useState<null | FileList>(null);
   const [fileName, setFileName] = useState<string>('未选择任何文件');
   const { enqueueSnackbar } = useSnackbar();
 
@@ -42,9 +42,15 @@ export default function UploadButtons(props: tProps) {
       return;
     }
     // @ts-ignore
-    setFileInfo(e.target?.files[0]);
+    if (e.target?.files.length < 2) {
+      // @ts-ignore
+      setFileName(e.target?.files[0]?.name);
+    } else {
+      // @ts-ignore
+      setFileName(`${e.target?.files.length}个文件`);
+    }
     // @ts-ignore
-    setFileName(e.target?.files[0]?.name);
+    setFileList(e.target?.files);
   };
   const uploadFile = async() => {
     // console.log(typeId);
@@ -58,7 +64,7 @@ export default function UploadButtons(props: tProps) {
     //   });
     //   return;
     // }
-    if (!fileInfo) {
+    if (!(fileList as FileList)[0]) {
       enqueueSnackbar('请选择需要上传的文件！！！', {
         autoHideDuration: 3000,
         variant: 'warning'
@@ -83,7 +89,7 @@ export default function UploadButtons(props: tProps) {
       id: typeId,
       type,
       remote: filePath,
-      files: fileInfo
+      files: fileList
     })) as HTTPResult;
     console.log(res);
   };

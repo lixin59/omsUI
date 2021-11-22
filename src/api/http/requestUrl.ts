@@ -13,5 +13,5 @@ export const urlType = {
   jobStart: 'job/start',
   jobStop: 'job/stop',
   jobLogs: 'job/tail',
-  upload_file: '/tools/upload_file'
+  upload_file: '/tools/upload'
 };

@@ -245,7 +245,7 @@ export const editTunnelApi = (data: EditTunnelPut) => {
 
 // 删除 tunnel
 export const deleteTunnelApi = (id: number) => {
-  return deleteApi(urlType.tunnel, id);
+  return deleteApi(`${urlType.tunnel}/${id}`);
 };
 
 
@@ -329,11 +329,24 @@ export const jobLogsUrlApi = (id: number) => {
 // 文件分发 上传文件
 export const uploadFileApi = (data: UploadFilePost) => {
   const formData = new FormData();
+  const files:{[index: string]:any} = {};
+  const fileList = { ...data.files };
   for (const k in data) {
-    if (data.hasOwnProperty(k)) {
+    if (data.hasOwnProperty(k) && k !== 'files') {
       // @ts-ignore
       formData.append(k, data[k]);
     }
   }
-  return postApi(`${urlType.upload_file}`, formData);
+  // eslint-disable-next-line guard-for-in
+  for (const k in fileList) {
+    // @ts-ignore
+    files[fileList[k].name] = fileList[k].size;
+    formData.append('files', fileList[k]);
+  }
+  return postApi(`${urlType.upload_file}`, formData, {
+    headers: {
+      'X-Files': JSON.stringify(files)
+    },
+    timeout: 86400000 // 一天
+  });
 };
