@@ -9,6 +9,7 @@ import Command from './Command';
 import JobPage from './Job';
 import TunnelPage from './Tunnel';
 import WebSSH from './WebSSH';
+import FileBrowserPage from './FileBrowser';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -60,7 +61,7 @@ function ModeTabs() {
         <OmsTab label='上传文件' {...a11yProps(2)} />
         <OmsTab label='web SSH' {...a11yProps(3)} />
         <OmsTab label='执行命令' {...a11yProps(4)} />
-        <OmsTab label='Item Six' {...a11yProps(5)} />
+        <OmsTab label='文件浏览' {...a11yProps(5)} />
         <OmsTab label='Item Seven' {...a11yProps(6)} />
       </OmsTabs>
       <TabPanel className={classes.TabPanel} value={value} index={0}>
@@ -78,10 +79,10 @@ function ModeTabs() {
       <TabPanel className={classes.TabPanel} value={value} index={4}>
         <Command/>
       </TabPanel>
-      <TabPanel value={value} index={5}>
-        Item Six
+      <TabPanel className={classes.TabPanel} value={value} index={5}>
+        <FileBrowserPage/>
       </TabPanel>
-      <TabPanel value={value} index={6}>
+      <TabPanel className={classes.TabPanel} value={value} index={6}>
         Item Seven
       </TabPanel>
     </div>
