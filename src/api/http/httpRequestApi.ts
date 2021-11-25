@@ -350,3 +350,43 @@ export const uploadFileApi = (data: UploadFilePost) => {
     timeout: 86400000 // 一天
   });
 };
+
+
+// 文件浏览
+export const fileBrowserApi = (data: {
+  host_id: string | number, // host的ID
+  id: any // 文件路径
+}) => {
+  return getApi(`${urlType.fileBrowser}`, data);
+};
+
+// 删除文件
+export const deleteFileApi = (data: {
+  host_id: string | number, // host的ID
+  id: any // 文件路径或者文件名
+}) => {
+  const formData = new FormData();
+  for (const k in data) {
+    if (data.hasOwnProperty(k)) {
+      // @ts-ignore
+      formData.append(k, data[k]);
+    }
+  }
+  return postApi(`${urlType.deleteFile}`, formData);
+};
+
+//
+export const createFileApi = (data: {
+  host_id: string | number, // host的ID
+  id: any // 文件父路径
+  dir: string // 文件夹名称
+}) => {
+  const formData = new FormData();
+  for (const k in data) {
+    if (data.hasOwnProperty(k)) {
+      // @ts-ignore
+      formData.append(k, data[k]);
+    }
+  }
+  return postApi(`${urlType.mkdir}`, formData);
+};

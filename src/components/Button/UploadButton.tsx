@@ -10,6 +10,7 @@ type tProps = {
   filePath?: string,
   typeId?: number,
   type?: 'host' | 'group' | 'tag',
+  todo?: any,
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -30,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function UploadButtons(props: tProps) {
-  const { filePath = '', typeId, type } = props;
+  const { filePath = '', typeId, type, todo } = props;
   const classes = useStyles();
   const [fileList, setFileList] = useState<null | FileList>(null);
   const [fileName, setFileName] = useState<string>('未选择任何文件');
@@ -92,6 +93,9 @@ export default function UploadButtons(props: tProps) {
       files: fileList
     })) as HTTPResult;
     console.log(res);
+    if (todo) {
+      todo();
+    }
   };
   return (
     <div className={classes.root}>
