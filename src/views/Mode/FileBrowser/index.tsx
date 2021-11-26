@@ -1,19 +1,16 @@
-import React, { memo, FC, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { GroupInfo, HostInfo, IState, TagInfo } from '../../../store/interface';
 import { fileBrowserApi, deleteFileApi, createFileApi, HTTPResult } from '../../../api/http/httpRequestApi';
 import {
   FullFileBrowser,
   setChonkyDefaults,
-  ChonkyIconProps,
   ChonkyActions,
   FileArray,
   defineFileAction,
   FileActionHandler,
   ChonkyIconName
 } from 'chonky';
-import { ChonkyIconFA } from 'chonky-icon-fontawesome';
-import svg from '../../../assets/icons/Error.svg';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import OmsLabel from '../../../components/OmsLabel';
@@ -25,11 +22,11 @@ import { FileSelectionTransform } from 'chonky/src/types/action.types';
 import { FileHelper } from 'chonky/src/util/file-helper';
 import UploadButtons from '../../../components/Button/UploadButton';
 import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
+import FileIcon from './FileIcon';
 
 type tDP = {
   // deleteGroup: ActionCreator<any>;
@@ -101,21 +98,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const myEmojiMap: { [iconName: string]: any } = {
-  bentoEmoji: svg,
-  angryEmoji: '😠',
-  japanEmoji: '🗾'
-};
-export const MyEmojiIcon: FC<ChonkyIconProps> = memo((props) => {
-  const emojiIcon = myEmojiMap[props.icon];
-  if (emojiIcon) {
-    return <>
-    </>;
-  }
-  return <ChonkyIconFA {...props} />;
-});
-
-setChonkyDefaults({ iconComponent: MyEmojiIcon });
+setChonkyDefaults({ iconComponent: FileIcon });
 
 const FileBrowserPage = ({ hostList }: tProps) => {
   const classes = useStyles();
@@ -370,7 +353,7 @@ const FileBrowserPage = ({ hostList }: tProps) => {
       </div>
       <div className={classes.FileBrowser}>
         <FullFileBrowser
-          files={files}
+          files={filesss}
           folderChain={folderChain}
           fileActions={myFileActions}
           onFileAction={handleAction}
