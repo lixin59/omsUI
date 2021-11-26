@@ -26,7 +26,7 @@ import {
   HTTPResult,
   jobLogsUrlApi
 } from '../../../api/http/httpRequestApi';
-import axios from 'axios';
+import axios, { CancelTokenSource } from 'axios';
 
 type tDP = {
   deleteJob: ActionCreator<any>;
@@ -92,6 +92,7 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [open, setOpen] = useState<boolean>(false);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
+  const [cancelToken, setCancelToken] = useState<CancelTokenSource | null>(null);
   const [Info, setInfo] = useState<JobInfo>({
     id: 0,
     name: '',
@@ -144,24 +145,39 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
     });
   };
 
-  const jobLogs = async(info: JobInfo) => {
-    function getDataFromStream(data: string): Promise<any> {
-      return axios({
-        url: data,
-        method: 'GET',
-        onDownloadProgress: (progressEvent) => {
-          const dataChunk = progressEvent.currentTarget.response;
-          setData(dataChunk);
-          console.log(dataChunk);
+  const fetchRepos = (url:string) => {
+    if (cancelToken) {
+      // console.log('取消上一次请求');
+      cancelToken.cancel('Operation canceled due to new request.');
+    }
+    const source = axios.CancelToken.source(); // 声明一个source对象
+    setCancelToken(source);
+
+    axios.get(url, {
+      onDownloadProgress: (progressEvent) => {
+        const dataChunk = progressEvent.currentTarget.response;
+        setData(dataChunk);
+        console.log(dataChunk);
+      },
+      cancelToken: source.token
+    })
+      .catch((error) => {
+        if (axios.isCancel(error)) {
+          console.log('Request canceled', error);
+        } else {
+          console.log(error);
         }
       });
-    }
+    // source.cancel('Operation canceled by the user.');
+  };
+
+  const jobLogs = async(info: JobInfo) => {
     const { id } = info;
     // const resd = (await jobLogsApi(id)) as HTTPResult;
     // jobLogsApi(id);
-    const res = jobLogsUrlApi(id);
+    const url = jobLogsUrlApi(id);
     // window.open(res);
-    getDataFromStream(res);
+    fetchRepos(url);
     setOpenLog(true);
     // const a = document.createElement('a');
     // a.setAttribute('href', res);
@@ -224,6 +240,14 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  const toCloseLog = useCallback(() => {
+    if (cancelToken) {
+      // console.log(cancelToken.cancel);
+      cancelToken.cancel('cancel http');
+    }
+    setOpenLog(false);
+  }, [cancelToken]);
 
   return (
     <Paper className={classes.rootTable}>
@@ -312,7 +336,7 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
         open={openLog}
         title={'查看日志'}
         text={data}
-        toClose={() => setOpenLog(false)}
+        toClose={toCloseLog}
       />
       <TipDialog
         open={open}
