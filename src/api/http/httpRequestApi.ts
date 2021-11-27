@@ -375,7 +375,7 @@ export const deleteFileApi = (data: {
   return postApi(`${urlType.deleteFile}`, formData);
 };
 
-//
+// 创建文件夹
 export const createFileApi = (data: {
   host_id: string | number, // host的ID
   id: any // 文件父路径
@@ -389,4 +389,12 @@ export const createFileApi = (data: {
     }
   }
   return postApi(`${urlType.mkdir}`, formData);
+};
+
+// 下载文件
+export const downloadFileApi = (data:{
+  host_id: string | number, // host的ID
+  id: any // 文件路径 如/root/go/robots.txt
+}) => {
+  return getApi(`${urlType.download_file}`, { ...data }, { responseType: 'blob', timeout: 1000 });
 };

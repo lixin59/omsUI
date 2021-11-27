@@ -88,11 +88,14 @@ const svgIconMap: { [iconName: string]: any } = {
   zip: svgMap.zip
 };
 
+// eslint-disable-next-line react/display-name
 const FileIcon: FC<ChonkyIconProps> = memo((props:PropsWithChildren<any>) => {
-  const icon = svgIconMap[props.icon];
+  const icon = svgIconMap[props?.icon];
+  const size = props?.fixedWidth ? '20px' : '100%';
+  const top = props?.fixedWidth ? '2px' : '0';
   if (icon) {
     return <>
-      <img style={{ height: '20px', width: '20px' }} src={icon}/>
+      <img style={{ height: size, width: size, position: 'relative', top }} src={icon}/>
     </>;
   }
   return <ChonkyIconFA {...props} />;

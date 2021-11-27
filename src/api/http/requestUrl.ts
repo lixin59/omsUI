@@ -14,6 +14,7 @@ export const urlType = {
   jobStop: 'job/stop',
   jobLogs: 'job/tail',
   upload_file: '/tools/upload',
+  download_file: '/tools/download',
   fileBrowser: '/tools/browse',
   deleteFile: '/tools/delete',
   mkdir: '/tools/mkdir'

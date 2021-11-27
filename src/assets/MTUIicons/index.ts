@@ -21,6 +21,47 @@ import exe from './exe.svg';
 import file from './file.svg';
 import flash from './flash.svg';
 import flow from './flow.svg';
+import folderComponents from './folder-components.svg';
+import folderConfig from './folder-config.svg';
+import folderContainer from './folder-container.svg';
+import folderCss from './folder-css.svg';
+import folderDatabase from './folder-database.svg';
+import folderDebug from './folder-debug.svg';
+import folderDist from './folder-dist.svg';
+import folderDocker from './folder-docker.svg';
+import folderDocs from './folder-docs.svg';
+import folderDownload from './folder-download.svg';
+import folderGit from './folder-git.svg';
+import folderGithub from './folder-github.svg';
+import folderGitlab from './folder-gitlab.svg';
+import folderGradle from './folder-gradle.svg';
+import folderImages from './folder-images.svg';
+import folderJavascript from './folder-javascript.svg';
+import folderJson from './folder-json.svg';
+import folderNode from './folder-node.svg';
+import folderPhp from './folder-php.svg';
+import folderplugin from './folder-plugin.svg';
+import folderprivate from './folder-private.svg';
+import folderpublic from './folder-public.svg';
+import folderPython from './folder-python.svg';
+import folderRoutes from './folder-routes.svg';
+import folderSass from './folder-sass.svg';
+import folderServer from './folder-server.svg';
+import folderSrc from './folder-src.svg';
+import folderSvelte from './folder-svelte.svg';
+import folderSvg from './folder-svg.svg';
+import folderTasks from './folder-tasks.svg';
+import folderTemp from './folder-temp.svg';
+import folderTest from './folder-test.svg';
+import folderTheme from './folder-theme.svg';
+import folderTypescript from './folder-typescript.svg';
+import folderUtils from './folder-utils.svg';
+import folderVideo from './folder-video.svg';
+import folderViews from './folder-views.svg';
+import folderVscode from './folder-vscode.svg';
+import folderVue from './folder-vue.svg';
+import folderWebpack from './folder-webpack.svg';
+import folderYarn from './folder-yarn.svg';
 import fsharp from './fsharp.svg';
 import git from './git.svg';
 import gitlab from './gitlab.svg';
@@ -105,6 +146,47 @@ const svgMap = {
   file,
   flash,
   flow,
+  folderComponents,
+  folderConfig,
+  folderContainer,
+  folderCss,
+  folderDatabase,
+  folderDebug,
+  folderDist,
+  folderDocker,
+  folderDocs,
+  folderDownload,
+  folderGit,
+  folderGithub,
+  folderGitlab,
+  folderGradle,
+  folderImages,
+  folderJavascript,
+  folderJson,
+  folderNode,
+  folderPhp,
+  folderplugin,
+  folderprivate,
+  folderpublic,
+  folderPython,
+  folderRoutes,
+  folderSass,
+  folderServer,
+  folderSrc,
+  folderSvelte,
+  folderSvg,
+  folderTasks,
+  folderTemp,
+  folderTest,
+  folderTheme,
+  folderTypescript,
+  folderUtils,
+  folderVideo,
+  folderViews,
+  folderVscode,
+  folderVue,
+  folderWebpack,
+  folderYarn,
   fsharp,
   git,
   gitlab,

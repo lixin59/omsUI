@@ -33,7 +33,8 @@ export default function LogDialog({ open = false, title, text = '', toClose }: t
       maxWidth='md'
     >
       <DialogTitle style={{ backgroundColor: '#ffe2c0' }}>{title}</DialogTitle>
-      <div style={{ whiteSpace: 'pre-line', wordWrap: 'break-word', wordBreak: 'break-all' }}>
+      {/* <div style={{ whiteSpace: 'pre-line', wordWrap: 'break-word', wordBreak: 'break-all' }}>*/}
+      <div style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word', paddingLeft: '20px' }}>
         {text}
       </div>
       <DialogActions>

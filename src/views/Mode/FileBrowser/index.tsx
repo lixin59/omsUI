@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { GroupInfo, HostInfo, IState, TagInfo } from '../../../store/interface';
-import { fileBrowserApi, deleteFileApi, createFileApi, HTTPResult } from '../../../api/http/httpRequestApi';
+import { fileBrowserApi, deleteFileApi, createFileApi, downloadFileApi, HTTPResult } from '../../../api/http/httpRequestApi';
 import {
   FullFileBrowser,
   setChonkyDefaults,
@@ -27,6 +27,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
 import FileIcon from './FileIcon';
+import qs from 'qs';
+import { baseUrl, urlType } from '../../../api/http/requestUrl';
 
 type tDP = {
   // deleteGroup: ActionCreator<any>;
@@ -108,7 +110,7 @@ const FileBrowserPage = ({ hostList }: tProps) => {
   const [parentDir, setParentDir] = useState<string>('');
   const [isMkdir, setIsMkdir] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
-  const [files, setFiles] = useState<FileArray>([null, null]);
+  const [files, setFiles] = useState<FileArray>([]);
   const [folderChain, setFolderChain] = useState<FileArray>([]);
 
   const deleteAction = defineFileAction({
@@ -167,7 +169,49 @@ const FileBrowserPage = ({ hostList }: tProps) => {
       icon: ChonkyIconName.download
     }
   }, (data) => {
-    console.log('下载', data.state.contextMenuTriggerFile);
+    // console.log('下载', data.state.contextMenuTriggerFile);
+    // @ts-ignore
+    const { id, name, size } = data?.state?.contextMenuTriggerFile;
+    if (hostId && id) {
+      // if (size > (30 * 1024 * 1024)) {
+      //   const url = `${baseUrl}${urlType.download_file}?${qs.stringify({ host_id: hostId, id })}`;
+      //   console.log('下载大文件', url);
+      //   const tempLink = document.createElement('a');
+      //   tempLink.style.display = 'none';
+      //   tempLink.href = url;
+      //   tempLink.target = '_blank';
+      //   tempLink.setAttribute('download', decodeURI(name));
+      //   // 兼容：某些浏览器不支持HTML5的download属性
+      //   if (typeof tempLink.download === 'undefined') {
+      //     tempLink.setAttribute('target', '_blank');
+      //   }
+      //   // 挂载a标签
+      //   document.body.appendChild(tempLink);
+      //   tempLink.click();
+      //   document.body.removeChild(tempLink);
+      //   // 释放blob URL地址
+      //   window.URL.revokeObjectURL(url);
+      // } else {
+      //   downloadFileApi({ host_id: hostId, id });
+      // }
+      const url = `${baseUrl}${urlType.download_file}?${qs.stringify({ host_id: hostId, id })}`;
+      // console.log('下载大文件', url);
+      const tempLink = document.createElement('a');
+      tempLink.style.display = 'none';
+      tempLink.href = url;
+      tempLink.target = '_blank';
+      tempLink.setAttribute('download', decodeURI(name));
+      // 兼容：某些浏览器不支持HTML5的download属性
+      if (typeof tempLink.download === 'undefined') {
+        tempLink.setAttribute('target', '_blank');
+      }
+      // 挂载a标签
+      document.body.appendChild(tempLink);
+      tempLink.click();
+      document.body.removeChild(tempLink);
+      // 释放blob URL地址
+      window.URL.revokeObjectURL(url);
+    }
   });
 
   const selectAllFileAction = defineFileAction({
@@ -353,7 +397,7 @@ const FileBrowserPage = ({ hostList }: tProps) => {
       </div>
       <div className={classes.FileBrowser}>
         <FullFileBrowser
-          files={filesss}
+          files={files}
           folderChain={folderChain}
           fileActions={myFileActions}
           onFileAction={handleAction}

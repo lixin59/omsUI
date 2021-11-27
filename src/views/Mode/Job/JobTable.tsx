@@ -157,7 +157,7 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
       onDownloadProgress: (progressEvent) => {
         const dataChunk = progressEvent.currentTarget.response;
         setData(dataChunk);
-        console.log(dataChunk);
+        // console.log(dataChunk);
       },
       cancelToken: source.token
     })

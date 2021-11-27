@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { baseUrl } from './requestUrl';
+// import { convertRes2Blob } from '../../utils';
 // const hide = null;
 const instance = axios.create({ // 创建axios实例，在这里可以设置请求的默认配置
   timeout: 10000, // 设置超时时间10s
@@ -59,6 +60,10 @@ instance.interceptors.request.use((config) => {
 
 /** 添加响应拦截器  **/
 instance.interceptors.response.use((response) => {
+  // if (response.request.responseType === 'blob') { // 下载小于30m文件
+  //   convertRes2Blob(response);
+  // }
+
   return Promise.resolve(response.data);
   // hide();
   // if (response.statusText === 'ok') { // 响应结果里的statusText: ok是我与后台的约定，大家可以根据实际情况去做对应的判断
