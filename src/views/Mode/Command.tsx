@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useReducer } from 'react';
+import React, { useEffect, useState, useRef, useReducer } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import SendIcon from '@material-ui/icons/Send';
@@ -155,6 +155,13 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
 
   const [msgList, dispatch] = useReducer(reducer, init(), init);
 
+  const msgRef = useRef<any>(null);
+
+  useEffect(() => {
+    const div = msgRef.current as HTMLDivElement;
+    div.scrollTop = div.scrollHeight;
+  }, [msgList]);
+
   useEffect(() => {
     const webSocket = new WebSocket(`${baseUrl}${url.index}`);
     setWs(webSocket);
@@ -263,7 +270,7 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
           清屏
         </Button>
       </div>
-      <div className={classes.shellBox}>
+      <div ref={msgRef} className={classes.shellBox}>
         {msgList.length > 0 ? msgList.map((e: WSdata) => (
           <>
             <div key={new Date().getTime() + 1} className={classes.hostname}>

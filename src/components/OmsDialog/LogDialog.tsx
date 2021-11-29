@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 // import DialogTitle from '@material-ui/core/DialogTitle';
 // import DialogContent from '@material-ui/core/DialogContent';
@@ -18,6 +18,18 @@ export default function LogDialog({ open = false, title, text = '', toClose }: t
 
   // const [isOpen, setIsOpen] = useState<boolean>(open);
 
+
+  const msgRef = useRef<any>(null);
+
+  useEffect(() => {
+    try {
+      const div = msgRef.current as HTMLDivElement;
+      div.scrollTop = div.scrollHeight;
+    } catch (e) {
+      console.log(e);
+    }
+  }, [text, msgRef]);
+
   const closeDialog = () => {
     if (toClose) {
       toClose();
@@ -34,7 +46,7 @@ export default function LogDialog({ open = false, title, text = '', toClose }: t
     >
       <DialogTitle style={{ backgroundColor: '#ffe2c0' }}>{title}</DialogTitle>
       {/* <div style={{ whiteSpace: 'pre-line', wordWrap: 'break-word', wordBreak: 'break-all' }}>*/}
-      <div style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word', paddingLeft: '20px' }}>
+      <div ref={msgRef} style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word', paddingLeft: '20px', overflow: 'auto' }}>
         {text}
       </div>
       <DialogActions>
