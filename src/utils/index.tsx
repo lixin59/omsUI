@@ -41,3 +41,21 @@ export function convertRes2Blob(response: AxiosResponse) {
     console.log(e);
   }
 }
+
+export function downloadFile(url: string, fileName: string): void {
+  const tempLink = document.createElement('a');
+  tempLink.style.display = 'none';
+  tempLink.href = url;
+  tempLink.target = '_blank';
+  tempLink.setAttribute('download', decodeURI(fileName));
+  // 兼容：某些浏览器不支持HTML5的download属性
+  if (typeof tempLink.download === 'undefined') {
+    tempLink.setAttribute('target', '_blank');
+  }
+  // 挂载a标签
+  document.body.appendChild(tempLink);
+  tempLink.click();
+  document.body.removeChild(tempLink);
+  // 释放blob URL地址
+  window.URL.revokeObjectURL(url);
+}

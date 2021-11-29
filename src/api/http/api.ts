@@ -85,7 +85,7 @@ instance.interceptors.response.use((response) => {
     return Promise.reject(error);
   } else {
     // message.error('请求超时, 请刷新重试');
-    return Promise.reject(new Error('请求超时, 请刷新重试'));
+    return Promise.reject(error);
   }
 });
 

@@ -340,7 +340,7 @@ export const uploadFileApi = (data: UploadFilePost) => {
   // eslint-disable-next-line guard-for-in
   for (const k in fileList) {
     // @ts-ignore
-    files[fileList[k].name] = fileList[k].size;
+    files[encodeURI(fileList[k].name)] = fileList[k].size;
     formData.append('files', fileList[k]);
   }
   return postApi(`${urlType.upload_file}`, formData, {
