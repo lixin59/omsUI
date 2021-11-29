@@ -357,7 +357,7 @@ export const fileBrowserApi = (data: {
   host_id: string | number, // host的ID
   id: any // 文件路径
 }) => {
-  return getApi(`${urlType.fileBrowser}`, data);
+  return getApi(`${urlType.fileBrowser}`, data, { timeout: 20000 });
 };
 
 // 删除文件

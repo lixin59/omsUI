@@ -30,6 +30,7 @@ import FileIcon from './FileIcon';
 import qs from 'qs';
 import { baseUrl, urlType } from '../../../api/http/requestUrl';
 import { downloadFile } from '../../../utils';
+import { useSnackbar } from 'notistack';
 
 type tDP = {
   // deleteGroup: ActionCreator<any>;
@@ -104,6 +105,7 @@ const useStyles = makeStyles((theme: Theme) =>
 setChonkyDefaults({ iconComponent: FileIcon });
 
 const FileBrowserPage = ({ hostList }: tProps) => {
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [hostId, setHost] = useState<number>(0);
   const [filePath, setFilePath] = useState<string>('');
@@ -273,6 +275,10 @@ const FileBrowserPage = ({ hostList }: tProps) => {
       }
       const res = (await fileBrowserApi({ host_id: hostId, id: data.state.contextMenuTriggerFile.id })) as HTTPResult;
       if (res.code !== '200') {
+        enqueueSnackbar(res.msg, {
+          autoHideDuration: 3000,
+          variant: 'error'
+        });
         return;
       }
       setFiles(res.data.files);
@@ -284,6 +290,10 @@ const FileBrowserPage = ({ hostList }: tProps) => {
       }
       const res = (await fileBrowserApi({ host_id: hostId, id: data.payload.targetFile.id })) as HTTPResult;
       if (res.code !== '200') {
+        enqueueSnackbar(res.msg, {
+          autoHideDuration: 3000,
+          variant: 'error'
+        });
         return;
       }
       setFiles(res.data.files);
@@ -296,6 +306,10 @@ const FileBrowserPage = ({ hostList }: tProps) => {
         }
         const res = (await fileBrowserApi({ host_id: hostId, id: data.payload.file.id })) as HTTPResult;
         if (res.code !== '200') {
+          enqueueSnackbar(res.msg, {
+            autoHideDuration: 3000,
+            variant: 'error'
+          });
           return;
         }
         setFiles(res.data.files);
@@ -307,6 +321,10 @@ const FileBrowserPage = ({ hostList }: tProps) => {
   const viewFiles = async() => {
     const res = (await fileBrowserApi({ host_id: hostId, id: '.' })) as HTTPResult;
     if (res.code !== '200') {
+      enqueueSnackbar(res.msg, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
       return;
     }
     // console.log('res', res);
