@@ -5,6 +5,7 @@ import sun from '../../assets/icons/sun.png';
 
 const styles: Styles<any, {}> = (theme: Theme) => ({
   switchBox: {
+    cursor: 'pointer',
     width: '48px',
     height: '24px',
     borderRadius: '12px',

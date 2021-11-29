@@ -20,8 +20,8 @@ export default function ThemeSwitch({ checked = false, onChange, ...props }: tPr
 
   return (
     <div className={classes.switchBox}>
-      <div className={classes.switchIconMoon}></div>
-      <div className={classes.switchIconSun}></div>
+      <div className={classes.switchIconMoon} onClick={changeChecked}></div>
+      <div className={classes.switchIconSun} onClick={changeChecked}></div>
       <div className={isChecked ? classes.switchChecked : classes.switchNoChecked} onClick={changeChecked}></div>
     </div>
   );
