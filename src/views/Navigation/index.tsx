@@ -1,18 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // router
-import { NavLink, Switch, Route, Redirect } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import Home from '../Home';
-import About from '../About';
-import Group from '../Group';
-import Mode from '../Mode';
 import styles from './style';
 
 export default function Navigation() {
   const classes = makeStyles(styles)();
   const [value, setValue] = useState<number>(0);
+  const navigate = useNavigate();
+  const hash = useLocation();
+
+  useEffect(() => {
+    if (hash.pathname === '/') {
+      navigate('/home'); // 页面初始化跳转Home页面
+    }
+    if (hash.pathname.includes('/home')) {
+      setValue(0);
+    }
+    if (hash.pathname.includes('/group')) {
+      setValue(1);
+    }
+    if (hash.pathname.includes('/mode')) {
+      setValue(2);
+    }
+    if (hash.pathname.includes('/about')) {
+      setValue(3);
+    }
+  }, [hash]);
 
   return (
     <>
@@ -30,13 +46,7 @@ export default function Navigation() {
         <BottomNavigationAction label='关于' component={NavLink} to='/about' className={classes.navItem}/>
       </BottomNavigation>
       <div style={{ height: 'calc(100% - 56px)' }}>
-        <Switch>
-          <Route path='/home' component={Home}/>
-          <Route path='/group' component={Group}/>
-          <Route path='/mode' component={Mode}/>
-          <Route path='/about'component={About}/>
-          <Redirect from='/*' to='/home' />
-        </Switch>
+        <Outlet />
       </div>
     </>
   );

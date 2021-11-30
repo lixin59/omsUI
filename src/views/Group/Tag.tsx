@@ -6,14 +6,17 @@ import Button from '@material-ui/core/Button';
 import TagTable from './TagTable';
 import styles from './style';
 import { ActionCreator } from 'redux';
-import { TagInfo } from '../../store/interface';
+import { IState, TagInfo } from '../../store/interface';
 import { useSnackbar } from 'notistack';
 import { addTagApi, HTTPResult } from '../../api/http/httpRequestApi';
+import actions from '../../store/action';
+import { connect } from 'react-redux';
 
 type tDP = {
   deleteTag: ActionCreator<any>;
   addTag: ActionCreator<any>;
   editTag: ActionCreator<any>;
+  initTag: ActionCreator<any>;
 };
 
 type tOP = {};
@@ -23,6 +26,17 @@ type tSP = tOP & {
 };
 
 type tProps = tSP & tDP;
+
+const mapStateToProps = (state: IState, props: tOP): tSP => ({
+  ...props,
+  tagList: state.tagList
+});
+const mapDispatch: tDP = {
+  initTag: actions.initTagInfo,
+  deleteTag: actions.deleteTagInfo,
+  addTag: actions.addTagInfo,
+  editTag: actions.editTagInfo
+};
 
 const Tag = (props: tProps) => {
   const classes = makeStyles(styles)();
@@ -86,4 +100,7 @@ const Tag = (props: tProps) => {
   );
 };
 
-export default Tag;
+export default connect(
+  mapStateToProps,
+  mapDispatch
+)(Tag);

@@ -25,25 +25,25 @@ const OmsTab = withStyles((theme: Theme) =>
         'sans-serif',
         '"Apple Color Emoji"',
         '"Segoe UI Emoji"',
-        '"Segoe UI Symbol"',
+        '"Segoe UI Symbol"'
       ].join(','),
       '&:hover': {
         color: '#40a9ff',
         backgroundColor: theme.palette.grey['50'],
-        opacity: 1,
+        opacity: 1
       },
       '&$selected': {
         color: '#1890ff',
         fontSize: 18,
         backgroundColor: theme.palette.grey['100'],
-        fontWeight: theme.typography.fontWeightMedium,
+        fontWeight: theme.typography.fontWeightMedium
       },
       '&:focus': {
-        color: '#40a9ff',
-      },
+        color: '#40a9ff'
+      }
     },
-    selected: {},
-  }),
-)((props: StyledTabProps | TabTypeMap['props']) => <Tab disableRipple {...props} />);
+    selected: {}
+  })
+)((props: StyledTabProps | TabTypeMap['props'] | any) => <Tab disableRipple {...props} />);
 
 export default OmsTab;

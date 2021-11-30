@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import LinkIcon from '@material-ui/icons/Link';
@@ -14,6 +14,7 @@ import OmsMenuItem from '../../components/OmsSelect/OmsMenuItem';
 import OmsError from '../../components/OmsError';
 import { useSnackbar } from 'notistack';
 import { baseUrl } from '../../api/websocket/url';
+import { useLocation } from 'react-router-dom';
 
 type tDP = {
   // deleteGroup: ActionCreator<any>;
@@ -97,19 +98,28 @@ const useStyles = makeStyles((theme: Theme) =>
 const WebSSH = ({ hostList, groupList, tagList }: tProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
-  const [item, setItem] = useState<string>('');
+  const [item, setItem] = useState<number>(0);
   const [ws, setWs] = useState<'' | WebSocket>('');
 
+  const pathname = useLocation().pathname;
+
+  useEffect(() => {
+    const id = Number(pathname.replace(/\/mode\/web-ssh\/:/g, ''));
+    if (id !== 0) {
+      setItem(id);
+      connectHost();
+      console.log('主机id', id);
+    }
+  }, [item]);
+
   const connectHost = () => {
-    // console.log(item);
-    if (!item) {
-      enqueueSnackbar(`请先选择一个主机`, {
-        autoHideDuration: 3000,
-        variant: 'error'
-      });
+    if (!item || ws) {
+      // enqueueSnackbar(`请先选择一个主机`, {
+      //   autoHideDuration: 3000,
+      //   variant: 'error'
+      // });
       return;
     }
-    // const ws = new WebSocket(`ws://10.1.1.74:9090/ws/ssh/${item}?cols=150&rows=40`);
     setWs(new WebSocket(`${baseUrl}ssh/${item}?cols=150&rows=40`));
   };
 
@@ -117,16 +127,16 @@ const WebSSH = ({ hostList, groupList, tagList }: tProps) => {
     if (!ws) {
       return;
     }
-    // enqueueSnackbar('正在关闭WebSocket连接...', {
-    //   autoHideDuration: 3000,
-    //   variant: 'info'
-    // });
+    enqueueSnackbar('正在关闭WebSocket连接...', {
+      autoHideDuration: 3000,
+      variant: 'info'
+    });
     (ws as WebSocket).close();
     setWs('');
   };
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setItem(event.target.value as string);
+    setItem(event.target.value as number);
     // console.log(type);
     // console.log(item);
   };
@@ -139,7 +149,7 @@ const WebSSH = ({ hostList, groupList, tagList }: tProps) => {
           <OmsSelect
             labelId='typeItem-select-label'
             id='typeItem-select-label'
-            value={item}
+            value={item || ''}
             onChange={handleChange}
           >
             {hostList.map((e) => {
@@ -148,7 +158,7 @@ const WebSSH = ({ hostList, groupList, tagList }: tProps) => {
           </OmsSelect>
         </FormControl>
         <Button
-          disabled={!!ws}
+          disabled={!item || !!ws}
           className={classes.LinkButton}
           startIcon={<LinkIcon />}
           onClick={connectHost}

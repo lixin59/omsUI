@@ -1,5 +1,6 @@
 import React, { RefObject } from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter, useRoutes } from 'react-router-dom';
 import './index.css';
 import { Provider } from 'react-redux';
 import store from './store';
@@ -13,29 +14,31 @@ const onClickDismiss = (key: SnackbarKey) => () => {
 };
 
 ReactDOM.render(
-    // <React.StrictMode>
-    <SnackbarProvider
-      ref={notistackRef}
-      action={(key) => (
-        <Button onClick={onClickDismiss(key)}>
+  // <React.StrictMode>
+  <SnackbarProvider
+    ref={notistackRef}
+    action={(key) => (
+      <Button onClick={onClickDismiss(key)}>
             ✖️
-        </Button>
-      )}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      maxSnack={4}
-      iconVariant={{
-        success: '✅',
-        error: '🚫',
-        warning: '⚠️',
-        info: 'ℹ️',
-      }}>
-      <Provider store={store}>
+      </Button>
+    )}
+    anchorOrigin={{
+      vertical: 'top',
+      horizontal: 'right'
+    }}
+    maxSnack={4}
+    iconVariant={{
+      success: '✅',
+      error: '🚫',
+      warning: '⚠️',
+      info: 'ℹ️'
+    }}>
+    <Provider store={store}>
+      <BrowserRouter>
         <App/>
-      </Provider>
-    </SnackbarProvider>,
-    // </React.StrictMode>,
-    document.getElementById('root'),
+      </BrowserRouter>
+    </Provider>
+  </SnackbarProvider>,
+  // </React.StrictMode>,
+  document.getElementById('root')
 );

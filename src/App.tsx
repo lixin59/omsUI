@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, useRoutes } from 'react-router-dom';
+import router from './router/index';
 import './App.css';
 import Navigation from './views/Navigation';
 import GitHubIcon from '@material-ui/icons/GitHub';
@@ -60,26 +61,19 @@ function App() {
 
   return (
     <div className='App'>
-      <BrowserRouter>
-        <ThemeProvider theme={light ? themeLight : themeDark}>
-          <CssBaseline />
-          <Navigation/>
-          <div
-            className={classes.githubIconBox}
-            style={{
-              // '@media (min-width:1600px) and (max-width:1600px)': {
-              //   display: 'none'
-              // }
-            }}
-          >
-            <GitHubIcon onClick={openGithub}/>
-            <ThemeSwitch
-              checked={light}
-              onChange={() => setLight((prev) => !prev)}
-            />
-          </div>
-        </ThemeProvider>
-      </BrowserRouter>
+      <ThemeProvider theme={light ? themeLight : themeDark}>
+        <CssBaseline />
+        {useRoutes(router)}
+        <div
+          className={classes.githubIconBox}
+        >
+          <GitHubIcon onClick={openGithub}/>
+          <ThemeSwitch
+            checked={light}
+            onChange={() => setLight((prev) => !prev)}
+          />
+        </div>
+      </ThemeProvider>
     </div>
   );
 }

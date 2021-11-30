@@ -9,14 +9,17 @@ import Button from '@material-ui/core/Button';
 import GroupTable from './GroupTable';
 import styles from './style';
 import { ActionCreator } from 'redux';
-import { GroupInfo } from '../../store/interface';
+import { GroupInfo, IState } from '../../store/interface';
 import { useSnackbar } from 'notistack';
 import { addGroupApi, HTTPResult } from '../../api/http/httpRequestApi';
+import { connect } from 'react-redux';
+import actions from '../../store/action';
 
 type tDP = {
   deleteGroup: ActionCreator<any>;
   addGroup: ActionCreator<any>;
   editGroup: ActionCreator<any>;
+  initGroup: ActionCreator<any>;
 };
 
 type tOP = {};
@@ -26,6 +29,17 @@ type tSP = tOP & {
 };
 
 type tProps = tSP & tDP;
+
+const mapStateToProps = (state: IState, props: tOP): tSP => ({
+  ...props,
+  groupList: state.groupList
+});
+const mapDispatch: tDP = {
+  initGroup: actions.initGroupInfo,
+  deleteGroup: actions.deleteGroupInfo,
+  addGroup: actions.addGroupInfo,
+  editGroup: actions.editGroupInfo
+};
 
 const Grouping = (props: tProps) => {
   const classes = makeStyles(styles)();
@@ -131,4 +145,7 @@ const Grouping = (props: tProps) => {
   );
 };
 
-export default Grouping;
+export default connect(
+  mapStateToProps,
+  mapDispatch
+)(Grouping);

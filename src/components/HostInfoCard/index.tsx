@@ -26,6 +26,7 @@ import FormDialog from '../OmsDialog/FormDialog';
 import styles from './style';
 import { GroupInfo, TagInfo, HostInfo, IState } from '../../store/interface';
 import HostInfoForm from './hostInfoForm';
+import { useNavigate } from 'react-router-dom';
 
 // type tProps = {
 //   hostInfo: HostInfo;
@@ -75,6 +76,7 @@ type tProps = tSP & tDP & {
 function HostInfoCard(props: tProps) {
   const { hostInfo, deleteHost, editHost, groupList, tagList } = props;
   const classes = makeStyles(styles)();
+  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const titles: string = '确定要删除这台主机吗？';
   const text: string = '如果是不小心点到了删除按钮请点击取消，否则请你考虑清楚在决定是否要删除，后果自负！！！';
@@ -165,7 +167,13 @@ function HostInfoCard(props: tProps) {
     <>
       <Card className={classes.HostInfoCard}>
         <Typography className={classes.title} color='textSecondary' gutterBottom>
-          <Button className={classes.commandButton} variant='contained'>命令</Button>
+          <Button
+            className={classes.commandButton}
+            variant='contained'
+            onClick={() => navigate(`/mode/web-ssh/:${hostInfo.id}`)}
+          >
+            命令
+          </Button>
           <Button
             className={classes.editButton}
             variant='contained'

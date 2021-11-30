@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme: Theme) =>
     sendButton: {
       marginTop: '12px',
       height: '45px',
-      width: '140px',
+      width: '120px',
       backgroundColor: theme.palette.success[theme.palette.type],
       '&:hover': {
         backgroundColor: theme.palette.success.main
@@ -77,7 +77,7 @@ const useStyles = makeStyles((theme: Theme) =>
     clearButton: {
       marginTop: '12px',
       height: '45px',
-      width: '80px',
+      width: '120px',
       backgroundColor: theme.palette.error[theme.palette.type],
       '&:hover': {
         backgroundColor: theme.palette.error.main

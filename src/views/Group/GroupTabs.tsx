@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { NavLink, useNavigate, Outlet, useLocation } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import OmsTabs from '../../components/OmsTabs/Tabs';
 import OmsTab from '../../components/OmsTabs/Tab';
 import TabPanel from '../../components/OmsTabs/TabPanel';
-import Grouping from './Grouping';
-import Tag from './Tag';
 import styles from './style';
 import { a11yProps } from '../../utils/index';
 import { ActionCreator } from 'redux';
@@ -49,9 +48,23 @@ const mapDispatch: tDP = {
 
 type tProps = tSP & tDP;
 
-function ModeTabs({ groupList, tagList, addGroup, initGroup, initTag,
-  addTag, deleteGroup, deleteTag, editTag, editGroup
+function ModeTabs({ initGroup, initTag
 }: tProps) {
+  const navigate = useNavigate();
+  const hash = useLocation();
+
+  useEffect(() => {
+    if (hash.pathname === '/group') {
+      setValue(0);
+      navigate('/group/groupTable');
+    }
+    if (hash.pathname === '/group/groupTable') {
+      setValue(0);
+    }
+    if (hash.pathname === '/group/tagTable') {
+      setValue(1);
+    }
+  }, []);
 
   useEffect(() => {
     (async() => {
@@ -87,14 +100,14 @@ function ModeTabs({ groupList, tagList, addGroup, initGroup, initTag,
         aria-label='Vertical tabs example'
         className={classes.tabs}
       >
-        <OmsTab label='分组' {...a11yProps(0)} />
-        <OmsTab label='标签' {...a11yProps(1)} />
+        <OmsTab label='分组' component={NavLink} to='/group/groupTable' {...a11yProps(0)} />
+        <OmsTab label='标签' component={NavLink} to='/group/tagTable' {...a11yProps(1)} />
       </OmsTabs>
       <TabPanel className={classes.TabPanel} value={value} index={0}>
-        <Grouping addGroup={addGroup} deleteGroup={deleteGroup} editGroup={editGroup} groupList={groupList}/>
+        <Outlet/>
       </TabPanel>
       <TabPanel className={classes.TabPanel} value={value} index={1}>
-        <Tag deleteTag={deleteTag} addTag={addTag} editTag={editTag} tagList={tagList}/>
+        <Outlet/>
       </TabPanel>
     </div>
   );
