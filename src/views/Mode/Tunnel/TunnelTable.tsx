@@ -207,6 +207,8 @@ export default function JobTable({ deleteTunnel, tunnelList, hostList, editTunne
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component='div'
+        labelRowsPerPage={<div>每页行数:</div>}
+        labelDisplayedRows={({ from, to, count }) => `${from}-${to} 总数 ${count !== -1 ? count : 0}`}
         count={tunnelList.length}
         rowsPerPage={rowsPerPage}
         page={page}

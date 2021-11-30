@@ -39,7 +39,7 @@ interface Column {
 }
 
 const columns: Column[] = [
-  { id: 'name', label: '分组名称', minWidth: 170 },
+  { id: 'name', label: '标签名称', minWidth: 170 },
   {
     id: 'operation',
     label: '操作',
@@ -159,6 +159,8 @@ export default function TagTable({ deleteTag, tagList, editTag }: tProps) {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component='div'
+        labelRowsPerPage={<div>每页行数:</div>}
+        labelDisplayedRows={({ from, to, count }) => `${from}-${to} 总数 ${count !== -1 ? count : 0}`}
         count={tagList.length}
         rowsPerPage={rowsPerPage}
         page={page}

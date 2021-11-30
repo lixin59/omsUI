@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { BrowserRouter, useRoutes } from 'react-router-dom';
+import { useRoutes } from 'react-router-dom';
 import router from './router/index';
 import './App.css';
-import Navigation from './views/Navigation';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider, createTheme, makeStyles, createStyles, Theme } from '@material-ui/core/styles';
