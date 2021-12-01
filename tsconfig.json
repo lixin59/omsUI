@@ -4,17 +4,34 @@
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": false,
-    "skipLibCheck": false, // 编译时声明文件报错 这里需要改成true
+    "skipLibCheck": true, // 编译时声明文件报错 这里需要改成true
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
+    "strict": false,
+    "strictNullChecks": true, // 在严格的null检查模式下,null和 undefined值不包含在任何类型里只允许用它们自己和 any来赋值（有个例外，undefined可以赋值到 void
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true, // 确保类的非undefined属性已经在构造函数里初始化。
+    "alwaysStrict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
+    "noEmitHelpers": true,
+    "noEmitOnError": true,
+    "noErrorTruncation": true,
+    "noFallthroughCasesInSwitch": true, // 检查switch语句
+    "noImplicitAny": false, // 检查具有隐式类型any的变量
+    "noImplicitReturns": true, // 确保函数声明的返回值和函数内部的返回值是同一种类型
+    "noImplicitThis": true, // 	当 this表达式的值为 any类型的时候，生成一个错误。
+    "noImplicitUseStrict": false, // 模块输出中不包含 "use strict"指令。
+    "noLib": false, // 不包含默认的库文件（ lib.d.ts）。
+    "noStrictGenericChecks": false, // 禁用在函数类型里对泛型签名进行严格检查。
+    "noUnusedLocals": false, // 若有未使用的局部变量则抛错
+    "noUnusedParameters": false, // 	若有未使用的参数则抛错。
     "jsx": "react-jsx"
   },
-  "include": ["./src"]
+  "include": ["./src"],
 }

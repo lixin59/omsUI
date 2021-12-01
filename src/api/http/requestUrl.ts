@@ -1,4 +1,8 @@
-const testHost = import.meta.env.VITE_TEST_HOST;
+let testHost = '';
+if (import.meta.env.DEV) {
+  // 开发环境使用配置的host
+  testHost = import.meta.env.VITE_TEST_HOST;
+}
 
 const localhost = testHost || window.location.host;
 
