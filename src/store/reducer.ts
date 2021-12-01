@@ -1,5 +1,5 @@
-import { GroupInfo, HostAction, TagInfo, HostInfo, TunnelInfo, JobInfo } from './interface';
-import { groupActions, hostActions, tagActions, tunnelActions, jobActions } from './action-types';
+import { GroupInfo, HostAction, TagInfo, HostInfo, TunnelInfo, JobInfo, IState, PrivateKeyInfo } from './interface';
+import { groupActions, hostActions, tagActions, tunnelActions, jobActions, privateKeyActions } from './action-types';
 // import { getGroupsApi, getJobsApi, getTagsApi, getTunnelsApi, HTTPResult } from '../api/http/httpRequestApi';
 // import { hostInfo } from '../views/Home/typings';
 
@@ -144,16 +144,17 @@ import { groupActions, hostActions, tagActions, tunnelActions, jobActions } from
 // const tunnel = (await getTunnelsApi()) as HTTPResult;
 
 // 初始化state数据
-const initialState = {
+const initialState: IState = {
   hostList: [],
+  groupList: [],
+  tagList: [],
+  tunnelList: [],
+  jobList: [],
+  privateKeyList: []
   // groupList: res.data || [],
   // tagList: rest.data || [],
   // tunnelList: tunnel.data || [],
   // jobList: job.data || []
-  groupList: [],
-  tagList: [],
-  tunnelList: [],
-  jobList: []
 };
 
 // 状态处理函数
@@ -302,6 +303,35 @@ const reducer = (state = initialState, action: HostAction) => {
       return ({
         ...state,
         jobList: [...state.jobList]
+      });
+    }
+    case privateKeyActions.INIT: {
+      return ({
+        ...state,
+        privateKeyList: action.value
+      });
+    }
+    case privateKeyActions.DELETE: {
+      return ({
+        ...state,
+        privateKeyList: state.privateKeyList.filter((item: PrivateKeyInfo) => item.id !== action.value)
+      });
+    }
+    case privateKeyActions.ADD: {
+      return ({
+        ...state,
+        privateKeyList: [...state.privateKeyList, action.value]
+      });
+    }
+    case privateKeyActions.EDIT: {
+      state.privateKeyList.forEach((e:PrivateKeyInfo, i:number, arr:PrivateKeyInfo[]) => {
+        if (e.id === action.value.id) {
+          arr[i] = action.value;
+        }
+      });
+      return ({
+        ...state,
+        privateKeyList: [...state.privateKeyList]
       });
     }
     default:

@@ -8,7 +8,7 @@ type tProps = {
 }
 
 
-const GroupForm = ({ Info, setInfo }: tProps) => {
+const TagForm = ({ Info, setInfo }: tProps) => {
   return (
     <>
       <TextField
@@ -23,4 +23,4 @@ const GroupForm = ({ Info, setInfo }: tProps) => {
     </>);
 };
 
-export default GroupForm;
+export default TagForm;

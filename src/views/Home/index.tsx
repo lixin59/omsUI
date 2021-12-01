@@ -6,7 +6,7 @@ import {
   addHostApi,
   HTTPResult,
   getGroupsApi,
-  getTagsApi
+  getTagsApi, getPrivateKeysApi
 } from '../../api/http/httpRequestApi';
 import Loading from '../../components/OmsSkeleton/Loading';
 import OmsError from '../../components/OmsError';
@@ -19,13 +19,14 @@ import actions from '../../store/action';
 import BodyBox from '../../components/Bodybox';
 import HostInfoCard from '../../components/HostInfoCard';
 import HostInfoForm from '../../components/HostInfoCard/hostInfoForm';
-import { GroupInfo, IState, TagInfo, HostInfo } from '../../store/interface';
+import { GroupInfo, IState, TagInfo, HostInfo, PrivateKeyInfo } from '../../store/interface';
 import homeStyle from './homStyle';
 import FormDialog from '../../components/OmsDialog/FormDialog';
 import { useSnackbar } from 'notistack';
 type tDP = {
   initGroup: ActionCreator<any>;
   initTag: ActionCreator<any>;
+  initPrivateKey: ActionCreator<any>;
   deleteHost: ActionCreator<any>;
   addHost: ActionCreator<any>;
   editHost: ActionCreator<any>;
@@ -37,7 +38,8 @@ type tOP = {};
 type tSP = tOP & {
   hostList: HostInfo[],
   groupList: GroupInfo[],
-  tagList: TagInfo[]
+  tagList: TagInfo[],
+  privateKeyList: PrivateKeyInfo[],
 };
 
 const baseHostInfo: HostInfo = {
@@ -65,11 +67,13 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
   ...props,
   hostList: state.hostList,
   groupList: state.groupList,
-  tagList: state.tagList
+  tagList: state.tagList,
+  privateKeyList: state.privateKeyList
 });
 const mapDispatch: tDP = {
   initGroup: actions.initGroupInfo,
   initTag: actions.initTagInfo,
+  initPrivateKey: actions.initPrivateKeyInfo,
   deleteHost: actions.deleteHostInfo,
   addHost: actions.addHostInfo,
   editHost: actions.editHostInfo,
@@ -79,24 +83,30 @@ const mapDispatch: tDP = {
 type tProps = tSP & tDP;
 
 function Home(props: tProps) {
-  const { hostList, deleteHost, addHost, initTag, initGroup,
-    editHost, groupList, tagList, initStore } = props;
+  const { hostList, addHost, initTag, initGroup, initPrivateKey,
+    privateKeyList, groupList, tagList, initStore } = props;
 
   useEffect(() => {
     (async() => {
       const res = (await getGroupsApi()) as HTTPResult;
       const res1 = (await getTagsApi()) as HTTPResult;
+      const res2 = (await getPrivateKeysApi()) as HTTPResult;
       if (res.code !== '200') {
         return;
       }
       if (res1.code !== '200') {
         return;
       }
+      if (res2.code !== '200') {
+        return;
+      }
       initGroup(res.data);
       initTag(res1.data);
+      initPrivateKey(res2.data);
       setTlc(res1.data?.map((e: TagInfo) => ({ ...e, checked: false })));
     })();
   }, []);
+
   const classes = makeStyles(homeStyle)();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -105,7 +115,7 @@ function Home(props: tProps) {
   const [tlc, setTlc] = useState(tagList?.map((e) => ({ ...e, checked: false })));
 
   const title = '添加一个新的主机';
-  const content = HostInfoForm({ hostInfo, setHostInfo, groupList, tlc, setTlc });
+  const content = HostInfoForm({ hostInfo, setHostInfo, privateKeyList, groupList, tlc, setTlc });
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -161,7 +171,7 @@ function Home(props: tProps) {
       port: data.port,
       group: data.group.id,
       password: data.password,
-      keyFile: data.keyFile,
+      private_key_id: data.private_key_id,
       tags: JSON.stringify(data.tags?.map((e: TagInfo) => e.id))
     };
 

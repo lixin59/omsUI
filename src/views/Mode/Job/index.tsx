@@ -47,7 +47,6 @@ const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob, toInit }: tPro
 
   useEffect(() => {
     (async() => {
-      // console.log('jobeff');
       const res = (await getJobsApi()) as HTTPResult;
       if (res.code !== '200') {
         return;

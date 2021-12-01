@@ -24,9 +24,10 @@ import { useSnackbar } from 'notistack';
 import TipDialog from '../OmsDialog/TipDialog';
 import FormDialog from '../OmsDialog/FormDialog';
 import styles from './style';
-import { GroupInfo, TagInfo, HostInfo, IState } from '../../store/interface';
+import { GroupInfo, TagInfo, HostInfo, IState, PrivateKeyInfo } from '../../store/interface';
 import HostInfoForm from './hostInfoForm';
 import { useNavigate } from 'react-router-dom';
+import { URL } from '../../router/index';
 
 // type tProps = {
 //   hostInfo: HostInfo;
@@ -50,14 +51,16 @@ type tOP = {};
 type tSP = tOP & {
   hostList: HostInfo[],
   groupList: GroupInfo[],
-  tagList: TagInfo[]
+  tagList: TagInfo[],
+  privateKeyList: PrivateKeyInfo[],
 };
 
 const mapStateToProps = (state: IState, props: tOP): tSP => ({
   ...props,
   hostList: state.hostList,
   groupList: state.groupList,
-  tagList: state.tagList
+  tagList: state.tagList,
+  privateKeyList: state.privateKeyList
 });
 const mapDispatch: tDP = {
   initGroup: actions.initGroupInfo,
@@ -74,7 +77,7 @@ type tProps = tSP & tDP & {
 
 
 function HostInfoCard(props: tProps) {
-  const { hostInfo, deleteHost, editHost, groupList, tagList } = props;
+  const { hostInfo, deleteHost, editHost, groupList, tagList, privateKeyList } = props;
   const classes = makeStyles(styles)();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -91,7 +94,7 @@ function HostInfoCard(props: tProps) {
   }, [tagList]);
 
   const title = '编辑主机信息';
-  const content = HostInfoForm({ hostInfo: hosts, setHostInfo: setHosts, groupList, tlc, setTlc });
+  const content = HostInfoForm({ hostInfo: hosts, setHostInfo: setHosts, privateKeyList, groupList, tlc, setTlc });
 
 
   const closeDialog = () => {
@@ -126,7 +129,7 @@ function HostInfoCard(props: tProps) {
       addr: hosts.addr,
       port: hosts.port,
       password: hosts.password || '',
-      keyFile: hosts.keyFile,
+      private_key_id: hosts.private_key_id,
       group: hosts?.group?.id,
       tags: JSON.stringify((tags?.map((e) => e.id)))
     };
@@ -170,7 +173,7 @@ function HostInfoCard(props: tProps) {
           <Button
             className={classes.commandButton}
             variant='contained'
-            onClick={() => navigate(`/mode/web-ssh/:${hostInfo.id}`)}
+            onClick={() => navigate(`${URL.webSSH}/${hostInfo.id}`)}
           >
             命令
           </Button>

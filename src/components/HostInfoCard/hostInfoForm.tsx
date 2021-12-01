@@ -5,42 +5,42 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
-import { GroupInfo, HostInfo, TagInfo } from '../../store/interface';
+import { GroupInfo, HostInfo, PrivateKeyInfo, TagInfo } from '../../store/interface';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Input from '@material-ui/core/Input';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+// import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    keyFile: {
-      marginTop: '10px',
-      'display': 'flex',
-      'alignContent': 'space-evenly',
-      'alignItems': 'center',
-      'justifyContent': 'space-between'
-      // '& > *': {
-      //   margin: theme.spacing(1)
-      // }
-    },
-    input: {
-      display: 'none'
-    }
-  })
-);
+// const useStyles = makeStyles((theme: Theme) =>
+//   createStyles({
+//     keyFile: {
+//       marginTop: '10px',
+//       'display': 'flex',
+//       'alignContent': 'space-evenly',
+//       'alignItems': 'center',
+//       'justifyContent': 'space-between'
+//       // '& > *': {
+//       //   margin: theme.spacing(1)
+//       // }
+//     },
+//     input: {
+//       display: 'none'
+//     }
+//   })
+// );
 
 type tProps = {
   hostInfo: HostInfo,
   setHostInfo: Dispatch<SetStateAction<HostInfo>>,
   groupList: GroupInfo[],
+  privateKeyList: PrivateKeyInfo[],
   tlc: Array<TagInfo & { checked: boolean }>,
   setTlc: Dispatch<SetStateAction<Array<TagInfo & { checked: boolean }>>>
 }
@@ -53,9 +53,9 @@ interface PassWordState {
   showPassword: boolean;
 }
 
-const HostInfoForm = ({ hostInfo, setHostInfo, groupList, tlc, setTlc }: tProps) => {
-  const classes = useStyles();
-  const [fileName, setFileName] = useState<string>('未选择任何文件');
+const HostInfoForm = ({ hostInfo, setHostInfo, groupList, privateKeyList, tlc, setTlc }: tProps) => {
+  // const classes = useStyles();
+  // const [fileName, setFileName] = useState<string>('未选择任何文件');
   const [values, setValues] = React.useState<PassWordState>({
     amount: '',
     password: '',
@@ -64,7 +64,8 @@ const HostInfoForm = ({ hostInfo, setHostInfo, groupList, tlc, setTlc }: tProps)
     showPassword: false
   });
 
-  const groupArr = [{ id: 0, name: '无', mode: 1, params: '' }, ...groupList];
+  const groupArr: GroupInfo[] = [{ id: 0, name: '无', mode: 1, params: '' }, ...groupList];
+  const privateKeyArr: PrivateKeyInfo[] = [{ id: 0, name: '无', passphrase: '', key_file: '' }, ...privateKeyList];
   return (
     <>
       <TextField
@@ -155,6 +156,21 @@ const HostInfoForm = ({ hostInfo, setHostInfo, groupList, tlc, setTlc }: tProps)
         </>) : '请在分组页面添加分组才可以选择分组' }
       </FormControl>
       <FormControl style={{ width: '100%' }}>
+        {privateKeyArr.length > 0 ? (<>
+          <InputLabel id='group-select-label'>选择密钥文件</InputLabel>
+          <Select
+            labelId='group-select-label'
+            id='group-select'
+            value={hostInfo.private_key_id}
+            onChange={(e) => setHostInfo({ ...hostInfo, private_key_id: e?.target?.value as number })}
+          >
+            {privateKeyArr.map((e) => {
+              return (<MenuItem key={e.id} value={e.id}>{e.name}</MenuItem>);
+            })}
+          </Select>
+        </>) : '请在分组页面添加分组才可以选择分组' }
+      </FormControl>
+      <FormControl style={{ width: '100%' }}>
         <FormGroup row>
           {tlc && tlc.map((e, index) => {
             return (
@@ -179,36 +195,6 @@ const HostInfoForm = ({ hostInfo, setHostInfo, groupList, tlc, setTlc }: tProps)
         </FormGroup>
       </FormControl>
       <Divider/>
-      <div className={classes.keyFile}>
-        <TextField
-          size='small'
-          disabled
-          id='select-file'
-          variant='outlined'
-          value={fileName}
-        />
-        <input
-          className={classes.input}
-          id='contained-button-file'
-          multiple
-          type='file'
-          onChange={(e) => {
-            // @ts-ignore
-            if (!e.target!.files[0]!.name) {
-              return;
-            }
-            // @ts-ignore
-            setHostInfo({ ...hostInfo, keyFile: e.target?.files[0] });
-            // @ts-ignore
-            setFileName(e.target?.files[0]?.name);
-          }}
-        />
-        <label htmlFor='contained-button-file'>
-          <Button variant='contained' color='primary' component='span'>
-            选择秘钥文件
-          </Button>
-        </label>
-      </div>
     </>);
 };
 

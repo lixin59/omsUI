@@ -66,6 +66,18 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
     '&:hover': {
       backgroundColor: theme.palette.success.main
     }
+  },
+  keyFile: {
+    'display': 'flex',
+    'alignContent': 'space-evenly',
+    'alignItems': 'center',
+    'justifyContent': 'space-between'
+    // '& > *': {
+    //   margin: theme.spacing(1)
+    // }
+  },
+  input: {
+    display: 'none'
   }
 });
 

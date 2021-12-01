@@ -104,11 +104,10 @@ const WebSSH = ({ hostList, groupList, tagList }: tProps) => {
   const pathname = useLocation().pathname;
 
   useEffect(() => {
-    const id = Number(pathname.replace(/\/mode\/web-ssh\/:/g, ''));
+    const id = Number(pathname.replace(/\/mode\/web_ssh\//g, ''));
     if (id !== 0) {
       setItem(id);
       connectHost();
-      console.log('主机id', id);
     }
   }, [item]);
 

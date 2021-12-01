@@ -8,6 +8,7 @@ const Mode = lazy(() => import('../views/Mode/index'));
 const About = lazy(() => import('../views/About'));
 const Grouping = lazy(() => import('../views/Group/Grouping'));
 const Tag = lazy(() => import('../views/Group/Tag'));
+const PrivateKey = lazy(() => import('../views/Group/PrivateKey'));
 const Job = lazy(() => import('../views/Mode/Job/index'));
 const Tunnel = lazy(() => import('../views/Mode/Tunnel/index'));
 const UploadFile = lazy(() => import('../views/Mode/UploadFile'));
@@ -22,6 +23,22 @@ const lazyLoad = (children: ReactNode): ReactNode => {
   </Suspense>;
 };
 
+export const URL = {
+  home: '/home',
+  group: '/group',
+  mode: '/mode',
+  about: '/about',
+  groupTable: '/group/group_table',
+  tagTable: '/group/tagTable',
+  privateKey: '/group/private_key',
+  job: '/mode/job',
+  tunnel: '/mode/tunnel',
+  uploadFile: '/mode/upload_file',
+  webSSH: '/mode/web_ssh',
+  command: '/mode/command',
+  fileBrowser: '/mode/file_browser'
+};
+
 const router:RouteObject[] = [
   {
     path: '/',
@@ -29,57 +46,61 @@ const router:RouteObject[] = [
     children: [
       {
         index: true,
-        path: '/home',
+        path: URL.home,
         element: lazyLoad(<Home />)
       },
       {
-        path: '/group',
+        path: URL.group,
         element: lazyLoad(<Group />),
         children: [
           {
             index: true,
-            path: '/group/groupTable',
+            path: URL.groupTable,
             element: lazyLoad(<Grouping/>)
           },
           {
-            path: '/group/tagTable',
+            path: URL.tagTable,
             element: lazyLoad(<Tag/>)
+          },
+          {
+            path: URL.privateKey,
+            element: lazyLoad(<PrivateKey/>)
           }
         ]
       },
       {
-        path: '/mode',
+        path: URL.mode,
         element: lazyLoad(<Mode />),
         children: [
           {
             index: true,
-            path: '/mode/job',
+            path: URL.job,
             element: lazyLoad(<Job/>)
           },
           {
-            path: '/mode/tunnel',
+            path: URL.tunnel,
             element: lazyLoad(<Tunnel/>)
           },
           {
-            path: '/mode/upload-file',
+            path: URL.uploadFile,
             element: lazyLoad(<UploadFile/>)
           },
           {
-            path: '/mode/web-ssh/:id',
+            path: `${URL.webSSH}/:id`,
             element: lazyLoad(<WebSSH/>)
           },
           {
-            path: '/mode/command',
+            path: URL.command,
             element: lazyLoad(<Command/>)
           },
           {
-            path: '/mode/file-browser',
+            path: URL.fileBrowser,
             element: lazyLoad(<FileBrowser/>)
           }
         ]
       },
       {
-        path: '/about',
+        path: URL.about,
         element: lazyLoad(<About />)
       }
     ]

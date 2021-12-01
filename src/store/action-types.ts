@@ -53,3 +53,10 @@ export enum jobActions{
   ADD = 'ADD_JOB_INFO',
   EDIT = 'EDIT_JOB_INFO',
 }
+
+export enum privateKeyActions{
+  INIT = 'INIT_PRIVATE_KEY_INFO',
+  DELETE = 'DELETE_PRIVATE_KEY_INFO',
+  ADD = 'ADD_PRIVATE_KEY_INFO',
+  EDIT = 'EDIT_PRIVATE_KEY_INFO',
+}

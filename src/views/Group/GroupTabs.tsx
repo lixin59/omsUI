@@ -11,6 +11,7 @@ import { GroupInfo, IState, TagInfo } from '../../store/interface';
 import actions from '../../store/action';
 import { connect } from 'react-redux';
 import { getGroupsApi, getTagsApi, HTTPResult } from '../../api/http/httpRequestApi';
+import { URL } from '../../router';
 
 type tDP = {
   initGroup: ActionCreator<any>;
@@ -54,15 +55,18 @@ function ModeTabs({ initGroup, initTag
   const hash = useLocation();
 
   useEffect(() => {
-    if (hash.pathname === '/group') {
+    if (hash.pathname === URL.group) {
       setValue(0);
-      navigate('/group/groupTable');
+      navigate(URL.groupTable);
     }
-    if (hash.pathname === '/group/groupTable') {
+    if (hash.pathname === URL.groupTable) {
       setValue(0);
     }
-    if (hash.pathname === '/group/tagTable') {
+    if (hash.pathname === URL.tagTable) {
       setValue(1);
+    }
+    if (hash.pathname === URL.privateKey) {
+      setValue(2);
     }
   }, []);
 
@@ -100,13 +104,17 @@ function ModeTabs({ initGroup, initTag
         aria-label='Vertical tabs example'
         className={classes.tabs}
       >
-        <OmsTab label='分组' component={NavLink} to='/group/groupTable' {...a11yProps(0)} />
-        <OmsTab label='标签' component={NavLink} to='/group/tagTable' {...a11yProps(1)} />
+        <OmsTab label='分组' component={NavLink} to={URL.groupTable} {...a11yProps(0)} />
+        <OmsTab label='标签' component={NavLink} to={URL.tagTable} {...a11yProps(1)} />
+        <OmsTab label='密钥' component={NavLink} to={URL.privateKey} {...a11yProps(1)} />
       </OmsTabs>
       <TabPanel className={classes.TabPanel} value={value} index={0}>
         <Outlet/>
       </TabPanel>
       <TabPanel className={classes.TabPanel} value={value} index={1}>
+        <Outlet/>
+      </TabPanel>
+      <TabPanel className={classes.TabPanel} value={value} index={2}>
         <Outlet/>
       </TabPanel>
     </div>

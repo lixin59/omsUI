@@ -21,5 +21,6 @@ export const urlType = {
   download_file: '/tools/download',
   fileBrowser: '/tools/browse',
   deleteFile: '/tools/delete',
-  mkdir: '/tools/mkdir'
+  mkdir: '/tools/mkdir',
+  privateKey: '/private_key'
 };

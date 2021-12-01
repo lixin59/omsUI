@@ -12,22 +12,22 @@ import Button from '@material-ui/core/Button';
 import TipDialog from '../../components/OmsDialog/TipDialog';
 import styles from './style';
 import { ActionCreator } from 'redux';
-import { TagInfo } from '../../store/interface';
+import { PrivateKeyInfo } from '../../store/interface';
 import { useSnackbar } from 'notistack';
-import { deleteTagApi, editTagApi, HTTPResult } from '../../api/http/httpRequestApi';
+import { deletePrivateKeyApi, editPrivateKeyApi, HTTPResult } from '../../api/http/httpRequestApi';
 import FormDialog from '../../components/OmsDialog/FormDialog';
-import TagForm from './Form/TagForm';
+import KeyFileForm from './Form/KeyFileForm';
 
 type tDP = {
-  deleteTag: ActionCreator<any>;
-  addTag: ActionCreator<any>;
-  editTag: ActionCreator<any>;
+  deletePrivateKey: ActionCreator<any>;
+  addPrivateKey: ActionCreator<any>;
+  editPrivateKey: ActionCreator<any>;
 };
 
 type tOP = {};
 
 type tSP = tOP & {
-  tagList: TagInfo[]
+  privateKeyList: PrivateKeyInfo[]
 };
 
 type tProps = tSP & tDP;
@@ -47,23 +47,27 @@ const columns: Column[] = [
   }
 ];
 
-export default function TagTable({ deleteTag, tagList, editTag }: tProps) {
+export default function KeyFileTable({ deletePrivateKey, privateKeyList, editPrivateKey }: tProps) {
   const classes = makeStyles(styles)();
   const { enqueueSnackbar } = useSnackbar();
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [open, setOpen] = useState<boolean>(false);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
-  const [Info, setInfo] = useState<TagInfo>({
+  const [fileName, setFileName] = useState<string>('未选择任何文件');
+
+  const [Info, setInfo] = useState<PrivateKeyInfo>({
     id: 0,
-    name: ''
+    name: '',
+    passphrase: '',
+    key_file: ''
   });
 
-  const content = TagForm({ Info, setInfo });
-  const title: string = '确定要删除这个标签吗？';
+  const content = KeyFileForm({ Info, setInfo, fileName, setFileName });
+  const title: string = '确定要删除这个密钥文件吗？';
   const text: string = '如果不想删除可以点击取消';
 
-  const dltButtonClick = (info: TagInfo) => {
+  const dltButtonClick = (info: PrivateKeyInfo) => {
     setInfo(info);
     setOpen(true);
   };
@@ -72,32 +76,33 @@ export default function TagTable({ deleteTag, tagList, editTag }: tProps) {
   };
 
   const toEdit = useCallback(async() => {
-    const res = (await editTagApi(Info)) as HTTPResult;
+    const res = (await editPrivateKeyApi(Info)) as HTTPResult;
+    setFileName('未选择任何文件');
     if (res.code !== '200') {
-      enqueueSnackbar(`标签: ${Info.name}修改失败${res.msg}`, {
+      enqueueSnackbar(`密钥: ${Info.name}修改失败${res.msg}`, {
         autoHideDuration: 3000,
         variant: 'error'
       });
       return;
     }
-    editTag(res.data);
-    enqueueSnackbar(`标签: ${Info.name} 修改成功${res.msg}`, {
+    editPrivateKey(res.data);
+    enqueueSnackbar(`密钥: ${Info.name} 修改成功${res.msg}`, {
       autoHideDuration: 3000,
       variant: 'success'
     });
   }, [Info]);
 
   const toDelete = useCallback(async() => {
-    const res = (await deleteTagApi(Info.id)) as HTTPResult;
+    const res = (await deletePrivateKeyApi(Info.id)) as HTTPResult;
     if (res.code !== '200') {
-      enqueueSnackbar(`标签: ${Info.name}删除失败${res.msg}`, {
+      enqueueSnackbar(`密钥: ${Info.name}删除失败${res.msg}`, {
         autoHideDuration: 3000,
         variant: 'error'
       });
       return;
     }
-    deleteTag(Info.id);
-    enqueueSnackbar(`标签: ${Info.name} 已被删除`, {
+    deletePrivateKey(Info.id);
+    enqueueSnackbar(`密钥: ${Info.name} 已被删除`, {
       autoHideDuration: 3000,
       variant: 'success'
     });
@@ -130,7 +135,7 @@ export default function TagTable({ deleteTag, tagList, editTag }: tProps) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {tagList && tagList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+            {privateKeyList && privateKeyList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
               return (
                 <TableRow hover role='checkbox' tabIndex={-1} key={row.name}>
                   <TableCell key={row.name} align='center'>
@@ -161,7 +166,7 @@ export default function TagTable({ deleteTag, tagList, editTag }: tProps) {
         component='div'
         labelRowsPerPage={<div>每页行数:</div>}
         labelDisplayedRows={({ from, to, count }) => `${from}-${to} 总数 ${count !== -1 ? count : 0}`}
-        count={tagList.length}
+        count={privateKeyList.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
@@ -178,7 +183,7 @@ export default function TagTable({ deleteTag, tagList, editTag }: tProps) {
         open={openEdit}
         content={content}
         toClose={() => setOpenEdit(false)}
-        title={'编辑标签信息'}
+        title={'编辑密钥信息'}
         todo={toEdit}
       />
     </Paper>

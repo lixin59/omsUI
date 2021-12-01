@@ -1,5 +1,5 @@
 import * as actionType from './action-types';
-import { GroupInfo, HostInfo, JobInfo, TagInfo, TunnelInfo } from './interface';
+import { GroupInfo, HostInfo, JobInfo, PrivateKeyInfo, TagInfo, TunnelInfo } from './interface';
 
 const actions = {
   initHostInfo(value:HostInfo[]) {
@@ -16,6 +16,18 @@ const actions = {
   },
   initTunnelInfo(value:TunnelInfo[]) {
     return { type: actionType.tunnelActions.INIT, value };
+  },
+  initPrivateKeyInfo(value: PrivateKeyInfo[]) {
+    return { type: actionType.privateKeyActions.INIT, value };
+  },
+  addPrivateKeyInfo(value:PrivateKeyInfo) {
+    return { type: actionType.privateKeyActions.ADD, value };
+  },
+  deletePrivateKeyInfo(value: number) {
+    return { type: actionType.privateKeyActions.DELETE, value };
+  },
+  editPrivateKeyInfo(value: PrivateKeyInfo) {
+    return { type: actionType.privateKeyActions.EDIT, value };
   },
   deleteHostInfo(value: number) {
     return { type: actionType.WILL_DELETE, value };

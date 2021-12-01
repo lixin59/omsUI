@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import styles from './style';
+import { URL } from '../../router';
 
 export default function Navigation() {
   const classes = makeStyles(styles)();
@@ -14,18 +15,18 @@ export default function Navigation() {
 
   useEffect(() => {
     if (hash.pathname === '/') {
-      navigate('/home'); // 页面初始化跳转Home页面
+      navigate(URL.home); // 页面初始化跳转Home页面
     }
-    if (hash.pathname.includes('/home')) {
+    if (hash.pathname.includes(URL.home)) {
       setValue(0);
     }
-    if (hash.pathname.includes('/group')) {
+    if (hash.pathname.includes(URL.group)) {
       setValue(1);
     }
-    if (hash.pathname.includes('/mode')) {
+    if (hash.pathname.includes(URL.mode)) {
       setValue(2);
     }
-    if (hash.pathname.includes('/about')) {
+    if (hash.pathname.includes(URL.about)) {
       setValue(3);
     }
   }, [hash]);
@@ -40,10 +41,10 @@ export default function Navigation() {
         showLabels
         className={classes.root}
       >
-        <BottomNavigationAction label='主机' component={NavLink} to='/home' className={classes.navItem}/>
-        <BottomNavigationAction label='组' component={NavLink} to='/group' className={classes.navItem} />
-        <BottomNavigationAction label='运维模式' component={NavLink} to='/mode' className={classes.navItem} />
-        <BottomNavigationAction label='关于' component={NavLink} to='/about' className={classes.navItem}/>
+        <BottomNavigationAction label='主机' component={NavLink} to={URL.home} className={classes.navItem}/>
+        <BottomNavigationAction label='组' component={NavLink} to={URL.group} className={classes.navItem} />
+        <BottomNavigationAction label='运维模式' component={NavLink} to={URL.mode} className={classes.navItem} />
+        <BottomNavigationAction label='关于' component={NavLink} to={URL.about} className={classes.navItem}/>
       </BottomNavigation>
       <div style={{ height: 'calc(100% - 56px)' }}>
         <Outlet />

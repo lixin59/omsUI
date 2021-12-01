@@ -15,7 +15,7 @@ export interface EditHostPut {
   port?: number,
   group?: number,
   password?: string,
-  keyFile?: any,
+  private_key_id?: any,
   tags?: string, // "[1,2]"
 }
 
@@ -26,7 +26,7 @@ export interface AddHostPost {
   port: number,
   group: number,
   password: string,
-  keyFile?: any,
+  private_key_id?: any,
   tags?: string, // "[1,2]",
 }
 
@@ -397,4 +397,53 @@ export const downloadFileApi = (data:{
   id: any // 文件路径 如/root/go/robots.txt
 }) => {
   return getApi(`${urlType.download_file}`, { ...data }, { responseType: 'blob', timeout: 1000 });
+};
+
+// 新增密钥
+export const addPrivateKeyApi = (data:{
+  name: string, // 某主机秘钥
+  passphrase?: string, // 秘钥的密码
+  key_file: any // 秘钥文件
+}) => {
+  const formData = new FormData();
+  for (const k in data) {
+    if (data.hasOwnProperty(k)) {
+      // @ts-ignore
+      formData.append(k, data[k]);
+    }
+  }
+  return postApi(urlType.privateKey, formData, { headers: { 'Content-Type': 'multipart/form-data' }});
+};
+
+
+// 获取所有密钥
+export const getPrivateKeysApi = () => {
+  return getApi(urlType.privateKey);
+};
+
+// 获取单个密钥
+export const getPrivateKeyApi = (id: number) => {
+  return getApi(`${urlType.privateKey}/${id}`);
+};
+
+// 修改密钥
+export const editPrivateKeyApi = (data: {
+  id: number,
+  name: string,
+  passphrase?: string,
+  key_file?: any
+}) => {
+  const formData = new FormData();
+  for (const k in data) {
+    if (data.hasOwnProperty(k)) {
+      // @ts-ignore
+      formData.append(k, data[k]);
+    }
+  }
+  return putApi(urlType.privateKey, formData, { headers: { 'Content-Type': 'multipart/form-data' }});
+};
+
+// 删除密钥
+export const deletePrivateKeyApi = (id: number) => {
+  return deleteApi(`${urlType.privateKey}/${id}`, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
 };

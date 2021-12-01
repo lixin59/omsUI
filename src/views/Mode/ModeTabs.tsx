@@ -5,6 +5,7 @@ import OmsTabs from '../../components/OmsTabs/Tabs';
 import OmsTab from '../../components/OmsTabs/Tab';
 import TabPanel from '../../components/OmsTabs/TabPanel';
 import { a11yProps } from '../../utils/index';
+import { URL } from '../../router';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -39,26 +40,26 @@ function ModeTabs() {
   const hash = useLocation();
 
   useEffect(() => {
-    if (hash.pathname === '/mode') {
+    if (hash.pathname === URL.mode) {
       setValue(0);
-      navigate('/mode/job');
+      navigate(URL.job);
     }
-    if (hash.pathname === '/mode/job') {
+    if (hash.pathname === URL.job) {
       setValue(0);
     }
-    if (hash.pathname === '/mode/tunnel') {
+    if (hash.pathname === URL.tunnel) {
       setValue(1);
     }
-    if (hash.pathname === '/mode/upload-file') {
+    if (hash.pathname === URL.uploadFile) {
       setValue(2);
     }
-    if (hash.pathname.includes('/mode/web-ssh')) {
+    if (hash.pathname.includes(URL.webSSH)) {
       setValue(3);
     }
-    if (hash.pathname === '/mode/command') {
+    if (hash.pathname === URL.command) {
       setValue(4);
     }
-    if (hash.pathname === '/mode/file-browser') {
+    if (hash.pathname === URL.fileBrowser) {
       setValue(5);
     }
   }, []);
@@ -79,12 +80,12 @@ function ModeTabs() {
         aria-label='Vertical tabs example'
         className={classes.tabs}
       >
-        <OmsTab label='任务管理' component={NavLink} to='/mode/job' {...a11yProps(0)} />
-        <OmsTab label='隧道管理' component={NavLink} to='/mode/tunnel' {...a11yProps(1)} />
-        <OmsTab label='上传文件' component={NavLink} to='/mode/upload-file' {...a11yProps(2)} />
-        <OmsTab label='web SSH' component={NavLink} to='/mode/web-ssh/:0' {...a11yProps(3)} />
-        <OmsTab label='执行命令' component={NavLink} to='/mode/command' {...a11yProps(4)} />
-        <OmsTab label='文件浏览' component={NavLink} to='/mode/file-browser' {...a11yProps(5)} />
+        <OmsTab label='任务管理' component={NavLink} to={URL.job} {...a11yProps(0)} />
+        <OmsTab label='隧道管理' component={NavLink} to={URL.tunnel} {...a11yProps(1)} />
+        <OmsTab label='上传文件' component={NavLink} to={URL.uploadFile} {...a11yProps(2)} />
+        <OmsTab label='web SSH' component={NavLink} to={`${URL.webSSH}/0`} {...a11yProps(3)} />
+        <OmsTab label='执行命令' component={NavLink} to={URL.command} {...a11yProps(4)} />
+        <OmsTab label='文件浏览' component={NavLink} to={URL.fileBrowser} {...a11yProps(5)} />
         <OmsTab label='Item Seven' {...a11yProps(6)} />
       </OmsTabs>
       <TabPanel className={classes.TabPanel} value={value} index={0}>

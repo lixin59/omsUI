@@ -6,11 +6,12 @@ export interface HostAction {
 }
 
 export interface IState {
-  hostList: HostInfo[];
-  groupList: GroupInfo[];
-  tagList: TagInfo[];
-  tunnelList: TunnelInfo[];
-  jobList: JobInfo[];
+  hostList: HostInfo[],
+  groupList: GroupInfo[],
+  tagList: TagInfo[],
+  tunnelList: TunnelInfo[],
+  jobList: JobInfo[],
+  privateKeyList: PrivateKeyInfo[],
 }
 
 export interface HostInfo {
@@ -60,4 +61,11 @@ export interface JobInfo {
   cmd: string,
   status: string,
   host_id: number,
+}
+
+export interface PrivateKeyInfo {
+  id: number,
+  name: string,
+  passphrase?: string,
+  key_file?: any,
 }
