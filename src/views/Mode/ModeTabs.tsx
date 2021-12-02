@@ -62,7 +62,7 @@ function ModeTabs() {
     if (hash.pathname === URL.fileBrowser) {
       setValue(5);
     }
-  }, []);
+  }, [hash]);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);

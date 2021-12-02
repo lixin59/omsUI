@@ -39,7 +39,7 @@ interface Column {
 }
 
 const columns: Column[] = [
-  { id: 'name', label: '标签名称', minWidth: 170 },
+  { id: 'name', label: '密钥名称', minWidth: 170 },
   {
     id: 'operation',
     label: '操作',

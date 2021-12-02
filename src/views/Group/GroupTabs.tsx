@@ -68,7 +68,7 @@ function ModeTabs({ initGroup, initTag
     if (hash.pathname === URL.privateKey) {
       setValue(2);
     }
-  }, []);
+  }, [hash]);
 
   useEffect(() => {
     (async() => {

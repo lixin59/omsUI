@@ -106,12 +106,12 @@ const WebSSH = ({ hostList, groupList, tagList }: tProps) => {
   useEffect(() => {
     const id = Number(pathname.replace(/\/mode\/web_ssh\//g, ''));
     if (id !== 0) {
+      connectHost(id);
       setItem(id);
-      connectHost();
     }
-  }, [item]);
+  }, []);
 
-  const connectHost = () => {
+  const connectHost = (item: number) => {
     if (!item || ws) {
       // enqueueSnackbar(`请先选择一个主机`, {
       //   autoHideDuration: 3000,
@@ -160,7 +160,7 @@ const WebSSH = ({ hostList, groupList, tagList }: tProps) => {
           disabled={!item || !!ws}
           className={classes.LinkButton}
           startIcon={<LinkIcon />}
-          onClick={connectHost}
+          onClick={() => connectHost(item)}
         >
           连接
         </Button>

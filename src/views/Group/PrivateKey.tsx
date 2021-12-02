@@ -96,9 +96,9 @@ const PrivateKey = (props: tProps) => {
           <TextField
             size='small'
             id='private-key-name'
-            label='秘钥的密码(非必填)'
+            label='密钥的密码(非必填)'
             variant='outlined'
-            placeholder='秘钥的密码可以为空'
+            placeholder='密钥的密码可以为空'
             value={passphrase}
             onChange={(e) => setPassphrase(e.target.value)}
           />
