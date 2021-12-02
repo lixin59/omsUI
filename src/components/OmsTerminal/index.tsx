@@ -82,9 +82,9 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
     });
 
     ws.onopen = (evt) => {
-      term.writeln('服务器连接成功...');
+      term.writeln('WebSocket服务器连接成功...');
       enqueueSnackbar(` WebSocket服务器连接成功: ${evt.type}`, {
-        autoHideDuration: 5000,
+        autoHideDuration: 3000,
         variant: 'success'
       });
     };
@@ -92,7 +92,7 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
     ws.onerror = (evt) => {
       console.log(evt);
       enqueueSnackbar(` WebSocket服务器连接失败: ${evt.type}`, {
-        autoHideDuration: 5000,
+        autoHideDuration: 3000,
         variant: 'error'
       });
     };

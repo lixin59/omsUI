@@ -32,7 +32,8 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
     width: '15%'
   },
   shellBox: {
-    width: '100%'
+    width: '100%',
+    height: '90%'
   },
   TabPanel: {
     height: '100%',
@@ -43,10 +44,12 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
     borderRight: `1px solid ${theme.palette.divider}`
   },
   rootTable: {
-    width: '100%'
+    width: '100%',
+    height: '100%'
   },
   container: {
-    maxHeight: 440
+    // maxHeight: 440,
+    height: '92%'
   },
   deleteButton: {
     marginRight: '14px',
