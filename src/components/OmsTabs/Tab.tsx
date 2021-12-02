@@ -28,18 +28,18 @@ const OmsTab = withStyles((theme: Theme) =>
         '"Segoe UI Symbol"'
       ].join(','),
       '&:hover': {
-        color: '#40a9ff',
-        backgroundColor: theme.palette.grey['50'],
+        color: theme.palette.tag.main,
+        backgroundColor: theme.palette.grey.A700,
         opacity: 1
       },
       '&$selected': {
-        color: '#1890ff',
+        color: theme.palette.tag.main,
         fontSize: 18,
-        backgroundColor: theme.palette.grey['100'],
+        backgroundColor: theme.palette.grey.A700,
         fontWeight: theme.typography.fontWeightMedium
       },
       '&:focus': {
-        color: '#40a9ff'
+        color: theme.palette.tag.main
       }
     },
     selected: {}

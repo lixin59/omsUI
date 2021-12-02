@@ -48,7 +48,8 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
     width: '100%'
   },
   tag: {
-    marginRight: '4px'
+    marginRight: '4px',
+    backgroundColor: theme.palette.tag.main
   }
 });
 

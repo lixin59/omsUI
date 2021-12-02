@@ -15,26 +15,31 @@ import IconButton from '@material-ui/core/IconButton';
 import Input from '@material-ui/core/Input';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-// import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import Chip from '@material-ui/core/Chip';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 
-// const useStyles = makeStyles((theme: Theme) =>
-//   createStyles({
-//     keyFile: {
-//       marginTop: '10px',
-//       'display': 'flex',
-//       'alignContent': 'space-evenly',
-//       'alignItems': 'center',
-//       'justifyContent': 'space-between'
-//       // '& > *': {
-//       //   margin: theme.spacing(1)
-//       // }
-//     },
-//     input: {
-//       display: 'none'
-//     }
-//   })
-// );
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    // keyFile: {
+    //   marginTop: '10px',
+    //   'display': 'flex',
+    //   'alignContent': 'space-evenly',
+    //   'alignItems': 'center',
+    //   'justifyContent': 'space-between'
+    //   // '& > *': {
+    //   //   margin: theme.spacing(1)
+    //   // }
+    // },
+    // input: {
+    //   display: 'none'
+    // },
+    tag: {
+      marginRight: '4px',
+      backgroundColor: theme.palette.tag.main
+    }
+  })
+);
 
 type tProps = {
   hostInfo: HostInfo,
@@ -54,7 +59,7 @@ interface PassWordState {
 }
 
 const HostInfoForm = ({ hostInfo, setHostInfo, groupList, privateKeyList, tlc, setTlc }: tProps) => {
-  // const classes = useStyles();
+  const classes = useStyles();
   // const [fileName, setFileName] = useState<string>('未选择任何文件');
   const [values, setValues] = React.useState<PassWordState>({
     amount: '',
@@ -188,7 +193,12 @@ const HostInfoForm = ({ hostInfo, setHostInfo, groupList, privateKeyList, tlc, s
                     color='primary'
                   />
                 }
-                label={e.name}
+                label={<Chip
+                  className={classes.tag}
+                  size='small'
+                  key={e.id}
+                  label={e.name}
+                />}
               />
             );
           })}

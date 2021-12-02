@@ -17,18 +17,19 @@ const homeStyle: Styles<any, {}> = (theme: Theme) => ({
     justifyContent: 'space-between',
     justifyItems: 'center',
     gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))',
-    gridGap: '20px 20px',
+    gridGap: '20px 20px'
   },
   FabButton: {
     position: 'fixed',
     bottom: '10vh',
     right: '1vw',
     zIndex: 999,
-    margin: theme.spacing(1),
+    backgroundColor: theme.palette.tag.light,
+    margin: theme.spacing(1)
   },
   Select: {
-    width: '100%',
-  },
+    width: '100%'
+  }
 });
 
 export default homeStyle;

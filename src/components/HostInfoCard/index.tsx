@@ -149,6 +149,34 @@ function HostInfoCard(props: tProps) {
     });
   };
 
+  const tagDelete = async(id:number) => {
+    const data = {
+      id: hostInfo.id,
+      hostname: hostInfo.name,
+      user: hostInfo.user,
+      addr: hostInfo.addr,
+      port: hostInfo.port,
+      password: hostInfo.password || '',
+      private_key_id: hostInfo.private_key_id,
+      group: hostInfo?.group?.id,
+      tags: JSON.stringify(hostInfo.tags.filter((item) => item.id !== id).map((e) => e.id))
+    };
+    const res = (await editHostApi(data)) as HTTPResult;
+
+    if (res.code !== '200') {
+      enqueueSnackbar(`主机修改失败: ${res.msg}`, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
+      return;
+    }
+    editHost(res.data);
+    enqueueSnackbar(`主机: ${hostInfo.name} 信息已经修改`, {
+      autoHideDuration: 3000,
+      variant: 'success'
+    });
+  };
+
   const onDelete = async() => {
     const res = (await deleteHostApi(hostInfo.id) as HTTPResult);
     // console.log(res);
@@ -222,12 +250,14 @@ function HostInfoCard(props: tProps) {
           <ListItem className={classes.listItem}>
             <ListItemText className={classes.listItemText} primary='标签:' />
             <ListItemText
+              style={{ maxWidth: '282px', maxHeight: '26px', overflow: 'hidden' }}
               primary={hostInfo.tags?.map((e) => (
                 <Chip
                   className={classes.tag}
                   size='small'
                   key={e.id}
                   label={e.name}
+                  onDelete={() => tagDelete(e.id)}
                 />))}
             />
           </ListItem>

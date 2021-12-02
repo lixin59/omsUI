@@ -4,11 +4,20 @@ import router from './router/index';
 import './App.css';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { ThemeProvider, createTheme, makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { ThemeProvider, createTheme, makeStyles, createStyles } from '@material-ui/core/styles';
 import ThemeSwitch from './components/OmsSwitch/ThemeSwitch'; // 4.x.x 版本
 // import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'; // 5.x.x 版本
 
-const useStyles = makeStyles((theme: Theme) =>
+declare module '@material-ui/core/styles/createPalette' {
+  interface Palette {
+    tag: Palette['primary'];
+  }
+  interface PaletteOptions {
+    tag: PaletteOptions['primary'];
+  }
+}
+
+const useStyles = makeStyles(() =>
   createStyles({
     githubIconBox: {
       position: 'absolute',
@@ -26,11 +35,21 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const themeLight = createTheme({
   palette: {
+    background: {
+      paper: '#fdfdfd'
+    },
     type: 'light',
     grey: {
       A100: '#f5f5f5', // BodyBox
-      A200: '#d7d7d7', // Navigation
-      A700: '#ffffff' // Select
+      A200: '#d5d5d5', // Navigation
+      A700: '#ffffff' // omsSelect
+    },
+    primary: {
+      main: '#4caf50'
+    },
+    tag: {
+      light: '#99CC99',
+      main: '#66CCCC'
     }
   }
 });
@@ -39,8 +58,15 @@ const themeDark = createTheme({
   palette: {
     type: 'dark',
     grey: {
-      A100: '#757575',
-      A200: '#393d49'
+      A100: '#2b2b2b',
+      A200: '#3c3f41',
+      A700: '#31343d' // omsSelect
+    },
+    primary: {
+      main: '#5fb878'
+    },
+    tag: {
+      main: '#009999'
     },
     text: {
       primary: '#ffffff'

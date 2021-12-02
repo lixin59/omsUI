@@ -6,8 +6,8 @@ import { TabsTypeMap } from '@material-ui/core/Tabs';
 
 const OmsTabs = withStyles({
   indicator: {
-    backgroundColor: '#1890ff',
-  },
+    backgroundColor: '#009999'
+  }
 })((props: StyledTabsProps | TabsTypeMap['props']) => <Tabs {...props} TabIndicatorProps={{ children: <span /> }} />);
 
 export default OmsTabs;
