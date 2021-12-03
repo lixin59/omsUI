@@ -342,7 +342,6 @@ export const uploadFileApi = (data: UploadFilePost) => {
   for (const k in fileList) {
     // @ts-ignore
     files[Base64.encode(fileList[k].name)] = fileList[k].size;
-    console.log(Base64.encode(fileList[k].name));
     formData.append('files', fileList[k]);
   }
   return postApi(`${urlType.upload_file}`, formData, {
