@@ -1,10 +1,47 @@
-## 项目简介
-本项目使用gin、gorm和ssh、sftp开发。旨在编写一个轻量，易用，多平台的运维项目。
+<p align="center">
+    <a href="https://github.com/lixin59/omsUI/blob/master/LICENSE">
+        <img
+            alt="MIT license"
+            src="https://img.shields.io/npm/l/chonky?style=flat&colorB=dcd67a"
+        />
+    </a>
+    <a href="https://github.com/lixin59/omsUI">
+        <img
+            alt="GitHub stars"
+            src="https://img.shields.io/github/stars/lixin59/omsUI?style=flat&colorB=50f4cc"
+        />
+    </a>
+    <a href="https://github.com/lixin59/omsUI">
+        <img src="https://img.shields.io/github/last-commit/lixin59/omsUI.svg?style=flat-square">
+    </a>
+    <a href="https://github.com/lixin59/omsUI">
+        <img src="https://img.shields.io/github/last-commit/lixin59/omsUI.svg?style=flat-square">
+    </a>
+    <img src="https://img.shields.io/github/commit-activity/y/lixin59/omsUI?style=flat-square">
+    <br />
+    <img src="https://img.shields.io/github/issues/lixin59/omsUI?style=flat-square">
+    <img src="https://img.shields.io/github/issues-closed-raw/lixin59/omsUI?style=flat-square">
+    <img src="https://img.shields.io/github/forks/lixin59/omsUI?style=flat-square">
+    <img src="https://img.shields.io/github/watchers/lixin59/omsUI?style=flat-square">
+    <br />
+    <br />
+</p>
 
+## 项目简介
+本项目后端使用gin、gorm和ssh、sftp开发。旨在编写一个轻量，易用，多平台的运维项目。
+前端使用react、typescript、vite构建。
 现阶段目的是做一个阉割版的xshell并简单的实现ansible或者saltstack的部分功能。
+
+### 目前已经实现的功能
+1. 隧道, 类似`ssh`的`-L`和`-R`
+2. cron任务和长进程的管理
+3. ssh命令批量执行
+4. 文件批量的上传 流式传输支持大文件
+5. 基于`sftp`文件浏览器
+
 ### 查看后端代码请移步到 [oms](https://github.com/ssbeatty/oms)
 
-# 安装依赖
+## 安装依赖
 ```shell
 npm install
 ```
@@ -13,14 +50,14 @@ npm install
 yarn add
 ```
 
-# 1.运行 
+## 1.运行 
 ```shell
 npm run dev
 ```
 ```shell
 yarn dev
 ```
-# 2.编译
+## 2.编译
 ```shell
 npm run build
 ```
@@ -28,7 +65,7 @@ npm run build
 yarn build
 ```
 
-# 3.注意 
+## 3.注意 
 ## node 版本 14.17.1 , vite 版本 2.6.14
 
 ## 开发环境调试设置
@@ -39,3 +76,35 @@ yarn build
 ```text
  VITE_TEST_HOST='127.0.0.1:9090'
 ```
+
+## 项目预览
+### 主题切换
+
+![浅色](./public/images/light.png)
+![深色](./public/images/dark.png)
+
+### 主机页面
+
+![主机页面](./public/images/home.png)
+
+### 分组管理
+
+![分组管理](./public/images/group.png)
+
+### 任务管理
+
+![任务管理](./public/images/job.png)
+
+### 上传文件
+
+![上传文件](./public/images/upload.png)
+
+### web ssh
+
+![web ssh](./public/images/webssh.png)
+
+
+### 文件浏览
+
+![文件浏览](./public/images/file.png)
+![文件浏览](./public/images/file1.png)
