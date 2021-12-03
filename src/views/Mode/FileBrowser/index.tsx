@@ -66,45 +66,95 @@ const mapDispatch: tDP = {
 
 type tProps = tSP & tDP;
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: '98%',
-      height: '100%'
-    },
-    ControlBox: {
-      marginBottom: '20px',
-      width: '100%',
-      display: 'flex',
-      alignContent: 'space-evenly',
-      alignItems: 'center',
-      justifyContent: 'flex-start'
-    },
-    Control: {
-      width: '25%'
-    },
-    mkdir: {
-      width: '100%'
-    },
-    LinkButton: {
-      marginTop: '12px',
-      marginLeft: '40px',
-      height: '45px',
-      width: '90px',
-      backgroundColor: theme.palette.info[theme.palette.type],
-      '&:hover': {
-        backgroundColor: theme.palette.info.main
-      }
-    },
-    FileBrowser: {
-      height: '85%'
-    }
-  })
-);
+// let darkMode = false;
+//
+// const useStyles = makeStyles((theme: Theme) => {
+//   if (theme.palette.type === 'dark') {
+//     darkMode = true;
+//   }
+//   return createStyles({
+//     root: {
+//       width: '98%',
+//       height: '100%'
+//     },
+//     ControlBox: {
+//       marginBottom: '20px',
+//       width: '100%',
+//       display: 'flex',
+//       alignContent: 'space-evenly',
+//       alignItems: 'center',
+//       justifyContent: 'flex-start'
+//     },
+//     Control: {
+//       width: '25%'
+//     },
+//     mkdir: {
+//       width: '100%'
+//     },
+//     LinkButton: {
+//       marginTop: '12px',
+//       marginLeft: '40px',
+//       height: '45px',
+//       width: '90px',
+//       backgroundColor: theme.palette.info[theme.palette.type],
+//       '&:hover': {
+//         backgroundColor: theme.palette.info.main
+//       }
+//     },
+//     FileBrowser: {
+//       height: '85%'
+//     }
+//   });
+// }
+// );
 
 setChonkyDefaults({ iconComponent: FileIcon });
 
 const FileBrowserPage = ({ hostList }: tProps) => {
+
+  let darkMode = false;
+
+  const useStyles = makeStyles((theme: Theme) => {
+    if (theme.palette.type === 'dark') {
+      darkMode = true;
+    }
+    return createStyles({
+      root: {
+        width: '98%',
+        height: '100%'
+      },
+      ControlBox: {
+        marginBottom: '20px',
+        width: '100%',
+        display: 'flex',
+        alignContent: 'space-evenly',
+        alignItems: 'center',
+        justifyContent: 'flex-start'
+      },
+      Control: {
+        width: '25%'
+      },
+      mkdir: {
+        width: '100%'
+      },
+      LinkButton: {
+        marginTop: '12px',
+        marginLeft: '40px',
+        height: '45px',
+        width: '90px',
+        backgroundColor: theme.palette.info[theme.palette.type],
+        '&:hover': {
+          backgroundColor: theme.palette.info.main
+        }
+      },
+      FileBrowser: {
+        height: '85%'
+      }
+    });
+  }
+  );
+
+
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [hostId, setHost] = useState<number>(0);
@@ -385,6 +435,8 @@ const FileBrowserPage = ({ hostList }: tProps) => {
           folderChain={folderChain}
           fileActions={myFileActions}
           onFileAction={handleAction}
+          darkMode={darkMode}
+          i18n={{ formatters: { formatFileModDate: (i, files) => files?.modDate as string }}}
         />
       </div>
       <Dialog open={open} onClose={() => setOpen(false)} aria-labelledby='upload_files'>

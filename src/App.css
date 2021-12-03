@@ -11,3 +11,16 @@
   padding-top: 0px !important;
   padding-bottom: 0px !important;
 }
+
+div[class^="listFileEntryProperty"] {
+  /* 文件浏览器 覆盖日期和文件大小list的样式*/
+  flex: 0 1 150px;
+  text-align: right;
+  min-width: 200px;
+  padding: 2px 8px;
+  z-index: 20;
+  overflow: hidden;
+  font-size: 14px;
+  box-sizing: border-box;
+  white-space: nowrap;
+}

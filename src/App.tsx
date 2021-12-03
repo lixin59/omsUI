@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { RefObject, useState } from 'react';
 import { useRoutes } from 'react-router-dom';
 import router from './router/index';
 import './App.css';
 import GitHubIcon from '@material-ui/icons/GitHub';
+import Button from '@material-ui/core/Button';
+import { SnackbarKey, SnackbarProvider } from 'notistack';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider, createTheme, makeStyles, createStyles } from '@material-ui/core/styles';
-import ThemeSwitch from './components/OmsSwitch/ThemeSwitch'; // 4.x.x 版本
+import ThemeSwitch from './components/OmsSwitch/ThemeSwitch';// 4.x.x 版本
 // import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'; // 5.x.x 版本
 
 declare module '@material-ui/core/styles/createPalette' {
@@ -20,6 +22,7 @@ declare module '@material-ui/core/styles/createPalette' {
 const useStyles = makeStyles(() =>
   createStyles({
     githubIconBox: {
+      cursor: 'pointer',
       position: 'absolute',
       top: '15px',
       right: '10vw',
@@ -74,6 +77,16 @@ const themeDark = createTheme({
   }
 });
 
+const notistackRef: RefObject<any> = React.createRef();
+const onClickDismiss = (key: SnackbarKey) => () => {
+  notistackRef.current.closeSnackbar(key);
+};
+
+const OmsRouter = () => {
+  return <>
+    {useRoutes(router)}
+  </>;
+};
 
 function App() {
   const classes = useStyles();
@@ -88,10 +101,27 @@ function App() {
     <div className='App'>
       <ThemeProvider theme={light ? themeLight : themeDark}>
         <CssBaseline />
-        {useRoutes(router)}
-        <div
-          className={classes.githubIconBox}
-        >
+        <SnackbarProvider
+          ref={notistackRef}
+          action={(key) => (
+            <Button onClick={onClickDismiss(key)}>
+              ✖️
+            </Button>
+          )}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right'
+          }}
+          maxSnack={4}
+          iconVariant={{
+            success: '✅',
+            error: '🚫',
+            warning: '⚠️',
+            info: 'ℹ️'
+          }}>
+          <OmsRouter/>
+        </SnackbarProvider>
+        <div className={classes.githubIconBox}>
           <GitHubIcon onClick={openGithub}/>
           <ThemeSwitch
             checked={light}

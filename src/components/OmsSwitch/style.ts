@@ -40,7 +40,8 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
     position: 'absolute',
     top: '0px',
     left: '-2px',
-    zIndex: 999
+    zIndex: 999,
+    animation: '$toLeft 0.2s linear 1'
   },
   switchNoChecked: {
     cursor: 'pointer',
@@ -54,8 +55,17 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
     borderRadius: '50%',
     position: 'absolute',
     top: '0px',
-    right: '-2px',
-    zIndex: 999
+    left: '24px',
+    zIndex: 999,
+    animation: '$toRight 0.2s linear 1'
+  },
+  '@keyframes toLeft': {
+    '0%': { left: '24px' },
+    '100%': { left: '-2px' }
+  },
+  '@keyframes toRight': {
+    '0%': { left: '-2px' },
+    '100%': { left: '24px' }
   }
 });
 

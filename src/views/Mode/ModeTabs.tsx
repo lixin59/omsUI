@@ -86,7 +86,7 @@ function ModeTabs() {
         <OmsTab label='web SSH' component={NavLink} to={`${URL.webSSH}/0`} {...a11yProps(3)} />
         <OmsTab label='执行命令' component={NavLink} to={URL.command} {...a11yProps(4)} />
         <OmsTab label='文件浏览' component={NavLink} to={URL.fileBrowser} {...a11yProps(5)} />
-        <OmsTab label='Item Seven' {...a11yProps(6)} />
+        <OmsTab label='主机监控' {...a11yProps(6)} />
       </OmsTabs>
       <TabPanel className={classes.TabPanel} value={value} index={0}>
         <Outlet/>
