@@ -2285,6 +2285,13 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
+"@types/js-base64@^3.3.1":
+  version "3.3.1"
+  resolved "https://registry.nlark.com/@types/js-base64/download/@types/js-base64-3.3.1.tgz?cache=0&sync_timestamp=1621869451770&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40types%2Fjs-base64%2Fdownload%2F%40types%2Fjs-base64-3.3.1.tgz#36c2d6dc126277ea28a4d0599d0cafbf547b51e6"
+  integrity sha1-NsLW3BJid+oopNBZnQyvv1R7UeY=
+  dependencies:
+    js-base64 "*"
+
 "@types/json-schema@*", "@types/json-schema@^7.0.3", "@types/json-schema@^7.0.5", "@types/json-schema@^7.0.7", "@types/json-schema@^7.0.8":
   version "7.0.9"
   resolved "https://registry.npmmirror.com/@types/json-schema/download/@types/json-schema-7.0.9.tgz?cache=0&sync_timestamp=1637265456183&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40types%2Fjson-schema%2Fdownload%2F%40types%2Fjson-schema-7.0.9.tgz#97edc9037ea0c38585320b28964dde3b39e4660d"
@@ -7608,6 +7615,11 @@ jest@26.6.0:
     "@jest/core" "^26.6.0"
     import-local "^3.0.2"
     jest-cli "^26.6.0"
+
+js-base64@*, js-base64@^3.7.2:
+  version "3.7.2"
+  resolved "https://registry.npmmirror.com/js-base64/download/js-base64-3.7.2.tgz#816d11d81a8aff241603d19ce5761e13e41d7745"
+  integrity sha1-gW0R2BqK/yQWA9Gc5XYeE+Qdd0U=
 
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"

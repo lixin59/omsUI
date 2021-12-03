@@ -1,5 +1,6 @@
 import { getApi, postApi, deleteApi, putApi } from './api';
 import { urlType, baseUrl } from './requestUrl';
+import { Base64 } from 'js-base64';
 
 export interface HTTPResult {
   code:string,
@@ -340,7 +341,8 @@ export const uploadFileApi = (data: UploadFilePost) => {
   // eslint-disable-next-line guard-for-in
   for (const k in fileList) {
     // @ts-ignore
-    files[encodeURI(fileList[k].name)] = fileList[k].size;
+    files[Base64.encode(fileList[k].name)] = fileList[k].size;
+    console.log(Base64.encode(fileList[k].name));
     formData.append('files', fileList[k]);
   }
   return postApi(`${urlType.upload_file}`, formData, {
