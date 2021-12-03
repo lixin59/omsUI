@@ -4,10 +4,12 @@ import audio from './audio.svg';
 import babel from './babel.svg';
 import bucklescript from './bucklescript.svg';
 import c from './c.svg';
+import cmake from './cmake.svg';
 import coffee from './coffee.svg';
 import coldfusion from './coldfusion.svg';
 import command from './command.svg';
 import cpp from './cpp.svg';
+import csharp from './csharp.svg';
 import css from './css.svg';
 import cuda from './cuda.svg';
 import database from './database.svg';
@@ -16,6 +18,7 @@ import django from './django.svg';
 import docker from './docker.svg';
 import document from './document.svg';
 import editorconfig from './editorconfig.svg';
+import erlang from './erlang.svg';
 import eslint from './eslint.svg';
 import exe from './exe.svg';
 import file from './file.svg';
@@ -71,6 +74,7 @@ import h from './h.svg';
 import hpp from './hpp.svg';
 import html from './html.svg';
 import image from './image.svg';
+import ini from './ini.svg';
 import jar from './jar.svg';
 import java from './java.svg';
 import javascript from './javascript.svg';
@@ -81,6 +85,8 @@ import json from './json.svg';
 import kotlin from './kotlin.svg';
 import less from './less.svg';
 import lib from './lib.svg';
+import log from './log.svg';
+import makefile from './makefile.svg';
 import markdown from './markdown.svg';
 import matlab from './matlab.svg';
 import mp3 from './mp3.svg';
@@ -100,6 +106,7 @@ import raml from './raml.svg';
 import react from './react.svg';
 import reduxAction from './redux-action.svg';
 import rescript from './rescript.svg';
+import robots from './robots.svg';
 import rollup from './rollup.svg';
 import rust from './rust.svg';
 import sass from './sass.svg';
@@ -109,6 +116,7 @@ import testJs from './test-js.svg';
 import testJsx from './test-jsx.svg';
 import testTs from './test-ts.svg';
 import tsconfig from './tsconfig.svg';
+import txt from './txt.svg';
 import typescript from './typescript.svg';
 import video from './video.svg';
 import vue from './vue.svg';
@@ -129,10 +137,12 @@ const svgMap = {
   babel,
   bucklescript,
   c,
+  cmake,
   coffee,
   coldfusion,
   command,
   cpp,
+  csharp,
   css,
   cuda,
   database,
@@ -141,6 +151,7 @@ const svgMap = {
   docker,
   document,
   editorconfig,
+  erlang,
   eslint,
   exe,
   file,
@@ -196,6 +207,7 @@ const svgMap = {
   hpp,
   html,
   image,
+  ini,
   jar,
   java,
   javascript,
@@ -206,6 +218,8 @@ const svgMap = {
   kotlin,
   less,
   lib,
+  log,
+  makefile,
   markdown,
   matlab,
   mp3,
@@ -225,6 +239,7 @@ const svgMap = {
   react,
   reduxAction,
   rescript,
+  robots,
   rollup,
   rust,
   sass,
@@ -233,6 +248,7 @@ const svgMap = {
   testJs,
   testJsx,
   testTs,
+  txt,
   tsconfig,
   typescript,
   video,
