@@ -13,6 +13,7 @@ import OmsLabel from '../../components/OmsLabel';
 import OmsMenuItem from '../../components/OmsSelect/OmsMenuItem';
 import { baseUrl, url } from '../../api/websocket/url';
 import { useSnackbar } from 'notistack';
+import lodash from 'lodash';
 
 type tDP = {
   // deleteGroup: ActionCreator<any>;
@@ -76,6 +77,7 @@ const useStyles = makeStyles((theme: Theme) =>
 type tItem = 'hostList' | 'groupList' | 'tagList' | 'default';
 
 type tUploadFile = {
+  id: string,
   current: string,
   dest: string,
   file: string,
@@ -91,6 +93,8 @@ const itemType = {
   tagList: '请选择标签',
   default: '请选择子选项'
 };
+
+let oldList:any[] = [];
 
 const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -111,7 +115,17 @@ const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
     webSocket.onmessage = (evt) => {
       // console.log('收到消息');
       // console.log(JSON.parse(evt.data));
-      setUploadList(JSON.parse(evt.data).data);
+      const { data } = JSON.parse(evt.data);
+      oldList.forEach((e, i) => {
+        data.forEach((x) => {
+          if (e?.id === x?.id) {
+            oldList[i] = x;
+          }
+        });
+      });
+      const newList = lodash.uniqBy([...oldList, ...data], 'id'); // 数组去重
+      oldList = newList;
+      setUploadList(newList);
     };
     webSocket.onerror = (evt) => {
       console.warn(evt);
@@ -197,7 +211,7 @@ const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
         {uploadList && uploadList.map((e) => {
           return (
             <LinearProgressWithLabel
-              key={e.dest}
+              key={e.id}
               dest={e.dest}
               total={e.total}
               value={e.percent}
