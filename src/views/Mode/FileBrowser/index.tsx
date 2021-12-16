@@ -31,9 +31,9 @@ import qs from 'qs';
 import { baseUrl, urlType } from '../../../api/http/requestUrl';
 import { downloadFile } from '../../../utils';
 import { useSnackbar } from 'notistack';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus, coyWithoutShadows } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { getFileType } from '../../../utils';
+import OmsViewMarkdown from '../../../components/OmsViewMarkdown';
+import OmsSyntaxHighlight from '../../../components/OmsSyntaxHighligh';
 
 const codeType = {
   c: 'c',
@@ -44,6 +44,7 @@ const codeType = {
   jsx: 'jsx',
   java: 'java',
   json: 'json',
+  md: 'markdown',
   php: 'php',
   py: 'python',
   tsx: 'jsx',
@@ -429,15 +430,8 @@ const FileBrowserPage = ({ hostList }: tProps) => {
     'uploadFiles': (<UploadButtons type='host' filePath={filePath} typeId={hostId} todo={todo}/>),
     'viewFile': (
       <div style={{ maxHeight: '80vh' }}>
-        <SyntaxHighlighter
-          showLineNumbers={true}
-          lineNumberStyle={{ color: '#ddd', fontSize: 10 }}
-          style={darkMode ? vscDarkPlus : coyWithoutShadows}
-          language={language}
-          PreTag='div'
-        >
-          {String(code).replace(/\n$/, '')}
-        </SyntaxHighlighter>
+        {language === codeType.md ? <OmsViewMarkdown textContent={code} darkMode={darkMode}/>
+          : <OmsSyntaxHighlight textContent={code} language={language} darkMode={darkMode}/>}
       </div>
     )
   };
