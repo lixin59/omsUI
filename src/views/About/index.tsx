@@ -1,15 +1,7 @@
 import React, { useEffect } from 'react';
 import BodyBox from '../../components/Bodybox';
-import ReactMarkdown from 'react-markdown';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { tomorrow, darcula, vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-
-const sty = vscDarkPlus;
-
-// a11yDark 比较好看
-// darcula webstorm
-// vscDarkPlus vscode暗色主题
-
+import OmsViewMarkdown from '../../components/OmsViewMarkdown';
+import OmsSyntaxHighlight from '../../components/OmsSyntaxHighligh';
 
 const markdown = `
 ## Here is some TypeScript code:
@@ -56,40 +48,8 @@ export default function About() {
         <div style={{ fontSize: '40px' }}>😉开源不易,如果喜欢我们的项目💗，请到GitHub上点个⭐</div>
       </div>
       <div style={{ width: '80%', margin: '0 auto' }}>
-        <ReactMarkdown
-          components={{
-            code({ node, inline, className, children, ...props }) {
-              const match = /language-(\w+)/.exec(className || '');
-              return !inline && match ? (
-                <SyntaxHighlighter
-                  showLineNumbers={true}
-                  lineNumberStyle={{ color: '#ddd', fontSize: 10 }}
-                  style={sty}
-                  language={match[1]}
-                  PreTag='div'
-                  {...props}
-                >
-                  {String(children).replace(/\n$/, '')}
-                </SyntaxHighlighter>
-              ) : (
-                <code className={className} {...props}>
-                  {children}
-                </code>
-              );
-            }
-          }}
-        >
-          {markdown}
-        </ReactMarkdown>
-        <SyntaxHighlighter
-          showLineNumbers={true}
-          lineNumberStyle={{ color: '#ddd', fontSize: 10 }}
-          style={sty}
-          language={'css'}
-          PreTag='div'
-        >
-          {String(csst).replace(/\n$/, '')}
-        </SyntaxHighlighter>
+        <OmsViewMarkdown textContent={markdown}/>
+        <OmsSyntaxHighlight textContent={csst} language={'css'} darkMode/>
       </div>
     </BodyBox>
   );
