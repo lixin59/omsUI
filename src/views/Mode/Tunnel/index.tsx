@@ -78,13 +78,6 @@ const TunnelPage = ({ hostList, tunnelList, addTunnel, editTunnel, deleteTunnel,
       });
       return;
     }
-    if (tunnelList.some((e) => e.destination === destination)) {
-      enqueueSnackbar(`该Tunnel已存在！`, {
-        autoHideDuration: 3000,
-        variant: 'warning'
-      });
-      return;
-    }
     const res = (await addTunnelApi({ mode: mode as 'local' | 'remote', source, destination, host_id: hostId as number })) as HTTPResult;
     if (res.code !== '200') {
       enqueueSnackbar(`添加任务失败${res.msg}`, {
@@ -128,7 +121,7 @@ const TunnelPage = ({ hostList, tunnelList, addTunnel, editTunnel, deleteTunnel,
           <TextField
             size='small'
             id='src-tunnel'
-            label='目标地址'
+            label='源地址'
             variant='outlined'
             value={source}
             onChange={(e) => setSrc(e.target.value)}
