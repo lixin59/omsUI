@@ -31,6 +31,25 @@ import qs from 'qs';
 import { baseUrl, urlType } from '../../../api/http/requestUrl';
 import { downloadFile } from '../../../utils';
 import { useSnackbar } from 'notistack';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus, coyWithoutShadows } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { getFileType } from '../../../utils';
+
+const codeType = {
+  c: 'c',
+  cpp: 'cpp',
+  css: 'css',
+  go: 'go',
+  js: 'javascript',
+  jsx: 'jsx',
+  java: 'java',
+  json: 'json',
+  php: 'php',
+  py: 'python',
+  tsx: 'jsx',
+  txt: 'txt',
+  ts: 'typescript'
+};
 
 type tDP = {
   // deleteGroup: ActionCreator<any>;
@@ -66,48 +85,6 @@ const mapDispatch: tDP = {
 
 type tProps = tSP & tDP;
 
-// let darkMode = false;
-//
-// const useStyles = makeStyles((theme: Theme) => {
-//   if (theme.palette.type === 'dark') {
-//     darkMode = true;
-//   }
-//   return createStyles({
-//     root: {
-//       width: '98%',
-//       height: '100%'
-//     },
-//     ControlBox: {
-//       marginBottom: '20px',
-//       width: '100%',
-//       display: 'flex',
-//       alignContent: 'space-evenly',
-//       alignItems: 'center',
-//       justifyContent: 'flex-start'
-//     },
-//     Control: {
-//       width: '25%'
-//     },
-//     mkdir: {
-//       width: '100%'
-//     },
-//     LinkButton: {
-//       marginTop: '12px',
-//       marginLeft: '40px',
-//       height: '45px',
-//       width: '90px',
-//       backgroundColor: theme.palette.info[theme.palette.type],
-//       '&:hover': {
-//         backgroundColor: theme.palette.info.main
-//       }
-//     },
-//     FileBrowser: {
-//       height: '85%'
-//     }
-//   });
-// }
-// );
-
 setChonkyDefaults({ iconComponent: FileIcon });
 
 const FileBrowserPage = ({ hostList }: tProps) => {
@@ -135,7 +112,7 @@ const FileBrowserPage = ({ hostList }: tProps) => {
         width: '25%'
       },
       mkdir: {
-        width: '100%'
+        width: '400px'
       },
       LinkButton: {
         marginTop: '12px',
@@ -163,6 +140,9 @@ const FileBrowserPage = ({ hostList }: tProps) => {
   const [parentDir, setParentDir] = useState<string>('');
   const [isMkdir, setIsMkdir] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
+  const [dialogType, setDialogType] = useState<string>('');
+  const [language, setLanguage] = useState<string>(codeType.txt);
+  const [code, setCode] = useState<string>('');
   const [files, setFiles] = useState<FileArray>([]);
   const [folderChain, setFolderChain] = useState<FileArray>([]);
 
@@ -208,6 +188,7 @@ const FileBrowserPage = ({ hostList }: tProps) => {
     if (currentFolder) {
       // console.log('调用api添加文件', currentFolder);
       setIsMkdir(true);
+      setDialogType('mkdir');
       setOpen(true);
       setParentDir(currentFolder.id);
     }
@@ -301,9 +282,39 @@ const FileBrowserPage = ({ hostList }: tProps) => {
       if (currentFolder) {
         // console.log('调用api上传文件', currentFolder);
         setIsMkdir(false);
+        setDialogType('uploadFiles');
         setFilePath(currentFolder.id);
         setOpen(true);
       }
+    }
+  );
+
+  const viewFilesAction = defineFileAction(
+    {
+      id: 'view_files',
+      requiresSelection: true,
+      button: {
+        name: '预览文件',
+        toolbar: true,
+        contextMenu: true,
+        group: 'Actions',
+        icon: ChonkyIconName.loading
+      }
+    } as const,
+    ({ state }) => {
+      console.log(state);
+      const { contextMenuTriggerFile } = state;
+      const fileType = getFileType(contextMenuTriggerFile?.name);
+      console.log(fileType);
+      if (contextMenuTriggerFile?.isDir) { // 文件夹不能预览
+        return;
+      }
+      // 调用api 获取文件内容 然后setCode
+      setIsMkdir(false);
+      setDialogType('viewFile');
+      setLanguage(codeType[fileType] || 'txt');
+      setCode('');
+      setOpen(true);
     }
   );
 
@@ -314,7 +325,8 @@ const FileBrowserPage = ({ hostList }: tProps) => {
     selectAllFileAction,
     clearSelectAction,
     openSelectAction,
-    uploadFilesAction
+    uploadFilesAction,
+    viewFilesAction
   ];
 
   const handleAction = React.useCallback<FileActionHandler>(async(data) => {
@@ -368,7 +380,7 @@ const FileBrowserPage = ({ hostList }: tProps) => {
     }
   }, [hostId]);
 
-  const viewFiles = async() => {
+  const browseFiles = async() => {
     const res = (await fileBrowserApi({ host_id: hostId, id: '.' })) as HTTPResult;
     if (res.code !== '200') {
       enqueueSnackbar(res.msg, {
@@ -404,6 +416,32 @@ const FileBrowserPage = ({ hostList }: tProps) => {
     setFolderChain(datas.data.folderChains);
   }, [hostId, parentDir, dir, filePath]);
 
+  const showDialogType = {
+    'mkdir': (<TextField
+      className={classes.mkdir}
+      size='small'
+      id='outlined-mkdir'
+      label='请输入文件夹名称'
+      variant='outlined'
+      value={dir}
+      onChange={(e) => setDir(e.target.value)}
+    />),
+    'uploadFiles': (<UploadButtons type='host' filePath={filePath} typeId={hostId} todo={todo}/>),
+    'viewFile': (
+      <div style={{ maxHeight: '80vh' }}>
+        <SyntaxHighlighter
+          showLineNumbers={true}
+          lineNumberStyle={{ color: '#ddd', fontSize: 10 }}
+          style={darkMode ? vscDarkPlus : coyWithoutShadows}
+          language={language}
+          PreTag='div'
+        >
+          {String(code).replace(/\n$/, '')}
+        </SyntaxHighlighter>
+      </div>
+    )
+  };
+
   return (
     <div className={classes.root}>
       <div className={classes.ControlBox}>
@@ -424,7 +462,7 @@ const FileBrowserPage = ({ hostList }: tProps) => {
           disabled={!hostId}
           className={classes.LinkButton}
           startIcon={<LinkIcon />}
-          onClick={viewFiles}
+          onClick={browseFiles}
         >
           查看
         </Button>
@@ -439,19 +477,19 @@ const FileBrowserPage = ({ hostList }: tProps) => {
           i18n={{ formatters: { formatFileModDate: (i, files) => files?.modDate as string }}}
         />
       </div>
-      <Dialog open={open} onClose={() => setOpen(false)} aria-labelledby='upload_files'>
-        <DialogContent dividers>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        aria-labelledby='file-browser'
+        fullWidth
+        maxWidth={dialogType === 'viewFile' ? 'xl' : 'sm'}
+      >
+        <DialogContent
+          style={{ minHeight: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'center ' }}
+          dividers
+        >
           <DialogContentText>
-            {isMkdir ? <TextField
-              className={classes.mkdir}
-              size='small'
-              id='outlined-mkdir'
-              label='请输入文件夹名称'
-              variant='outlined'
-              value={dir}
-              onChange={(e) => setDir(e.target.value)}
-            /> : <UploadButtons type='host' filePath={filePath} typeId={hostId} todo={todo}/>
-            }
+            {showDialogType[dialogType]}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

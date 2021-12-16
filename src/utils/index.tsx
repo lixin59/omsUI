@@ -59,3 +59,11 @@ export function downloadFile(url: string, fileName: string): void {
   // 释放blob URL地址
   window.URL.revokeObjectURL(url);
 }
+
+export function getFileType(filePath: any): string {
+  if (typeof filePath !== 'string') {
+    return '';
+  }
+  const startIndex = filePath.lastIndexOf('.');
+  if (startIndex !== -1) { return filePath.substring(startIndex + 1, filePath.length).toLowerCase(); } else return '';
+}

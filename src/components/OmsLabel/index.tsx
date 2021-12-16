@@ -11,7 +11,7 @@ const OmsLabel = withStyles((theme: Theme) =>
       top: '15%',
       left: '10px',
       color: theme.palette.success.main,
-      zIndex: 9999999999999
+      zIndex: 9
     },
     focused: {
       top: '0px',
