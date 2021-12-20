@@ -1,7 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { GroupInfo, HostInfo, IState, TagInfo } from '../../../store/interface';
-import { fileBrowserApi, deleteFileApi, createFileApi, HTTPResult } from '../../../api/http/httpRequestApi';
+import { fileBrowserApi, deleteFileApi, createFileApi, previewFileApi, HTTPResult } from '../../../api/http/httpRequestApi';
+import { Base64 } from 'js-base64';
 import {
   FullFileBrowser,
   setChonkyDefaults,
@@ -35,11 +36,21 @@ import { getFileType } from '../../../utils';
 import OmsViewMarkdown from '../../../components/OmsViewMarkdown';
 import OmsSyntaxHighlight from '../../../components/OmsSyntaxHighligh';
 
+const imgType = {
+  jpeg: 'jpeg',
+  tiff: 'tiff',
+  png: 'png',
+  gif: 'gif',
+  svg: 'svg',
+  pdf: 'pdf'
+};
+
 const codeType = {
   c: 'c',
   cpp: 'cpp',
   css: 'css',
   go: 'go',
+  html: 'html',
   js: 'javascript',
   jsx: 'jsx',
   java: 'java',
@@ -47,9 +58,13 @@ const codeType = {
   md: 'markdown',
   php: 'php',
   py: 'python',
+  rs: 'rust',
   tsx: 'jsx',
   txt: 'txt',
-  ts: 'typescript'
+  ts: 'typescript',
+  xml: 'xml',
+  yaml: 'yaml',
+  ...imgType
 };
 
 type tDP = {
@@ -302,19 +317,28 @@ const FileBrowserPage = ({ hostList }: tProps) => {
         icon: ChonkyIconName.loading
       }
     } as const,
-    ({ state }) => {
-      console.log(state);
+    async({ state }) => {
+      // console.log(state);
       const { contextMenuTriggerFile } = state;
       const fileType = getFileType(contextMenuTriggerFile?.name);
-      console.log(fileType);
+      // console.log(fileType);
       if (contextMenuTriggerFile?.isDir) { // 文件夹不能预览
         return;
       }
       // 调用api 获取文件内容 然后setCode
+      const res = (await previewFileApi({ host_id: hostId, id: contextMenuTriggerFile?.id })) as HTTPResult;
+      // console.log(res);
+      if (res.code !== '200') {
+        enqueueSnackbar(res.msg, {
+          autoHideDuration: 3000,
+          variant: 'error'
+        });
+        return;
+      }
       setIsMkdir(false);
       setDialogType('viewFile');
       setLanguage(codeType[fileType] || 'txt');
-      setCode('');
+      setCode(res.data);
       setOpen(true);
     }
   );
@@ -430,8 +454,10 @@ const FileBrowserPage = ({ hostList }: tProps) => {
     'uploadFiles': (<UploadButtons type='host' filePath={filePath} typeId={hostId} todo={todo}/>),
     'viewFile': (
       <div style={{ maxHeight: '80vh' }}>
-        {language === codeType.md ? <OmsViewMarkdown textContent={code} darkMode={darkMode}/>
-          : <OmsSyntaxHighlight textContent={code} language={language} darkMode={darkMode}/>}
+        {language === codeType.md ? <OmsViewMarkdown textContent={Base64.decode(code)} darkMode={darkMode}/>
+          : imgType[language] ? <img src={`data:image/bmp;base64,${code}`} style={{ width: '100%', height: '100%' }} alt='图片预览'/>
+            : <OmsSyntaxHighlight textContent={Base64.decode(code)} language={language} darkMode={darkMode}/>
+        }
       </div>
     )
   };

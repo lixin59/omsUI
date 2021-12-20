@@ -400,6 +400,14 @@ export const downloadFileApi = (data:{
   return getApi(`${urlType.download_file}`, { ...data }, { responseType: 'blob', timeout: 1000 });
 };
 
+// 预览文件
+export const previewFileApi = (data:{
+  host_id: string | number, // host的ID
+  id: any // 文件路径 如/root/go/robots.txt
+}) => {
+  return getApi(`${urlType.preview_file}`, { ...data }, { timeout: 86400000 });
+};
+
 // 新增密钥
 export const addPrivateKeyApi = (data:{
   name: string, // 某主机秘钥

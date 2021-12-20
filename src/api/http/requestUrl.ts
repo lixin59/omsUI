@@ -19,6 +19,7 @@ export const urlType = {
   jobLogs: 'job/tail',
   upload_file: '/tools/upload',
   download_file: '/tools/download',
+  preview_file: '/tools/preview',
   fileBrowser: '/tools/browse',
   deleteFile: '/tools/delete',
   mkdir: '/tools/mkdir',
