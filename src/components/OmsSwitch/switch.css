@@ -1,0 +1,55 @@
+/* Switch开关样式 */
+/* 必须是input为 checkbox class 添加 switch 才能实现以下效果 */
+
+input[type='checkbox'].switch{
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: relative;
+  top: -4px;
+  left: -5px;
+  width: 48px;
+  height: 24px;
+  /*background-image: url("../../assets/icons/sun.png");*/
+  /*background-size: 50%;*/
+  /*border-radius: 20px;*/
+  /*border: 1px solid #000;*/
+  transition: border-color .3s, background-color .3s;
+}
+
+input[type='checkbox'].switch::after {
+  content: '';
+  display: inline-block;
+  width: 50%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1px solid #000;
+  background: #fff;
+  /*box-shadow: 0px 1px 0px 1px #999;*/
+  transition:.4s;
+  position: absolute;
+  left: 0%;
+  z-index: 2;
+}
+input[type='checkbox'].switch:hover::after {
+  box-shadow: 0px 0px 2px 3px #119c0f;
+}
+
+input[type='checkbox'].switch:checked {
+  border-radius: 12px;
+  background: rgba(255, 254, 254, 0.4);
+}
+
+/* 当input[type=checkbox]被选中时：伪元素显示下面样式 位置发生变化 */
+input[type='checkbox'].switch:checked::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  /* top: 0.053333rem; */
+}
+
+input[type='checkbox'].switch:checked:hover::after {
+  box-shadow: 0px 0px 2px 3px #26e924;
+}

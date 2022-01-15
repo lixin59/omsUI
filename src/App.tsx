@@ -6,8 +6,8 @@ import GitHubIcon from '@material-ui/icons/GitHub';
 import Button from '@material-ui/core/Button';
 import { SnackbarKey, SnackbarProvider } from 'notistack';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { ThemeProvider, createTheme, makeStyles, createStyles } from '@material-ui/core/styles';
-import ThemeSwitch from './components/OmsSwitch/ThemeSwitch';// 4.x.x 版本
+import ThemeSwitch from './components/OmsSwitch/ThemeSwitchInput';
+import { ThemeProvider, createTheme, makeStyles, createStyles } from '@material-ui/core/styles'; // 4.x.x 版本
 // import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'; // 5.x.x 版本
 
 declare module '@material-ui/core/styles/createPalette' {

@@ -15,6 +15,33 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
     display: 'flex',
     justifyContent: 'space-between'
   },
+  switchBox1: {
+    position: 'relative',
+    width: '48px',
+    height: '24px',
+    padding: '0px',
+    margin: '0px',
+    borderRadius: '12px',
+    border: '1px solid #000'
+  },
+  switchIconLeft: {
+    position: 'absolute',
+    left: '0px',
+    width: '50%',
+    height: '100%',
+    backgroundImage: `url(${moon})`,
+    backgroundSize: '100%',
+    zIndex: 1
+  },
+  switchIconRight: {
+    position: 'absolute',
+    right: '0px',
+    width: '50%',
+    height: '100%',
+    backgroundImage: `url(${sun})`,
+    backgroundSize: '100%',
+    zIndex: 1
+  },
   switchIconMoon: {
     width: '50%',
     height: '100%',
