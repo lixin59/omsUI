@@ -18,11 +18,10 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
   switchBox1: {
     position: 'relative',
     width: '48px',
-    height: '24px',
+    height: '26px',
     padding: '0px',
     margin: '0px',
-    borderRadius: '12px',
-    border: '1px solid #000'
+    borderRadius: '12px'
   },
   switchIconLeft: {
     position: 'absolute',
@@ -31,6 +30,7 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
     height: '100%',
     backgroundImage: `url(${moon})`,
     backgroundSize: '100%',
+    backgroundRepeat: 'no-repeat',
     zIndex: 1
   },
   switchIconRight: {
@@ -40,6 +40,7 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
     height: '100%',
     backgroundImage: `url(${sun})`,
     backgroundSize: '100%',
+    backgroundRepeat: 'no-repeat',
     zIndex: 1
   },
   switchIconMoon: {
