@@ -91,7 +91,7 @@ function HostInfoCard(props: tProps) {
 
   useEffect(() => {
     setTlc(tagList?.map((e) => ({ ...e, checked: !!hostInfo.tags?.find((item) => item.name === e.name) })));
-  }, [tagList]);
+  }, [tagList, hostInfo]);
 
   const title = '编辑主机信息';
   const content = HostInfoForm({ hostInfo: hosts, setHostInfo: setHosts, privateKeyList, groupList, tlc, setTlc });
