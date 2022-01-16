@@ -35,6 +35,7 @@ const OmsTab = withStyles((theme: Theme) =>
       '&$selected': {
         color: theme.palette.tag.main,
         fontSize: 18,
+        boxShadow: `2px 1px 2px 1px ${theme.palette.boxShadowInset.main} inset`,
         backgroundColor: theme.palette.grey.A700,
         fontWeight: theme.typography.fontWeightMedium
       },

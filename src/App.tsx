@@ -13,9 +13,11 @@ import { ThemeProvider, createTheme, makeStyles, createStyles } from '@material-
 declare module '@material-ui/core/styles/createPalette' {
   interface Palette {
     tag: Palette['primary'];
+    boxShadowInset: Palette['primary'];
   }
   interface PaletteOptions {
     tag: PaletteOptions['primary'];
+    boxShadowInset: PaletteOptions['primary'];
   }
 }
 
@@ -41,6 +43,9 @@ const themeLight = createTheme({
     background: {
       paper: '#fdfdfd'
     },
+    boxShadowInset: {
+      main: '#ccc'
+    },
     type: 'light',
     grey: {
       A100: '#f5f5f5', // BodyBox
@@ -59,6 +64,9 @@ const themeLight = createTheme({
 
 const themeDark = createTheme({
   palette: {
+    boxShadowInset: {
+      main: '#040404'
+    },
     type: 'dark',
     grey: {
       A100: '#2b2b2b',
