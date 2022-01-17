@@ -15,6 +15,7 @@ const UploadFile = lazy(() => import('../views/Mode/UploadFile'));
 const WebSSH = lazy(() => import('../views/Mode/WebSSH'));
 const Command = lazy(() => import('../views/Mode/Command'));
 const FileBrowser = lazy(() => import('../views/Mode/FileBrowser'));
+const HostMonitor = lazy(() => import('../views/Mode/HostMonitor'));
 
 
 const lazyLoad = (children: ReactNode): ReactNode => {
@@ -36,7 +37,8 @@ export const URL = {
   uploadFile: '/mode/upload_file',
   webSSH: '/mode/web_ssh',
   command: '/mode/command',
-  fileBrowser: '/mode/file_browser'
+  fileBrowser: '/mode/file_browser',
+  hostMonitor: '/mode/host_monitor'
 };
 
 const router:RouteObject[] = [
@@ -96,6 +98,10 @@ const router:RouteObject[] = [
           {
             path: URL.fileBrowser,
             element: lazyLoad(<FileBrowser/>)
+          },
+          {
+            path: URL.hostMonitor,
+            element: lazyLoad(<HostMonitor/>)
           }
         ]
       },
