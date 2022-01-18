@@ -1,8 +1,11 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { GroupInfo, HostInfo, IState, TagInfo } from '../../../store/interface';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
 import FormControl from '@material-ui/core/FormControl';
 import OmsLabel from '../../../components/OmsLabel';
 import OmsSelect from '../../../components/OmsSelect';
@@ -13,6 +16,9 @@ import LinkIcon from '@material-ui/icons/Link';
 import { useSnackbar } from 'notistack';
 import { baseUrl, url } from '../../../api/websocket/url';
 import GaugeChart from '../../../components/OmsEcharts/GaugeChart';
+import LiquidfillChart from '../../../components/OmsEcharts/LiquidfillChart';
+import PieChart from '../../../components/OmsEcharts/PieChart';
+import RowBarChart from '../../../components/OmsEcharts/RowBarChart';
 
 
 type tDP = {
@@ -79,11 +85,14 @@ interface IHostStatus {
   mem_cached: number, // 已缓存内存
   mem_free: number, // 内存余量
   mem_total: number, // 内存总量
-  running_procs: string, // 运行的进程数量
+  mem_usage: number, // 内存使用率
   swap_free: number, // 磁盘交换空间余量
   swap_total: number, // 磁盘交换空间总量
-  total_procs: string, // 总进程数
+  swap_usage: number, // swap使用率
+  running_procs: string | number, // 运行的进程数量
+  total_procs: string | number, // 总进程数
   uptime: number, // 运行时间
+  start_up_time: string // 运行时间
 }
 
 const useStyles = makeStyles((theme: Theme) => {
@@ -118,20 +127,33 @@ const useStyles = makeStyles((theme: Theme) => {
       }
     },
     dashBoard: {
-      height: '85%',
-      backgroundColor: '#000'
+      height: '85%'
     },
     box1: {
-      height: '30%',
-      backgroundColor: '#fff',
+      height: '10%',
       display: 'flex',
       alignContent: 'space-evenly',
       alignItems: 'center',
       justifyContent: 'space-around'
     },
+    box2: {
+      height: '30%',
+      display: 'flex',
+      alignContent: 'space-evenly',
+      alignItems: 'center',
+      justifyContent: 'space-around'
+    },
+    box3: {
+      overflow: 'auto',
+      height: '60%'
+    },
     box1Content: {
       height: '100%',
       width: '25%'
+    },
+    box3Content: {
+      height: '50%',
+      width: '100%'
     }
   });
 }
@@ -180,7 +202,7 @@ const HostMonitorPage = ({ hostList }: tProps) => {
 
   const browseHostMonitor = () => {
     console.log(hostId);
-    (ws as WebSocket).send(JSON.stringify({ type: 'HOST_STATUS', data: { type: 'host', id: hostId }}));
+    (ws as WebSocket).send(JSON.stringify({ type: 'HOST_STATUS', data: { type: 'host', id: hostId, interval: 2 }}));
   };
 
   return (
@@ -208,26 +230,49 @@ const HostMonitorPage = ({ hostList }: tProps) => {
           查看
         </Button>
       </div>
-      <div className={classes.dashBoard}>
+      <Paper className={classes.dashBoard} elevation={2}>
         <div className={classes.box1}>
+          <Typography variant='h5' gutterBottom>
+            {`主机名：${status?.hostname || ''}`}
+          </Typography>
+          <Typography variant='h5' gutterBottom>
+            {`运行时间：${status?.start_up_time || ''}`}
+          </Typography>
+        </div>
+        <Divider />
+        <div className={classes.box2}>
           <div className={classes.box1Content}>
-            cpu使用率
-            <GaugeChart data={status?.cpu.usage}/>
+            <GaugeChart data={status?.cpu.usage} title='cpu使用'/>
           </div>
           <div className={classes.box1Content}>
-            内存使用率
-            <GaugeChart data={Math.round(Number(status?.mem_total - status?.mem_free) / Number(status?.mem_total))}/>
+            <LiquidfillChart data={status?.mem_usage ? status?.mem_usage / 100 : 0 } title='内存使用'/>
           </div>
           <div className={classes.box1Content}>
-            swap使用率
-            <GaugeChart data={Math.round(Number(status?.swap_total - status?.swap_free) / Number(status?.swap_total))}/>
+            <PieChart
+              data={[{ value: status?.swap_total || 0, name: 'swap_total' }, { value: status?.swap_free || 0, name: 'swap_free' }]}
+              title='swap'
+            />
           </div>
           <div className={classes.box1Content}>
-            进程数量
-            <div>{status?.running_procs || 0}</div>
+            <RowBarChart
+              data={[{ value: status?.total_procs || 0, name: '总任务数' }, { value: status?.running_procs || 0, name: '运行中任务数' }]}
+              title='任务'
+            />
           </div>
         </div>
-      </div>
+        <Divider />
+        <div className={classes.box3}>
+          {status && status.fs_infos.map((e) =>
+            (<div key={e.used} className={classes.box3Content}>
+              <RowBarChart
+                data={[{ value: e.free || 0, name: '磁盘剩余空间' }, { value: e.used || 0, name: '磁盘已使用空间' }]}
+                title={`磁盘挂载点: ${e.mount_point}`}
+                color={['#45c5dc', '#971fde']}
+                xAxisName='字节'
+              />
+            </div>))}
+        </div>
+      </Paper>
     </div>
   );
 };

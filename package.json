@@ -30,6 +30,7 @@
     "chonky-icon-fontawesome": "^2.3.0",
     "echarts": "^5.2.2",
     "echarts-for-react": "^3.0.2",
+    "echarts-liquidfill": "^3.1.0",
     "js-base64": "^3.7.2",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
