@@ -1,11 +1,16 @@
 name: ci
 
+#on:
+#  # 每当 push 到 master 分支时触发部署
+#  push:
+#    branches: [master]
+#  # 手动触发部署
+#  # workflow_dispatch:
+
 on:
-  # 每当 push 到 master 分支时触发部署
   push:
-    branches: [master]
-  # 手动触发部署
-  # workflow_dispatch:
+    tags:
+      - '**'
 
 jobs:
   docs:
@@ -50,7 +55,7 @@ jobs:
       # 创建release文件
       - name: release
         uses: softprops/action-gh-release@v1
-        # if: startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/')
         with:
           files: "omsui.zip"
         env:
