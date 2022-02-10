@@ -43,12 +43,25 @@ jobs:
       - name: Build frontend
         run: yarn build
 
-      - name: Deploy to GitHub Pages
-        uses: crazy-max/ghaction-github-pages@v2
+      # 压缩dist目录
+      - name: Compressed file
+        run: zip -r omsui.zip ./dist
+
+      # 创建release文件
+      - name: release
+        uses: softprops/action-gh-release@v1
+        # if: startsWith(github.ref, 'refs/tags/')
         with:
-          # 部署到 gh-pages 分支
-          target_branch: gh-pages
-          # 部署目录为Vite项目的默认输出目录
-          build_dir: ./dist
+          files: "omsui.zip"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+#      - name: Deploy to GitHub Pages
+#        uses: crazy-max/ghaction-github-pages@v2
+#        with:
+#          # 部署到 gh-pages 分支
+#          target_branch: gh-pages
+#          # 部署目录为Vite项目的默认输出目录
+#          build_dir: ./dist
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
