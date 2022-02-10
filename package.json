@@ -2,8 +2,9 @@
   "name": "omsUI",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
     "build": "tsc && vite build",
+    "dev": "vite",
+    "release": "yarn version",
     "serve": "vite preview"
   },
   "author": {
