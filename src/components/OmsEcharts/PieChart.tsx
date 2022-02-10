@@ -74,4 +74,6 @@ const PieChart = memo((props:tProps) => {
     />);
 });
 
+PieChart.displayName = 'PieChart';
+
 export default PieChart;

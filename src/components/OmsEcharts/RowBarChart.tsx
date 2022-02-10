@@ -124,4 +124,6 @@ const RowBarChart = memo((props:tProps) => {
     />);
 });
 
+RowBarChart.displayName = 'RowBarChart';
+
 export default RowBarChart;

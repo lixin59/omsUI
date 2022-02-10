@@ -100,4 +100,6 @@ const LiquidfillChart = memo((props:tProps) => {
     />);
 });
 
+LiquidfillChart.displayName = 'LiquidfillChart';
+
 export default LiquidfillChart;

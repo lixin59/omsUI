@@ -134,4 +134,6 @@ const GaugeChart = memo((props:tProps) => {
     />);
 });
 
+GaugeChart.displayName = 'GaugeChart';
+
 export default GaugeChart;
