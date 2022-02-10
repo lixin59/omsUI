@@ -1,0 +1,1 @@
+import{as as a,at as s,au as o,av as e,aw as i,ax as t,ay as r,az as d,aA as n,aB as p,aC as x,aD as y,aE as l}from"./vendor.3adfed64.js";var v=a(s(e,i,t,r,d,n,p,x,y,l)),B=o("div")(v,{name:"MuiBox"}),g=B;export{g as B};

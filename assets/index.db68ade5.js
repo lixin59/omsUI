@@ -1,0 +1,1 @@
+import{j as t,m as r}from"./vendor.3adfed64.js";const a=r(o=>({root:{width:"100%",height:"100%",overflowY:"scroll",backgroundColor:o.palette.grey.A100}}));function c(o){const{children:s}=o,e=a();return t("div",{className:e.root,children:s})}export{c as B};

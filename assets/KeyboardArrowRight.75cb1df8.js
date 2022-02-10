@@ -1,0 +1,1 @@
+import{Z as e,e as r}from"./vendor.3adfed64.js";var t=e(r.exports.createElement("path",{d:"M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z"})),o=e(r.exports.createElement("path",{d:"M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"}));export{t as K,o as a};
