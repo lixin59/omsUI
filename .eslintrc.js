@@ -20,7 +20,7 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module',
   },
-  plugins: ['react', '@typescript-eslint', 'prettier'],
+  plugins: ['react', '@typescript-eslint'],
   rules: {
     'prettier/prettier': 'error',
     'accessor-pairs': 2, // 强制 getter 和 setter 在对象中成对出现
