@@ -80,31 +80,31 @@ yarn build
 ## 项目预览
 ### 主题切换
 
-![浅色](./public/images/light.png)
-![深色](./public/images/dark.png)
+![浅色](./docs/images/light.png)
+![深色](./docs/images/dark.png)
 
 ### 主机页面
 
-![主机页面](./public/images/home.png)
+![主机页面](./docs/images/home.png)
 
 ### 分组管理
 
-![分组管理](./public/images/group.png)
+![分组管理](./docs/images/group.png)
 
 ### 任务管理
 
-![任务管理](./public/images/job.png)
+![任务管理](./docs/images/job.png)
 
 ### 上传文件
 
-![上传文件](./public/images/upload.png)
+![上传文件](./docs/images/upload.png)
 
 ### web ssh
 
-![web ssh](./public/images/webssh.png)
+![web ssh](./docs/images/webssh.png)
 
 
 ### 文件浏览
 
-![文件浏览](./public/images/file.png)
-![文件浏览](./public/images/file1.png)
+![文件浏览](./docs/images/file.png)
+![文件浏览](./docs/images/file1.png)
