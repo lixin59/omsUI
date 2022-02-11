@@ -1,0 +1,8 @@
+# 忽略打包的文件
+unpackage
+
+node_modules
+
+dist
+
+.eslintrc.js
