@@ -67,7 +67,7 @@ module.exports = {
       }
     ], // 缩进风格
     // JSX 属性中一致使用双引号或单引号
-    'jsx-quotes': [2, 'prefer-single'],
+    'jsx-quotes': [2, 'prefer-double'],
     // 对象字面量中冒号的前后空格
     'key-spacing': [
       2,
