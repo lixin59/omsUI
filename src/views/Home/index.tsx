@@ -6,7 +6,8 @@ import {
   addHostApi,
   HTTPResult,
   getGroupsApi,
-  getTagsApi, getPrivateKeysApi
+  getTagsApi,
+  getPrivateKeysApi
 } from '../../api/http/httpRequestApi';
 import Loading from '../../components/OmsSkeleton/Loading';
 import OmsError from '../../components/OmsError';
@@ -19,6 +20,7 @@ import actions from '../../store/action';
 import BodyBox from '../../components/Bodybox';
 import HostInfoCard from '../../components/HostInfoCard';
 import HostInfoForm from '../../components/HostInfoCard/hostInfoForm';
+import { Scrollbars } from 'react-custom-scrollbars';
 import { GroupInfo, IState, TagInfo, HostInfo, PrivateKeyInfo } from '../../store/interface';
 import homeStyle from './homStyle';
 import FormDialog from '../../components/OmsDialog/FormDialog';
@@ -33,13 +35,13 @@ type tDP = {
   initStore: ActionCreator<any>;
 };
 
-type tOP = {};
+type tOP = any;
 
 type tSP = tOP & {
-  hostList: HostInfo[],
-  groupList: GroupInfo[],
-  tagList: TagInfo[],
-  privateKeyList: PrivateKeyInfo[],
+  hostList: HostInfo[];
+  groupList: GroupInfo[];
+  tagList: TagInfo[];
+  privateKeyList: PrivateKeyInfo[];
 };
 
 const baseHostInfo: HostInfo = {
@@ -83,11 +85,11 @@ const mapDispatch: tDP = {
 type tProps = tSP & tDP;
 
 function Home(props: tProps) {
-  const { hostList, addHost, initTag, initGroup, initPrivateKey,
-    privateKeyList, groupList, tagList, initStore } = props;
+  const { hostList, addHost, initTag, initGroup, initPrivateKey, privateKeyList, groupList, tagList, initStore } =
+    props;
 
   useEffect(() => {
-    (async() => {
+    (async () => {
       const res = (await getGroupsApi()) as HTTPResult;
       const res1 = (await getTagsApi()) as HTTPResult;
       const res2 = (await getPrivateKeysApi()) as HTTPResult;
@@ -125,7 +127,7 @@ function Home(props: tProps) {
     setOpen(false);
   };
 
-  const addNewHost = async() => {
+  const addNewHost = async () => {
     if (!hostInfo.addr) {
       enqueueSnackbar(`主机地址不能为空`, {
         autoHideDuration: 3000,
@@ -134,14 +136,14 @@ function Home(props: tProps) {
       return;
     }
     if (!hostInfo.user) {
-      enqueueSnackbar(`主机名不能为空`, {
+      enqueueSnackbar(`用户名不能为空`, {
         autoHideDuration: 3000,
         variant: 'error'
       });
       return;
     }
     if (!hostInfo.name) {
-      enqueueSnackbar(`用户名不能为空`, {
+      enqueueSnackbar(`主机名不能为空`, {
         autoHideDuration: 3000,
         variant: 'error'
       });
@@ -175,7 +177,7 @@ function Home(props: tProps) {
       tags: JSON.stringify(data.tags?.map((e: TagInfo) => e.id))
     };
 
-    console.log(resData);
+    // console.log(resData);
 
     const res = (await addHostApi(resData)) as HTTPResult;
     if (res.code !== '200') {
@@ -201,14 +203,19 @@ function Home(props: tProps) {
         initStore={initStore}
         apiFn={getHostsApi}
         delay={0}
-        loading={<Loading/>}
+        loading={<Loading />}
         error={
           <div style={{ marginTop: '100px' }}>
-            <OmsError errInfo='请求数据失败，网络异常' variant='h3' errType='server' imgStyle={{ width: '400px', height: '400px' }}/>
+            <OmsError
+              errInfo="请求数据失败，网络异常"
+              variant="h3"
+              errType="server"
+              imgStyle={{ width: '400px', height: '400px' }}
+            />
           </div>
-        }
-      >
+        }>
         {
+          // <Scrollbars></Scrollbars>
           <div
             style={{
               width: '90%',
@@ -222,37 +229,24 @@ function Home(props: tProps) {
               justifyItems: 'center',
               gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))',
               gridGap: '20px 20px'
-            }}
-          >
+            }}>
             {hostList.map((i: HostInfo) => {
-              return (
-                <HostInfoCard
-                  hostInfo={i}
-                  key={i.id}
-                />
-              );
+              return <HostInfoCard hostInfo={i} key={i.id} />;
             })}
           </div>
         }
       </HTTP.Get>
       <Fab
-        variant='extended'
-        size='medium'
-        color='primary'
-        aria-label='add'
+        variant="extended"
+        size="medium"
+        color="primary"
+        aria-label="add"
         className={classes.FabButton}
-        onClick={handleClickOpen}
-      >
+        onClick={handleClickOpen}>
         <AddIcon />
         添加主机
       </Fab>
-      <FormDialog
-        open={open}
-        content={content}
-        toClose={handleClose}
-        title={title}
-        todo={addNewHost}
-      />
+      <FormDialog open={open} content={content} toClose={handleClose} title={title} todo={addNewHost} />
     </BodyBox>
   );
 }

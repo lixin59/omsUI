@@ -9,6 +9,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
+import { Scrollbars } from 'react-custom-scrollbars';
 import styles from './style';
 import { ActionCreator } from 'redux';
 import LogDialog from '../../../components/OmsDialog/LogDialog';
@@ -33,10 +34,10 @@ type tDP = {
   editJob: ActionCreator<any>;
 };
 
-type tOP = {};
+type tOP = any;
 
 type tSP = tOP & {
-  jobList: JobInfo[]
+  jobList: JobInfo[];
 };
 
 type tProps = tSP & tDP;
@@ -106,12 +107,12 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
   const [openLog, setOpenLog] = useState<boolean>(false);
   const [data, setData] = useState<any>('');
 
-  const title: string = '确定要删除这个任务吗？';
-  const text: string = '如果不想删除可以点击取消';
+  const title = '确定要删除这个任务吗？';
+  const text = '如果不想删除可以点击取消';
 
   const content = JobInfoForm({ Info, setInfo });
 
-  const startJob = async(info: JobInfo) => {
+  const startJob = async (info: JobInfo) => {
     const { id, name } = info;
     const res = (await jobStartApi(id)) as HTTPResult;
     editJob(res.data);
@@ -128,7 +129,7 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
     });
   };
 
-  const stopJob = async(info: JobInfo) => {
+  const stopJob = async (info: JobInfo) => {
     const { id, name } = info;
     const res = (await jobStopApi(id)) as HTTPResult;
     if (res.code !== '200') {
@@ -145,7 +146,7 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
     });
   };
 
-  const fetchRepos = (url:string) => {
+  const fetchRepos = (url: string) => {
     if (cancelToken) {
       // console.log('取消上一次请求');
       cancelToken.cancel('Operation canceled due to new request.');
@@ -153,14 +154,15 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
     const source = axios.CancelToken.source(); // 声明一个source对象
     setCancelToken(source);
 
-    axios.get(url, {
-      onDownloadProgress: (progressEvent) => {
-        const dataChunk = progressEvent.currentTarget.response;
-        setData(dataChunk);
-        // console.log(dataChunk);
-      },
-      cancelToken: source.token
-    })
+    axios
+      .get(url, {
+        onDownloadProgress: (progressEvent) => {
+          const dataChunk = progressEvent.currentTarget.response;
+          setData(dataChunk);
+          // console.log(dataChunk);
+        },
+        cancelToken: source.token
+      })
       .catch((error) => {
         if (axios.isCancel(error)) {
           console.log('Request canceled', error);
@@ -171,7 +173,7 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
     // source.cancel('Operation canceled by the user.');
   };
 
-  const jobLogs = async(info: JobInfo) => {
+  const jobLogs = async (info: JobInfo) => {
     const { id } = info;
     // const resd = (await jobLogsApi(id)) as HTTPResult;
     // jobLogsApi(id);
@@ -190,7 +192,7 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
     // a.click();
   };
 
-  const toEdit = useCallback(async() => {
+  const toEdit = useCallback(async () => {
     const res = (await editJobApi(Info)) as HTTPResult;
     if (res.code !== '200') {
       enqueueSnackbar(`任务: ${Info.name}修改失败${res.msg}`, {
@@ -215,7 +217,7 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
     setOpen(false);
   };
 
-  const toDelete = useCallback(async() => {
+  const toDelete = useCallback(async () => {
     const res = (await deleteJobApi(Info.id)) as HTTPResult;
     if (res.code !== '200') {
       enqueueSnackbar(`任务: ${Info.name}删除失败${res.msg}`, {
@@ -252,80 +254,59 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
   return (
     <Paper className={classes.rootTable}>
       <TableContainer className={classes.container}>
-        <Table stickyHeader aria-label='sticky table'>
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  align='center'
-                  key={column.id}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {jobList && jobList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-              return (
-                <TableRow hover role='checkbox' tabIndex={-1} key={row.name}>
-                  <TableCell key={row.name} align='center'>
-                    {row.name}
+        <Scrollbars>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell align="center" key={column.id} style={{ minWidth: column.minWidth }}>
+                    {column.label}
                   </TableCell>
-                  <TableCell key={row.type} align='center'>
-                    {row.type}
-                  </TableCell>
-                  <TableCell key={row.spec} align='center'>
-                    {row.spec}
-                  </TableCell>
-                  <TableCell key={row.cmd} align='center'>
-                    {row.cmd}
-                  </TableCell>
-                  <TableCell key={row.status} align='center'>
-                    {row.status}
-                  </TableCell>
-                  <TableCell align='center'>
-                    <Button
-                      className={classes.editBtn}
-                      onClick={() => { setInfo(row); setOpenEdit(true); }}
-                    >
-                      编辑
-                    </Button>
-                    <Button
-                      className={classes.deleteButton}
-                      onClick={() => dltButtonClick(row)}
-                    >
-                      删除
-                    </Button>
-                    <Button
-                      className={classes.starBtn}
-                      onClick={() => startJob(row)}
-                    >
-                      启动
-                    </Button>
-                    <Button
-                      className={classes.stopBtn}
-                      onClick={() => stopJob(row)}
-                    >
-                      停止
-                    </Button>
-                    <Button
-                      className={classes.reStarBtn}
-                      onClick={() => jobLogs(row)}
-                    >
-                      日志
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {jobList &&
+                jobList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                  return (
+                    <TableRow hover role="checkbox" tabIndex={-1} key={row.name}>
+                      <TableCell align="center">{row.name}</TableCell>
+                      <TableCell align="center">{row.type}</TableCell>
+                      <TableCell align="center">{row.spec}</TableCell>
+                      <TableCell align="center">{row.cmd}</TableCell>
+                      <TableCell align="center">{row.status}</TableCell>
+                      <TableCell align="center">
+                        <Button
+                          className={classes.editBtn}
+                          onClick={() => {
+                            setInfo(row);
+                            setOpenEdit(true);
+                          }}>
+                          编辑
+                        </Button>
+                        <Button className={classes.deleteButton} onClick={() => dltButtonClick(row)}>
+                          删除
+                        </Button>
+                        <Button className={classes.starBtn} onClick={() => startJob(row)}>
+                          启动
+                        </Button>
+                        <Button className={classes.stopBtn} onClick={() => stopJob(row)}>
+                          停止
+                        </Button>
+                        <Button className={classes.reStarBtn} onClick={() => jobLogs(row)}>
+                          日志
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </Scrollbars>
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
-        component='div'
+        component="div"
         labelRowsPerPage={<div>每页行数:</div>}
         labelDisplayedRows={({ from, to, count }) => `${from}-${to} 总数 ${count !== -1 ? count : 0}`}
         count={jobList.length}
@@ -334,19 +315,8 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      <LogDialog
-        open={openLog}
-        title={'查看日志'}
-        text={data}
-        toClose={toCloseLog}
-      />
-      <TipDialog
-        open={open}
-        title={title}
-        text={text}
-        toClose={closeDialog}
-        todo={toDelete}
-      />
+      <LogDialog open={openLog} title={'任务日志'} text={data} toClose={toCloseLog} />
+      <TipDialog open={open} title={title} text={text} toClose={closeDialog} todo={toDelete} />
       <FormDialog
         open={openEdit}
         content={content}

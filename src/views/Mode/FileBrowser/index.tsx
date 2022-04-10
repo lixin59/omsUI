@@ -1,7 +1,13 @@
 import React, { useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { GroupInfo, HostInfo, IState, TagInfo } from '../../../store/interface';
-import { fileBrowserApi, deleteFileApi, createFileApi, previewFileApi, HTTPResult } from '../../../api/http/httpRequestApi';
+import {
+  fileBrowserApi,
+  deleteFileApi,
+  createFileApi,
+  previewFileApi,
+  HTTPResult
+} from '../../../api/http/httpRequestApi';
 import { Base64 } from 'js-base64';
 import {
   FullFileBrowser,
@@ -28,6 +34,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
 import FileIcon from './FileIcon';
+import { Scrollbars } from 'react-custom-scrollbars';
 import qs from 'qs';
 import { baseUrl, urlType } from '../../../api/http/requestUrl';
 import { downloadFile } from '../../../utils';
@@ -35,6 +42,7 @@ import { useSnackbar } from 'notistack';
 import { getFileType } from '../../../utils';
 import OmsViewMarkdown from '../../../components/OmsViewMarkdown';
 import OmsSyntaxHighlight from '../../../components/OmsSyntaxHighligh';
+import { FileData } from 'chonky/src/types/file.types';
 
 const imgType = {
   jpeg: 'jpeg',
@@ -76,12 +84,13 @@ type tDP = {
   // editTag: ActionCreator<any>;
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 type tOP = {};
 
 type tSP = tOP & {
-  hostList: HostInfo[],
-  groupList: GroupInfo[],
-  tagList: TagInfo[]
+  hostList: HostInfo[];
+  groupList: GroupInfo[];
+  tagList: TagInfo[];
 };
 
 const mapStateToProps = (state: IState, props: tOP): tSP => ({
@@ -104,7 +113,6 @@ type tProps = tSP & tDP;
 setChonkyDefaults({ iconComponent: FileIcon });
 
 const FileBrowserPage = ({ hostList }: tProps) => {
-
   let darkMode = false;
 
   const useStyles = makeStyles((theme: Theme) => {
@@ -144,9 +152,7 @@ const FileBrowserPage = ({ hostList }: tProps) => {
         height: '85%'
       }
     });
-  }
-  );
-
+  });
 
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
@@ -162,72 +168,79 @@ const FileBrowserPage = ({ hostList }: tProps) => {
   const [files, setFiles] = useState<FileArray>([]);
   const [folderChain, setFolderChain] = useState<FileArray>([]);
 
-  const deleteAction = defineFileAction({
-    id: 'omsDelete',
-    requiresSelection: true,
-    button: {
-      name: '删除',
-      contextMenu: true,
-      icon: ChonkyIconName.trash,
-      group: 'Actions'
+  const deleteAction = defineFileAction(
+    {
+      id: 'omsDelete',
+      requiresSelection: true,
+      button: {
+        name: '删除',
+        contextMenu: true,
+        icon: ChonkyIconName.trash,
+        group: 'Actions'
+      }
+    },
+    async (data) => {
+      const { id, parentId } = data!.state!.contextMenuTriggerFile as FileData;
+      if (!id) {
+        return;
+      }
+      const rest = (await deleteFileApi({ host_id: hostId, id })) as HTTPResult;
+      if (rest.code !== '200') {
+        return;
+      }
+      const res = (await fileBrowserApi({ host_id: hostId, id: parentId })) as HTTPResult;
+      if (res.code !== '200') {
+        return;
+      }
+      setFiles(res.data.files);
+      setFolderChain(res.data.folderChains);
     }
-  }, async(data) => {
-    // @ts-ignore
-    const { id, parentId } = data.state.contextMenuTriggerFile;
-    if (!id) {
-      return;
-    }
-    const rest = (await deleteFileApi({ host_id: hostId, id })) as HTTPResult;
-    if (rest.code !== '200') {
-      return;
-    }
-    const res = (await fileBrowserApi({ host_id: hostId, id: parentId })) as HTTPResult;
-    if (res.code !== '200') {
-      return;
-    }
-    setFiles(res.data.files);
-    setFolderChain(res.data.folderChains);
-  });
+  );
 
-  const createAction = defineFileAction({
-    id: 'omsCreate',
-    button: {
-      name: '创建文件夹',
-      contextMenu: true,
-      toolbar: true,
-      icon: ChonkyIconName.folderCreate,
-      group: 'Actions'
+  const createAction = defineFileAction(
+    {
+      id: 'omsCreate',
+      button: {
+        name: '创建文件夹',
+        contextMenu: true,
+        toolbar: true,
+        icon: ChonkyIconName.folderCreate,
+        group: 'Actions'
+      }
+    },
+    (data) => {
+      const { folderChain } = data.getReduxState();
+      const currentFolder = folderChain[folderChain.length - 1];
+      if (currentFolder) {
+        // console.log('调用api添加文件', currentFolder);
+        setIsMkdir(true);
+        setDialogType('mkdir');
+        setOpen(true);
+        setParentDir(currentFolder.id);
+      }
     }
-  }, (data) => {
-    const { folderChain } = data.getReduxState();
-    const currentFolder = folderChain[folderChain.length - 1];
-    if (currentFolder) {
-      // console.log('调用api添加文件', currentFolder);
-      setIsMkdir(true);
-      setDialogType('mkdir');
-      setOpen(true);
-      setParentDir(currentFolder.id);
-    }
-  });
+  );
 
-  const downloadAction = defineFileAction({
-    id: 'omsDownload',
-    requiresSelection: true,
-    button: {
-      name: '下载文件',
-      contextMenu: true,
-      icon: ChonkyIconName.download
+  const downloadAction = defineFileAction(
+    {
+      id: 'omsDownload',
+      requiresSelection: true,
+      button: {
+        name: '下载文件',
+        contextMenu: true,
+        icon: ChonkyIconName.download
+      }
+    },
+    (data) => {
+      // console.log('下载', data.state.contextMenuTriggerFile);
+      const { id, name } = data?.state?.contextMenuTriggerFile as FileData;
+      if (hostId && id) {
+        const url = `${baseUrl}${urlType.download_file}?${qs.stringify({ host_id: hostId, id })}`;
+        // console.log('下载大文件', url);
+        downloadFile(url, name);
+      }
     }
-  }, (data) => {
-    // console.log('下载', data.state.contextMenuTriggerFile);
-    // @ts-ignore
-    const { id, name } = data?.state?.contextMenuTriggerFile;
-    if (hostId && id) {
-      const url = `${baseUrl}${urlType.download_file}?${qs.stringify({ host_id: hostId, id })}`;
-      // console.log('下载大文件', url);
-      downloadFile(url, name);
-    }
-  });
+  );
 
   const selectAllFileAction = defineFileAction({
     id: 'select_all_files',
@@ -264,21 +277,19 @@ const FileBrowserPage = ({ hostList }: tProps) => {
     }) as FileSelectionTransform
   } as const);
 
-  const openSelectAction = defineFileAction(
-    {
-      id: 'open_selection',
-      hotkeys: ['enter'],
-      requiresSelection: true,
-      fileFilter: FileHelper.isOpenable,
-      button: {
-        name: '打开文件夹',
-        toolbar: true,
-        contextMenu: true,
-        group: 'Actions',
-        icon: ChonkyIconName.openFiles
-      }
-    } as const
-  );
+  const openSelectAction = defineFileAction({
+    id: 'open_selection',
+    hotkeys: ['enter'],
+    requiresSelection: true,
+    fileFilter: FileHelper.isOpenable,
+    button: {
+      name: '打开文件夹',
+      toolbar: true,
+      contextMenu: true,
+      group: 'Actions',
+      icon: ChonkyIconName.openFiles
+    }
+  } as const);
 
   const uploadFilesAction = defineFileAction(
     {
@@ -317,12 +328,13 @@ const FileBrowserPage = ({ hostList }: tProps) => {
         icon: ChonkyIconName.loading
       }
     } as const,
-    async({ state }) => {
+    async ({ state }) => {
       // console.log(state);
       const { contextMenuTriggerFile } = state;
       const fileType = getFileType(contextMenuTriggerFile?.name);
       // console.log(fileType);
-      if (contextMenuTriggerFile?.isDir) { // 文件夹不能预览
+      if (contextMenuTriggerFile?.isDir) {
+        // 文件夹不能预览
         return;
       }
       // 调用api 获取文件内容 然后setCode
@@ -354,44 +366,15 @@ const FileBrowserPage = ({ hostList }: tProps) => {
     viewFilesAction
   ];
 
-  const handleAction = React.useCallback<FileActionHandler>(async(data) => {
-    // console.log(data);
-    if (data.id === ChonkyActions.OpenSelection.id && data.state?.contextMenuTriggerFile?.isDir) { // 右键菜单打开文件夹
-      if (!hostId) {
-        return;
-      }
-      const res = (await fileBrowserApi({ host_id: hostId, id: data.state.contextMenuTriggerFile.id })) as HTTPResult;
-      if (res.code !== '200') {
-        enqueueSnackbar(res.msg, {
-          autoHideDuration: 3000,
-          variant: 'error'
-        });
-        return;
-      }
-      setFiles(res.data.files);
-      setFolderChain(res.data.folderChains);
-    }
-    if (data.id === ChonkyActions.OpenFiles.id && data.payload.targetFile?.isDir) { // 单击文件树进入文件夹
-      if (!hostId) {
-        return;
-      }
-      const res = (await fileBrowserApi({ host_id: hostId, id: data.payload.targetFile.id })) as HTTPResult;
-      if (res.code !== '200') {
-        enqueueSnackbar(res.msg, {
-          autoHideDuration: 3000,
-          variant: 'error'
-        });
-        return;
-      }
-      setFiles(res.data.files);
-      setFolderChain(res.data.folderChains);
-    }
-    if (data.id === ChonkyActions.MouseClickFile.id && data.payload.clickType === 'double') { // 双击文件夹列表进入文件夹
-      if (data.payload.file.isDir) {
+  const handleAction = React.useCallback<FileActionHandler>(
+    async (data) => {
+      // console.log(data);
+      if (data.id === ChonkyActions.OpenSelection.id && data.state?.contextMenuTriggerFile?.isDir) {
+        // 右键菜单打开文件夹
         if (!hostId) {
           return;
         }
-        const res = (await fileBrowserApi({ host_id: hostId, id: data.payload.file.id })) as HTTPResult;
+        const res = (await fileBrowserApi({ host_id: hostId, id: data.state.contextMenuTriggerFile.id })) as HTTPResult;
         if (res.code !== '200') {
           enqueueSnackbar(res.msg, {
             autoHideDuration: 3000,
@@ -402,10 +385,45 @@ const FileBrowserPage = ({ hostList }: tProps) => {
         setFiles(res.data.files);
         setFolderChain(res.data.folderChains);
       }
-    }
-  }, [hostId]);
+      if (data.id === ChonkyActions.OpenFiles.id && data.payload.targetFile?.isDir) {
+        // 单击文件树进入文件夹
+        if (!hostId) {
+          return;
+        }
+        const res = (await fileBrowserApi({ host_id: hostId, id: data.payload.targetFile.id })) as HTTPResult;
+        if (res.code !== '200') {
+          enqueueSnackbar(res.msg, {
+            autoHideDuration: 3000,
+            variant: 'error'
+          });
+          return;
+        }
+        setFiles(res.data.files);
+        setFolderChain(res.data.folderChains);
+      }
+      if (data.id === ChonkyActions.MouseClickFile.id && data.payload.clickType === 'double') {
+        // 双击文件夹列表进入文件夹
+        if (data.payload.file.isDir) {
+          if (!hostId) {
+            return;
+          }
+          const res = (await fileBrowserApi({ host_id: hostId, id: data.payload.file.id })) as HTTPResult;
+          if (res.code !== '200') {
+            enqueueSnackbar(res.msg, {
+              autoHideDuration: 3000,
+              variant: 'error'
+            });
+            return;
+          }
+          setFiles(res.data.files);
+          setFolderChain(res.data.folderChains);
+        }
+      }
+    },
+    [hostId]
+  );
 
-  const browseFiles = async() => {
+  const browseFiles = async () => {
     const res = (await fileBrowserApi({ host_id: hostId, id: '.' })) as HTTPResult;
     if (res.code !== '200') {
       enqueueSnackbar(res.msg, {
@@ -419,7 +437,7 @@ const FileBrowserPage = ({ hostList }: tProps) => {
     setFolderChain(res.data.folderChains);
   };
 
-  const todo = useCallback(async() => {
+  const todo = useCallback(async () => {
     setOpen(false);
     let datas = {} as HTTPResult;
     if (isMkdir) {
@@ -442,22 +460,27 @@ const FileBrowserPage = ({ hostList }: tProps) => {
   }, [hostId, parentDir, dir, filePath]);
 
   const showDialogType = {
-    'mkdir': (<TextField
-      className={classes.mkdir}
-      size='small'
-      id='outlined-mkdir'
-      label='请输入文件夹名称'
-      variant='outlined'
-      value={dir}
-      onChange={(e) => setDir(e.target.value)}
-    />),
-    'uploadFiles': (<UploadButtons type='host' filePath={filePath} typeId={hostId} todo={todo}/>),
-    'viewFile': (
+    mkdir: (
+      <TextField
+        className={classes.mkdir}
+        size="small"
+        id="outlined-mkdir"
+        label="请输入文件夹名称"
+        variant="outlined"
+        value={dir}
+        onChange={(e) => setDir(e.target.value)}
+      />
+    ),
+    uploadFiles: <UploadButtons type="host" filePath={filePath} typeId={hostId} todo={todo} />,
+    viewFile: (
       <div style={{ maxHeight: '80vh' }}>
-        {language === codeType.md ? <OmsViewMarkdown textContent={Base64.decode(code)} darkMode={darkMode}/>
-          : imgType[language] ? <img src={`data:image/bmp;base64,${code}`} style={{ width: '100%', height: '100%' }} alt='图片预览'/>
-            : <OmsSyntaxHighlight textContent={Base64.decode(code)} language={language} darkMode={darkMode}/>
-        }
+        {language === codeType.md ? (
+          <OmsViewMarkdown textContent={Base64.decode(code)} darkMode={darkMode} />
+        ) : imgType[language] ? (
+          <img src={`data:image/bmp;base64,${code}`} style={{ width: '100%', height: '100%' }} alt="图片预览" />
+        ) : (
+          <OmsSyntaxHighlight textContent={Base64.decode(code)} language={language} darkMode={darkMode} />
+        )}
       </div>
     )
   };
@@ -468,22 +491,20 @@ const FileBrowserPage = ({ hostList }: tProps) => {
         <FormControl className={classes.Control}>
           <OmsLabel>请选择主机</OmsLabel>
           <OmsSelect
-            labelId='typeItem-select-label'
-            id='typeItem-select-label'
+            labelId="typeItem-select-label"
+            id="typeItem-select-label"
             value={hostId || ''}
-            onChange={(e) => setHost(e?.target?.value as number)}
-          >
+            onChange={(e) => setHost(e?.target?.value as number)}>
             {hostList.map((e) => {
-              return (<OmsMenuItem key={e.name} value={e.id}>{e.name}</OmsMenuItem>);
+              return (
+                <OmsMenuItem key={e.name} value={e.id}>
+                  {e.name}
+                </OmsMenuItem>
+              );
             })}
           </OmsSelect>
         </FormControl>
-        <Button
-          disabled={!hostId}
-          className={classes.LinkButton}
-          startIcon={<LinkIcon />}
-          onClick={browseFiles}
-        >
+        <Button disabled={!hostId} className={classes.LinkButton} startIcon={<LinkIcon />} onClick={browseFiles}>
           查看
         </Button>
       </div>
@@ -494,39 +515,37 @@ const FileBrowserPage = ({ hostList }: tProps) => {
           fileActions={myFileActions}
           onFileAction={handleAction}
           darkMode={darkMode}
-          i18n={{ formatters: { formatFileModDate: (i, files) => files?.modDate as string }}}
+          i18n={{
+            formatters: { formatFileModDate: (i, files) => files?.modDate as string }
+          }}
         />
       </div>
       <Dialog
         open={open}
         onClose={() => setOpen(false)}
-        aria-labelledby='file-browser'
+        aria-labelledby="file-browser"
         fullWidth
-        maxWidth={dialogType === 'viewFile' ? 'xl' : 'sm'}
-      >
+        maxWidth={dialogType === 'viewFile' ? 'xl' : 'sm'}>
         <DialogContent
           style={{ minHeight: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'center ' }}
-          dividers
-        >
+          dividers>
           <DialogContentText>
-            {showDialogType[dialogType]}
+            <Scrollbars style={{ minHeight: '550px' }}>{showDialogType[dialogType]}</Scrollbars>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)} color='primary'>
-            取消
+          <Button onClick={() => setOpen(false)} color="primary">
+            关闭
           </Button>
-          {isMkdir ? <Button onClick={todo} color='primary'>
-            确定
-          </Button> : null}
+          {isMkdir ? (
+            <Button onClick={todo} color="primary">
+              确定
+            </Button>
+          ) : null}
         </DialogActions>
       </Dialog>
     </div>
   );
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatch
-)(FileBrowserPage);
-
+export default connect(mapStateToProps, mapDispatch)(FileBrowserPage);

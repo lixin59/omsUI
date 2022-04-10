@@ -17,11 +17,17 @@ const Command = lazy(() => import('../views/Mode/Command'));
 const FileBrowser = lazy(() => import('../views/Mode/FileBrowser'));
 const HostMonitor = lazy(() => import('../views/Mode/HostMonitor'));
 
-
 const lazyLoad = (children: ReactNode): ReactNode => {
-  return <Suspense fallback={<><OmsLoading/></>}>
-    {children}
-  </Suspense>;
+  return (
+    <Suspense
+      fallback={
+        <>
+          <OmsLoading />
+        </>
+      }>
+      {children}
+    </Suspense>
+  );
 };
 
 export const URL = {
@@ -41,10 +47,10 @@ export const URL = {
   hostMonitor: '/mode/host_monitor'
 };
 
-const router:RouteObject[] = [
+const router: RouteObject[] = [
   {
     path: '/',
-    element: <Navigation/>,
+    element: <Navigation />,
     children: [
       {
         index: true,
@@ -58,15 +64,15 @@ const router:RouteObject[] = [
           {
             index: true,
             path: URL.groupTable,
-            element: lazyLoad(<Grouping/>)
+            element: lazyLoad(<Grouping />)
           },
           {
             path: URL.tagTable,
-            element: lazyLoad(<Tag/>)
+            element: lazyLoad(<Tag />)
           },
           {
             path: URL.privateKey,
-            element: lazyLoad(<PrivateKey/>)
+            element: lazyLoad(<PrivateKey />)
           }
         ]
       },
@@ -77,31 +83,31 @@ const router:RouteObject[] = [
           {
             index: true,
             path: URL.job,
-            element: lazyLoad(<Job/>)
+            element: lazyLoad(<Job />)
           },
           {
             path: URL.tunnel,
-            element: lazyLoad(<Tunnel/>)
+            element: lazyLoad(<Tunnel />)
           },
           {
             path: URL.uploadFile,
-            element: lazyLoad(<UploadFile/>)
+            element: lazyLoad(<UploadFile />)
           },
           {
             path: `${URL.webSSH}/:id`,
-            element: lazyLoad(<WebSSH/>)
+            element: lazyLoad(<WebSSH />)
           },
           {
             path: URL.command,
-            element: lazyLoad(<Command/>)
+            element: lazyLoad(<Command />)
           },
           {
             path: URL.fileBrowser,
-            element: lazyLoad(<FileBrowser/>)
+            element: lazyLoad(<FileBrowser />)
           },
           {
             path: URL.hostMonitor,
-            element: lazyLoad(<HostMonitor/>)
+            element: lazyLoad(<HostMonitor />)
           }
         ]
       },
