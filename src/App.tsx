@@ -3,6 +3,8 @@ import { useRoutes } from 'react-router-dom';
 import router from './router/index';
 import './App.css';
 import GitHubIcon from '@material-ui/icons/GitHub';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 import Button from '@material-ui/core/Button';
 import { SnackbarKey, SnackbarProvider } from 'notistack';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -34,7 +36,8 @@ const useStyles = makeStyles(() =>
       width: '100px',
       '@media (max-width:940px)': {
         display: 'none'
-      }}
+      }
+    }
   })
 );
 
@@ -91,9 +94,7 @@ const onClickDismiss = (key: SnackbarKey) => () => {
 };
 
 const OmsRouter = () => {
-  return <>
-    {useRoutes(router)}
-  </>;
+  return <>{useRoutes(router)}</>;
 };
 
 function App() {
@@ -106,15 +107,15 @@ function App() {
   };
 
   return (
-    <div className='App'>
+    <div className="App">
       <ThemeProvider theme={light ? themeLight : themeDark}>
         <CssBaseline />
         <SnackbarProvider
           ref={notistackRef}
           action={(key) => (
-            <Button onClick={onClickDismiss(key)}>
-              ✖️
-            </Button>
+            <IconButton size="small" onClick={onClickDismiss(key)}>
+              ️<CloseIcon fontSize="small" />
+            </IconButton>
           )}
           anchorOrigin={{
             vertical: 'top',
@@ -127,14 +128,11 @@ function App() {
             warning: '⚠️',
             info: 'ℹ️'
           }}>
-          <OmsRouter/>
+          <OmsRouter />
         </SnackbarProvider>
         <div className={classes.githubIconBox}>
-          <GitHubIcon onClick={openGithub}/>
-          <ThemeSwitch
-            checked={light}
-            onChange={() => setLight((prev) => !prev)}
-          />
+          <GitHubIcon onClick={openGithub} />
+          <ThemeSwitch checked={light} onChange={() => setLight((prev) => !prev)} />
         </div>
       </ThemeProvider>
     </div>
