@@ -9,6 +9,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
+import { Scrollbars } from 'react-custom-scrollbars';
 import styles from './style';
 import { ActionCreator } from 'redux';
 import { GroupInfo } from '../../store/interface';
@@ -24,10 +25,10 @@ type tDP = {
   editGroup: ActionCreator<any>;
 };
 
-type tOP = {};
+type tOP = any;
 
 type tSP = tOP & {
-  groupList: GroupInfo[]
+  groupList: GroupInfo[];
 };
 
 type tProps = tSP & tDP;
@@ -73,7 +74,7 @@ export default function GroupTable({ groupList, deleteGroup, editGroup }: tProps
 
   const content = GroupForm({ Info, setInfo });
 
-  const toEdit = useCallback(async() => {
+  const toEdit = useCallback(async () => {
     const res = (await editGroupApi(Info)) as HTTPResult;
     if (res.code !== '200') {
       enqueueSnackbar(`分组: ${Info.name}修改失败${res.msg}`, {
@@ -89,8 +90,8 @@ export default function GroupTable({ groupList, deleteGroup, editGroup }: tProps
     });
   }, [Info]);
 
-  const title: string = '确定要删除这个分组吗？';
-  const text: string = '如果不想删除可以点击取消';
+  const title = '确定要删除这个分组吗？';
+  const text = '如果不想删除可以点击取消';
   const dltButtonClick = (info: GroupInfo) => {
     setInfo(info);
     setOpen(true);
@@ -98,7 +99,7 @@ export default function GroupTable({ groupList, deleteGroup, editGroup }: tProps
   const closeDialog = () => {
     setOpen(false);
   };
-  const toDelete = useCallback(async() => {
+  const toDelete = useCallback(async () => {
     const res = (await deleteGroupApi(Info.id)) as HTTPResult;
     if (res.code !== '200') {
       enqueueSnackbar(`分组: ${Info.name}删除失败${res.msg}`, {
@@ -126,71 +127,63 @@ export default function GroupTable({ groupList, deleteGroup, editGroup }: tProps
   return (
     <Paper className={classes.rootTable}>
       <TableContainer className={classes.container}>
-        <Table stickyHeader aria-label='sticky table'>
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  align='center'
-                  key={column.id}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {groupList && groupList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-              return (
-                <TableRow hover role='checkbox' tabIndex={-1} key={row.name}>
-                  <TableCell key={row.name} align='center'>
-                    {row.name}
+        <Scrollbars>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell align="center" key={column.id} style={{ minWidth: column.minWidth }}>
+                    {column.label}
                   </TableCell>
-                  <TableCell key={row.mode} align='center'>
-                    {row.mode ? '规则模式' : '主机模式'}
-                  </TableCell>
-                  <TableCell key={row.params} align='center'>
-                    {row.params}
-                  </TableCell>
-                  <TableCell align='center'>
-                    <Button
-                      className={classes.editBtn}
-                      onClick={() => { setInfo(row); setOpenEdit(true); }}
-                    >
-                      编辑
-                    </Button>
-                    <Button
-                      className={classes.deleteButton}
-                      onClick={() => dltButtonClick(row)}
-                    >
-                      删除
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {groupList &&
+                groupList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                  return (
+                    <TableRow hover role="checkbox" tabIndex={-1} key={row.name}>
+                      <TableCell key={row.name} align="center">
+                        {row.name}
+                      </TableCell>
+                      <TableCell key={row.mode} align="center">
+                        {row.mode ? '规则模式' : '主机模式'}
+                      </TableCell>
+                      <TableCell key={row.params} align="center">
+                        {row.params}
+                      </TableCell>
+                      <TableCell align="center">
+                        <Button
+                          className={classes.editBtn}
+                          onClick={() => {
+                            setInfo(row);
+                            setOpenEdit(true);
+                          }}>
+                          编辑
+                        </Button>
+                        <Button className={classes.deleteButton} onClick={() => dltButtonClick(row)}>
+                          删除
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </Scrollbars>
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         labelRowsPerPage={<div>每页行数:</div>}
         labelDisplayedRows={({ from, to, count }) => `${from}-${to} 总数 ${count !== -1 ? count : 0}`}
-        component='div'
+        component="div"
         count={groupList.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      <TipDialog
-        open={open}
-        title={title}
-        text={text}
-        toClose={closeDialog}
-        todo={toDelete}
-      />
+      <TipDialog open={open} title={title} text={text} toClose={closeDialog} todo={toDelete} />
       <FormDialog
         open={openEdit}
         content={content}

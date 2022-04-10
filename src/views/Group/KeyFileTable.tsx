@@ -9,6 +9,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
+import { Scrollbars } from 'react-custom-scrollbars';
 import TipDialog from '../../components/OmsDialog/TipDialog';
 import styles from './style';
 import { ActionCreator } from 'redux';
@@ -24,10 +25,10 @@ type tDP = {
   editPrivateKey: ActionCreator<any>;
 };
 
-type tOP = {};
+type tOP = any;
 
 type tSP = tOP & {
-  privateKeyList: PrivateKeyInfo[]
+  privateKeyList: PrivateKeyInfo[];
 };
 
 type tProps = tSP & tDP;
@@ -64,8 +65,8 @@ export default function KeyFileTable({ deletePrivateKey, privateKeyList, editPri
   });
 
   const content = KeyFileForm({ Info, setInfo, fileName, setFileName });
-  const title: string = '确定要删除这个密钥文件吗？';
-  const text: string = '如果不想删除可以点击取消';
+  const title = '确定要删除这个密钥文件吗？';
+  const text = '如果不想删除可以点击取消';
 
   const dltButtonClick = (info: PrivateKeyInfo) => {
     setInfo(info);
@@ -75,7 +76,7 @@ export default function KeyFileTable({ deletePrivateKey, privateKeyList, editPri
     setOpen(false);
   };
 
-  const toEdit = useCallback(async() => {
+  const toEdit = useCallback(async () => {
     const res = (await editPrivateKeyApi(Info)) as HTTPResult;
     setFileName('未选择任何文件');
     if (res.code !== '200') {
@@ -92,7 +93,7 @@ export default function KeyFileTable({ deletePrivateKey, privateKeyList, editPri
     });
   }, [Info]);
 
-  const toDelete = useCallback(async() => {
+  const toDelete = useCallback(async () => {
     const res = (await deletePrivateKeyApi(Info.id)) as HTTPResult;
     if (res.code !== '200') {
       enqueueSnackbar(`密钥: ${Info.name}删除失败${res.msg}`, {
@@ -120,50 +121,48 @@ export default function KeyFileTable({ deletePrivateKey, privateKeyList, editPri
   return (
     <Paper className={classes.rootTable}>
       <TableContainer className={classes.container}>
-        <Table stickyHeader aria-label='sticky table'>
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  align='center'
-                  key={column.id}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {privateKeyList && privateKeyList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-              return (
-                <TableRow hover role='checkbox' tabIndex={-1} key={row.name}>
-                  <TableCell key={row.name} align='center'>
-                    {row.name}
+        <Scrollbars>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell align="center" key={column.id} style={{ minWidth: column.minWidth }}>
+                    {column.label}
                   </TableCell>
-                  <TableCell align='center'>
-                    <Button
-                      className={classes.editBtn}
-                      onClick={() => { setInfo(row); setOpenEdit(true); }}
-                    >
-                      编辑
-                    </Button>
-                    <Button
-                      className={classes.deleteButton}
-                      onClick={ () => dltButtonClick(row)}
-                    >
-                      删除
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {privateKeyList &&
+                privateKeyList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                  return (
+                    <TableRow hover role="checkbox" tabIndex={-1} key={row.name}>
+                      <TableCell key={row.name} align="center">
+                        {row.name}
+                      </TableCell>
+                      <TableCell align="center">
+                        <Button
+                          className={classes.editBtn}
+                          onClick={() => {
+                            setInfo(row);
+                            setOpenEdit(true);
+                          }}>
+                          编辑
+                        </Button>
+                        <Button className={classes.deleteButton} onClick={() => dltButtonClick(row)}>
+                          删除
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </Scrollbars>
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
-        component='div'
+        component="div"
         labelRowsPerPage={<div>每页行数:</div>}
         labelDisplayedRows={({ from, to, count }) => `${from}-${to} 总数 ${count !== -1 ? count : 0}`}
         count={privateKeyList.length}
@@ -172,13 +171,7 @@ export default function KeyFileTable({ deletePrivateKey, privateKeyList, editPri
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      <TipDialog
-        open={open}
-        title={title}
-        text={text}
-        toClose={closeDialog}
-        todo={toDelete}
-      />
+      <TipDialog open={open} title={title} text={text} toClose={closeDialog} todo={toDelete} />
       <FormDialog
         open={openEdit}
         content={content}
