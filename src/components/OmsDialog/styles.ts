@@ -7,6 +7,7 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
     backgroundColor: theme.palette.primary[theme.palette.type]
   },
   dialogContent: {
+    overflowY: 'auto',
     boxSizing: 'border-box',
     whiteSpace: 'pre-wrap',
     wordWrap: 'break-word',

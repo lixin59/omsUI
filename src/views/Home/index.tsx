@@ -20,7 +20,6 @@ import actions from '../../store/action';
 import BodyBox from '../../components/Bodybox';
 import HostInfoCard from '../../components/HostInfoCard';
 import HostInfoForm from '../../components/HostInfoCard/hostInfoForm';
-import { Scrollbars } from 'react-custom-scrollbars';
 import { GroupInfo, IState, TagInfo, HostInfo, PrivateKeyInfo } from '../../store/interface';
 import homeStyle from './homStyle';
 import FormDialog from '../../components/OmsDialog/FormDialog';
@@ -215,7 +214,6 @@ function Home(props: tProps) {
           </div>
         }>
         {
-          // <Scrollbars></Scrollbars>
           <div
             style={{
               width: '90%',

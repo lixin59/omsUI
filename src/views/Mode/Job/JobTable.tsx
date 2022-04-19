@@ -9,7 +9,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
-import { Scrollbars } from 'react-custom-scrollbars';
 import styles from './style';
 import { ActionCreator } from 'redux';
 import LogDialog from '../../../components/OmsDialog/LogDialog';
@@ -254,55 +253,53 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
   return (
     <Paper className={classes.rootTable}>
       <TableContainer className={classes.container}>
-        <Scrollbars>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell align="center" key={column.id} style={{ minWidth: column.minWidth }}>
-                    {column.label}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {jobList &&
-                jobList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                  return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row.name}>
-                      <TableCell align="center">{row.name}</TableCell>
-                      <TableCell align="center">{row.type}</TableCell>
-                      <TableCell align="center">{row.spec}</TableCell>
-                      <TableCell align="center">{row.cmd}</TableCell>
-                      <TableCell align="center">{row.status}</TableCell>
-                      <TableCell align="center">
-                        <Button
-                          className={classes.editBtn}
-                          onClick={() => {
-                            setInfo(row);
-                            setOpenEdit(true);
-                          }}>
-                          编辑
-                        </Button>
-                        <Button className={classes.deleteButton} onClick={() => dltButtonClick(row)}>
-                          删除
-                        </Button>
-                        <Button className={classes.starBtn} onClick={() => startJob(row)}>
-                          启动
-                        </Button>
-                        <Button className={classes.stopBtn} onClick={() => stopJob(row)}>
-                          停止
-                        </Button>
-                        <Button className={classes.reStarBtn} onClick={() => jobLogs(row)}>
-                          日志
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </Scrollbars>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell align="center" key={column.id} style={{ minWidth: column.minWidth }}>
+                  {column.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {jobList &&
+              jobList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                return (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.name}>
+                    <TableCell align="center">{row.name}</TableCell>
+                    <TableCell align="center">{row.type}</TableCell>
+                    <TableCell align="center">{row.spec}</TableCell>
+                    <TableCell align="center">{row.cmd}</TableCell>
+                    <TableCell align="center">{row.status}</TableCell>
+                    <TableCell align="center">
+                      <Button
+                        className={classes.editBtn}
+                        onClick={() => {
+                          setInfo(row);
+                          setOpenEdit(true);
+                        }}>
+                        编辑
+                      </Button>
+                      <Button className={classes.deleteButton} onClick={() => dltButtonClick(row)}>
+                        删除
+                      </Button>
+                      <Button className={classes.starBtn} onClick={() => startJob(row)}>
+                        启动
+                      </Button>
+                      <Button className={classes.stopBtn} onClick={() => stopJob(row)}>
+                        停止
+                      </Button>
+                      <Button className={classes.reStarBtn} onClick={() => jobLogs(row)}>
+                        日志
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+          </TableBody>
+        </Table>
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}

@@ -34,7 +34,6 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
 import FileIcon from './FileIcon';
-import { Scrollbars } from 'react-custom-scrollbars';
 import qs from 'qs';
 import { baseUrl, urlType } from '../../../api/http/requestUrl';
 import { downloadFile } from '../../../utils';
@@ -529,9 +528,7 @@ const FileBrowserPage = ({ hostList }: tProps) => {
         <DialogContent
           style={{ minHeight: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'center ' }}
           dividers>
-          <DialogContentText>
-            <Scrollbars style={{ minHeight: '550px' }}>{showDialogType[dialogType]}</Scrollbars>
-          </DialogContentText>
+          <DialogContentText>{showDialogType[dialogType]}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)} color="primary">

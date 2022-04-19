@@ -14,7 +14,6 @@ import Button from '@material-ui/core/Button';
 import LinkIcon from '@material-ui/icons/Link';
 
 import { useSnackbar } from 'notistack';
-import { Scrollbars } from 'react-custom-scrollbars';
 import { baseUrl, url } from '../../../api/websocket/url';
 import GaugeChart from '../../../components/OmsEcharts/GaugeChart';
 import LiquidfillChart from '../../../components/OmsEcharts/LiquidfillChart';
@@ -143,7 +142,7 @@ const useStyles = makeStyles((theme: Theme) => {
       justifyContent: 'space-around'
     },
     box3: {
-      // overflowY: 'auto',
+      overflowY: 'auto',
       height: '50%',
       width: '100%'
     },
@@ -269,22 +268,20 @@ const HostMonitorPage = ({ hostList }: tProps) => {
         </div>
         <Divider />
         <div className={classes.box3}>
-          <Scrollbars className={classes.box3}>
-            {status &&
-              status.fs_infos.map((e) => (
-                <div key={e.mount_point} className={classes.box3Content}>
-                  <RowBarChart
-                    data={[
-                      { value: e.free || 0, name: '磁盘剩余空间' },
-                      { value: e.used || 0, name: '磁盘已使用空间' }
-                    ]}
-                    title={`磁盘挂载点: ${e.mount_point}`}
-                    color={['#45c5dc', '#971fde']}
-                    xAxisName="字节"
-                  />
-                </div>
-              ))}
-          </Scrollbars>
+          {status &&
+            status.fs_infos.map((e) => (
+              <div key={e.mount_point} className={classes.box3Content}>
+                <RowBarChart
+                  data={[
+                    { value: e.free || 0, name: '磁盘剩余空间' },
+                    { value: e.used || 0, name: '磁盘已使用空间' }
+                  ]}
+                  title={`磁盘挂载点: ${e.mount_point}`}
+                  color={['#45c5dc', '#971fde']}
+                  xAxisName="字节"
+                />
+              </div>
+            ))}
         </div>
       </Paper>
     </div>

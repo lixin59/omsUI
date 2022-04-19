@@ -9,7 +9,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
-import { Scrollbars } from 'react-custom-scrollbars';
 import styles from './style';
 import { ActionCreator } from 'redux';
 import TipDialog from '../../../components/OmsDialog/TipDialog';
@@ -152,56 +151,54 @@ export default function JobTable({ deleteTunnel, tunnelList, hostList, editTunne
   return (
     <Paper className={classes.rootTable}>
       <TableContainer className={classes.container}>
-        <Scrollbars>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell align="center" key={column.id} style={{ minWidth: column.minWidth }}>
-                    {column.label}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {tunnelList &&
-                tunnelList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                  return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                      <TableCell key={row.mode} align="center">
-                        {row.mode}
-                      </TableCell>
-                      <TableCell key={row.source} align="center">
-                        {row.source}
-                      </TableCell>
-                      <TableCell key={row.destination} align="center">
-                        {row.destination}
-                      </TableCell>
-                      <TableCell key={String(new Date().getTime())} align="center">
-                        {String(row.status)}
-                      </TableCell>
-                      <TableCell key={row.error_msg} align="center">
-                        {row.error_msg}
-                      </TableCell>
-                      <TableCell align="center">
-                        <Button
-                          className={classes.editBtn}
-                          onClick={() => {
-                            setInfo(row);
-                            setOpenEdit(true);
-                          }}>
-                          编辑
-                        </Button>
-                        <Button className={classes.deleteButton} onClick={() => dltButtonClick(row)}>
-                          删除
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </Scrollbars>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell align="center" key={column.id} style={{ minWidth: column.minWidth }}>
+                  {column.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {tunnelList &&
+              tunnelList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                return (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                    <TableCell key={row.mode} align="center">
+                      {row.mode}
+                    </TableCell>
+                    <TableCell key={row.source} align="center">
+                      {row.source}
+                    </TableCell>
+                    <TableCell key={row.destination} align="center">
+                      {row.destination}
+                    </TableCell>
+                    <TableCell key={String(new Date().getTime())} align="center">
+                      {String(row.status)}
+                    </TableCell>
+                    <TableCell key={row.error_msg} align="center">
+                      {row.error_msg}
+                    </TableCell>
+                    <TableCell align="center">
+                      <Button
+                        className={classes.editBtn}
+                        onClick={() => {
+                          setInfo(row);
+                          setOpenEdit(true);
+                        }}>
+                        编辑
+                      </Button>
+                      <Button className={classes.deleteButton} onClick={() => dltButtonClick(row)}>
+                        删除
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+          </TableBody>
+        </Table>
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
