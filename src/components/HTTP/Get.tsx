@@ -1,24 +1,24 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 
 type tProps = {
-  apiFn: ()=> any;
+  apiFn: () => any;
   data: any;
-  initStore?: (e:any)=> any;
+  initStore?: (e: any) => any;
   delay?: number;
-  loading: any;
-  reload?: any;
-  error: any;
+  loading: ReactElement;
+  dataIsEmpty: ReactElement;
+  error: ReactElement;
   children: any;
-}
+};
 
 type tState = {
   data: any[];
-  component: any
-}
+  component: ReactElement | Element;
+};
 
 class Get extends React.Component<tProps, tState> {
-  private timer: NodeJS.Timeout| null = null;
-  constructor(props:tProps) {
+  private timer: NodeJS.Timeout | null = null;
+  constructor(props: tProps) {
     super(props);
     this.state = {
       data: [],
@@ -27,10 +27,16 @@ class Get extends React.Component<tProps, tState> {
   }
 
   async componentDidMount() {
-    const { apiFn, delay, initStore, error } = this.props;
+    const { apiFn, delay, initStore, error, dataIsEmpty } = this.props;
     try {
       const { data } = await apiFn();
-      // console.log('调用获取所有主机信息的API');
+      // console.log('调用获取所有主机信息的API', data);
+      if (data?.length < 1) {
+        this.setState({
+          component: dataIsEmpty
+        });
+        return;
+      }
       this.timer = setTimeout(() => {
         // console.log('delay', delay);
         // this.setState({

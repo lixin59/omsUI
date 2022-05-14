@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import Typography from '@material-ui/core/Typography';
 import ErrorSvg from '../../assets/icons/Error.svg';
 import networkSvg from '../../assets/icons/ErrNetwork.svg';
@@ -6,17 +6,18 @@ import serverSvg from '../../assets/icons/ErrServer.svg';
 import { Variant } from '@material-ui/core/styles/createTypography';
 
 interface Props {
-  errInfo: string,
-  errType?: 'default' | 'network' | 'server',
-  svgImg?: string,
-  variant?: Variant
-  imgStyle?: React.CSSProperties,
+  errInfo: string;
+  errType?: 'default' | 'network' | 'server';
+  svgImg?: string;
+  variant?: Variant;
+  imgStyle?: CSSProperties;
+  style?: CSSProperties;
 }
 
 const defSvg = {
-  'default': ErrorSvg,
-  'network': networkSvg,
-  'server': serverSvg
+  default: ErrorSvg,
+  network: networkSvg,
+  server: serverSvg
 };
 
 const OmsError: React.FC<Props> = ({
@@ -24,20 +25,23 @@ const OmsError: React.FC<Props> = ({
   svgImg,
   variant = 'subtitle2',
   errType = 'default',
-  imgStyle
+  imgStyle,
+  style = {}
 }) => {
   const defaultImg = defSvg[errType];
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'space-around'
-    }}>
-      <Typography variant={variant} gutterBottom >
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+        ...style
+      }}>
+      <Typography variant={variant} gutterBottom>
         {errInfo}
       </Typography>
-      <img style={imgStyle || { width: '80px', height: '80px' }} src={svgImg || defaultImg} alt='' />
+      <img style={imgStyle || { width: '80px', height: '80px' }} src={svgImg || defaultImg} alt="" />
     </div>
   );
 };

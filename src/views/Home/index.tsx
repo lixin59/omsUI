@@ -17,6 +17,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import actions from '../../store/action';
+import imac from '../../assets/icons/imac.svg';
 import BodyBox from '../../components/Bodybox';
 import HostInfoCard from '../../components/HostInfoCard';
 import HostInfoForm from '../../components/HostInfoCard/hostInfoForm';
@@ -201,8 +202,18 @@ function Home(props: tProps) {
         data={hostList}
         initStore={initStore}
         apiFn={getHostsApi}
-        delay={0}
+        delay={500}
         loading={<Loading />}
+        dataIsEmpty={
+          <OmsError
+            errInfo="您还未添加主机，请在右下角点击“添加主机”按钮添加您的主机。"
+            variant="h5"
+            svgImg={imac}
+            errType="server"
+            imgStyle={{ width: '400px', height: '400px' }}
+            style={{ marginTop: '40px' }}
+          />
+        }
         error={
           <div style={{ marginTop: '100px' }}>
             <OmsError
