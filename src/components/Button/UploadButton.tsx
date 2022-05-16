@@ -4,22 +4,26 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { useSnackbar } from 'notistack';
+import SnackMessage from '../Snackbars/SnackMessage';
 import { HTTPResult, uploadFileApi } from '../../api/http/httpRequestApi';
 
 type tProps = {
-  filePath?: string,
-  typeId?: number,
-  type?: 'host' | 'group' | 'tag',
-  todo?: any,
-}
+  filePath?: string;
+  typeId?: number;
+  type?: 'host' | 'group' | 'tag';
+  onBeforeUpload?: () => void; // 开始上传之前需要处理的回调
+  onUploadComplete?: () => void; // 上传完成后需要处理的回调
+  // onUploadProgress?: (progressEvent: any) => void;
+  showUploadProgress: boolean;
+};
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      'display': 'flex',
-      'alignContent': 'space-evenly',
-      'alignItems': 'center',
-      'justifyContent': 'space-around',
+      display: 'flex',
+      alignContent: 'space-evenly',
+      alignItems: 'center',
+      justifyContent: 'space-around',
       '& > *': {
         margin: theme.spacing(1)
       }
@@ -31,29 +35,46 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function UploadButtons(props: tProps) {
-  const { filePath = '', typeId, type, todo } = props;
+  const { filePath = '', typeId, type, onBeforeUpload, onUploadComplete, showUploadProgress } = props;
   const classes = useStyles();
   const [fileList, setFileList] = useState<null | FileList>(null);
   const [fileName, setFileName] = useState<string>('未选择任何文件');
+  const [fileNameList, setFileNameList] = useState<any[]>([]);
   const { enqueueSnackbar } = useSnackbar();
 
   const changeFile = (e: ChangeEvent<HTMLInputElement>) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     if (!e.target!.files[0]!.name) {
       return;
     }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     if (e.target?.files.length < 2) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       setFileName(e.target?.files[0]?.name);
+      const arr: any[] = [];
+      for (let i = 0; i < e!.target!.files!.length; i++) {
+        arr.push(e!.target!.files![i]!.name);
+      }
+      setFileNameList(arr);
     } else {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       setFileName(`${e.target?.files.length}个文件`);
+      console.log(e.target?.files);
+      const arr: any[] = [];
+      for (let i = 0; i < e!.target!.files!.length; i++) {
+        arr.push(e!.target!.files![i]!.name);
+      }
+      setFileNameList(arr);
     }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     setFileList(e.target?.files);
   };
-  const uploadFile = async() => {
+  const uploadFile = async () => {
     // console.log(typeId);
     // console.log(type);
     // console.log(filePath);
@@ -86,6 +107,25 @@ export default function UploadButtons(props: tProps) {
       });
       return;
     }
+    if (onBeforeUpload) {
+      onBeforeUpload();
+    }
+    if (showUploadProgress) {
+      const data = {
+        id: typeId,
+        type,
+        remote: filePath,
+        files: fileList
+      };
+      enqueueSnackbar(`文件`, {
+        autoHideDuration: 10000,
+        key: 121313,
+        // persist: true,
+        variant: 'warning',
+        content: <SnackMessage id={121313} total={fileNameList} message={fileName} data={data} cb={onUploadComplete} />
+      });
+      return;
+    }
     const res = (await uploadFileApi({
       id: typeId,
       type,
@@ -93,36 +133,27 @@ export default function UploadButtons(props: tProps) {
       files: fileList
     })) as HTTPResult;
     console.log(res);
-    if (todo) {
-      todo();
+    if (onUploadComplete) {
+      console.log('ddddddddd');
+      onUploadComplete();
     }
   };
   return (
     <div className={classes.root}>
-      <TextField
-        size='small'
-        disabled
-        id='select-file'
-        variant='outlined'
-        value={fileName}
-      />
+      <TextField size="small" disabled id="select-file" variant="outlined" value={fileName} />
       <input
         className={classes.input}
-        id='contained-button-file'
+        id="contained-button-file"
         multiple
-        type='file'
+        type="file"
         onChange={(e) => changeFile(e)}
       />
-      <label htmlFor='contained-button-file'>
-        <Button variant='contained' color='primary' component='span'>
+      <label htmlFor="contained-button-file">
+        <Button variant="contained" color="primary" component="span">
           选择文件
         </Button>
       </label>
-      <Button
-        variant='contained'
-        startIcon={<CloudUploadIcon />}
-        onClick={() => uploadFile()}
-      >
+      <Button variant="contained" startIcon={<CloudUploadIcon />} onClick={() => uploadFile()}>
         上传
       </Button>
     </div>

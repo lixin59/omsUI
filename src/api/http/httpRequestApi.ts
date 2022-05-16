@@ -1,85 +1,85 @@
 import { getApi, postApi, deleteApi, putApi } from './api';
 import { urlType, baseUrl } from './requestUrl';
 import { Base64 } from 'js-base64';
+import {AxiosRequestConfig} from "axios";
 
 export interface HTTPResult {
-  code:string,
-  msg:string,
-  data: any | any[]
+  code: string;
+  msg: string;
+  data: any | any[];
 }
 
 export interface EditHostPut {
-  id: number,
-  hostname?: string,
-  user?: string,
-  addr?: string,
-  port?: number,
-  group?: number,
-  password?: string,
-  private_key_id?: any,
-  tags?: string, // "[1,2]"
+  id: number;
+  hostname?: string;
+  user?: string;
+  addr?: string;
+  port?: number;
+  group?: number;
+  password?: string;
+  private_key_id?: any;
+  tags?: string; // "[1,2]"
 }
 
 export interface AddHostPost {
-  hostname: string,
-  user: string,
-  addr: string,
-  port: number,
-  group: number,
-  password: string,
-  private_key_id?: any,
-  tags?: string, // "[1,2]",
+  hostname: string;
+  user: string;
+  addr: string;
+  port: number;
+  group: number;
+  password: string;
+  private_key_id?: any;
+  tags?: string; // "[1,2]",
 }
 
 export interface AddGroupPost {
-  name: string,
-  mode: 0 | 1,
-  params?: string,
+  name: string;
+  mode: 0 | 1;
+  params?: string;
 }
 
 export interface EditGroupPut {
-  id: number,
-  name?: string,
-  mode?: 0 | 1,
-  params?: string,
-};
-
+  id: number;
+  name?: string;
+  mode?: 0 | 1;
+  params?: string;
+}
 
 export interface AddTunnelPost {
-  mode: 'local' | 'remote',
-  source: string,
-  destination: string,
-  host_id: number,
+  mode: 'local' | 'remote';
+  source: string;
+  destination: string;
+  host_id: number;
 }
 
 export interface EditTunnelPut {
-  id: number,
-  mode?: 'local' | 'remote',
-  source?: string,
-  destination?: string,
-  host_id?: number,
-};
+  id: number;
+  mode?: 'local' | 'remote';
+  source?: string;
+  destination?: string;
+  host_id?: number;
+}
 
 export interface AddJobPost {
-  name: string,
-  type: 'cron' | 'task',
-  spec: string,
-  cmd: string,
-  host_id: number,
+  name: string;
+  type: 'cron' | 'task';
+  spec: string;
+  cmd: string;
+  host_id: number;
 }
 
 export interface EditJobPut {
-  id: number,
-  name?: string,
-  type?: 'cron' | 'task',
-  spec?: string,
-  cmd?: string,
-};
+  id: number;
+  name?: string;
+  type?: 'cron' | 'task';
+  spec?: string;
+  cmd?: string;
+}
 
 export interface UploadFilePost {
-  id: number, // host | group | tag的id,
-  type: 'host' | 'group' | 'tag',
-  remote: string, // 远端路径
+  id: number; // host | group | tag的id,
+  type: 'host' | 'group' | 'tag';
+  remote: string; // 远端路径
   files: any;
 }
 
@@ -97,8 +97,8 @@ export const getHostApi = (id: number) => {
 export const addHostApi = (data: AddHostPost) => {
   const formData = new FormData();
   for (const k in data) {
+    // eslint-disable-next-line no-prototype-builtins
     if (data.hasOwnProperty(k)) {
-      // @ts-ignore
       formData.append(k, data[k]);
     }
   }
@@ -109,8 +109,8 @@ export const addHostApi = (data: AddHostPost) => {
 export const editHostApi = (data: EditHostPut) => {
   const formData = new FormData();
   for (const k in data) {
+    // eslint-disable-next-line no-prototype-builtins
     if (data.hasOwnProperty(k)) {
-      // @ts-ignore
       formData.append(k, data[k]);
     }
   }
@@ -122,7 +122,6 @@ export const editHostApi = (data: EditHostPut) => {
 export const deleteHostApi = (id: number) => {
   return deleteApi(`${urlType.host}/${id}`, {});
 };
-
 
 // 获取所有 tag
 export const getTagsApi = () => {
@@ -141,8 +140,8 @@ export const addTagApi = (name: string) => {
   };
   const formData = new FormData();
   for (const k in data) {
+    // eslint-disable-next-line no-prototype-builtins
     if (data.hasOwnProperty(k)) {
-      // @ts-ignore
       formData.append(k, data[k]);
     }
   }
@@ -150,14 +149,11 @@ export const addTagApi = (name: string) => {
 };
 
 // 修改tag
-export const editTagApi = (data: {
-  id: number,
-  name: string
-}) => {
+export const editTagApi = (data: { id: number; name: string }) => {
   const formData = new FormData();
   for (const k in data) {
+    // eslint-disable-next-line no-prototype-builtins
     if (data.hasOwnProperty(k)) {
-      // @ts-ignore
       formData.append(k, data[k]);
     }
   }
@@ -168,7 +164,6 @@ export const editTagApi = (data: {
 export const deleteTagApi = (id: number) => {
   return deleteApi(`${urlType.tag}/${id}`);
 };
-
 
 // 获取所有 Group
 export const getGroupsApi = () => {
@@ -184,8 +179,8 @@ export const getGroupApi = (id: number) => {
 export const addGroupApi = (data: AddGroupPost) => {
   const formData = new FormData();
   for (const k in data) {
+    // eslint-disable-next-line no-prototype-builtins
     if (data.hasOwnProperty(k)) {
-      // @ts-ignore
       formData.append(k, data[k]);
     }
   }
@@ -196,8 +191,8 @@ export const addGroupApi = (data: AddGroupPost) => {
 export const editGroupApi = (data: EditGroupPut) => {
   const formData = new FormData();
   for (const k in data) {
+    // eslint-disable-next-line no-prototype-builtins
     if (data.hasOwnProperty(k)) {
-      // @ts-ignore
       formData.append(k, data[k]);
     }
   }
@@ -208,7 +203,6 @@ export const editGroupApi = (data: EditGroupPut) => {
 export const deleteGroupApi = (id: number) => {
   return deleteApi(`${urlType.group}/${id}`);
 };
-
 
 // 获取所有 tunnel
 export const getTunnelsApi = () => {
@@ -224,8 +218,8 @@ export const getTunnelApi = (id: number) => {
 export const addTunnelApi = (data: AddTunnelPost) => {
   const formData = new FormData();
   for (const k in data) {
+    // eslint-disable-next-line no-prototype-builtins
     if (data.hasOwnProperty(k)) {
-      // @ts-ignore
       formData.append(k, data[k]);
     }
   }
@@ -236,8 +230,8 @@ export const addTunnelApi = (data: AddTunnelPost) => {
 export const editTunnelApi = (data: EditTunnelPut) => {
   const formData = new FormData();
   for (const k in data) {
+    // eslint-disable-next-line no-prototype-builtins
     if (data.hasOwnProperty(k)) {
-      // @ts-ignore
       formData.append(k, data[k]);
     }
   }
@@ -248,7 +242,6 @@ export const editTunnelApi = (data: EditTunnelPut) => {
 export const deleteTunnelApi = (id: number) => {
   return deleteApi(`${urlType.tunnel}/${id}`);
 };
-
 
 // 获取所有 job
 export const getJobsApi = () => {
@@ -264,8 +257,8 @@ export const getJobApi = (id: number) => {
 export const addJobApi = (data: AddJobPost) => {
   const formData = new FormData();
   for (const k in data) {
+    // eslint-disable-next-line no-prototype-builtins
     if (data.hasOwnProperty(k)) {
-      // @ts-ignore
       formData.append(k, data[k]);
     }
   }
@@ -276,8 +269,8 @@ export const addJobApi = (data: AddJobPost) => {
 export const editJobApi = (data: EditJobPut) => {
   const formData = new FormData();
   for (const k in data) {
+    // eslint-disable-next-line no-prototype-builtins
     if (data.hasOwnProperty(k)) {
-      // @ts-ignore
       formData.append(k, data[k]);
     }
   }
@@ -294,8 +287,8 @@ export const jobStartApi = (id: number) => {
   const data = { id };
   const formData = new FormData();
   for (const k in data) {
+    // eslint-disable-next-line no-prototype-builtins
     if (data.hasOwnProperty(k)) {
-      // @ts-ignore
       formData.append(k, data[k]);
     }
   }
@@ -307,8 +300,8 @@ export const jobStopApi = (id: number) => {
   const data = { id };
   const formData = new FormData();
   for (const k in data) {
+    // eslint-disable-next-line no-prototype-builtins
     if (data.hasOwnProperty(k)) {
-      // @ts-ignore
       formData.append(k, data[k]);
     }
   }
@@ -326,21 +319,19 @@ export const jobLogsUrlApi = (id: number) => {
   return `${baseUrl}/${urlType.jobLogs}?id=${id}`;
 };
 
-
 // 文件分发 上传文件
-export const uploadFileApi = (data: UploadFilePost) => {
+export const uploadFileApi = (data: UploadFilePost, config?: AxiosRequestConfig) => {
   const formData = new FormData();
-  const files:{[index: string]:any} = {};
+  const files: { [index: string]: any } = {};
   const fileList = { ...data.files };
   for (const k in data) {
+    // eslint-disable-next-line no-prototype-builtins
     if (data.hasOwnProperty(k) && k !== 'files') {
-      // @ts-ignore
       formData.append(k, data[k]);
     }
   }
   // eslint-disable-next-line guard-for-in
   for (const k in fileList) {
-    // @ts-ignore
     files[Base64.encode(fileList[k].name)] = fileList[k].size;
     formData.append('files', fileList[k]);
   }
@@ -348,28 +339,28 @@ export const uploadFileApi = (data: UploadFilePost) => {
     headers: {
       'X-Files': JSON.stringify(files)
     },
-    timeout: 86400000 // 一天
+    timeout: 86400000, // 一天
+    ...config
   });
 };
 
-
 // 文件浏览
 export const fileBrowserApi = (data: {
-  host_id: string | number, // host的ID
-  id: any // 文件路径
+  host_id: string | number; // host的ID
+  id: any; // 文件路径
 }) => {
   return getApi(`${urlType.fileBrowser}`, data, { timeout: 20000 });
 };
 
 // 删除文件
 export const deleteFileApi = (data: {
-  host_id: string | number, // host的ID
-  id: any // 文件路径或者文件名
+  host_id: string | number; // host的ID
+  id: any; // 文件路径或者文件名
 }) => {
   const formData = new FormData();
   for (const k in data) {
+    // eslint-disable-next-line no-prototype-builtins
     if (data.hasOwnProperty(k)) {
-      // @ts-ignore
       formData.append(k, data[k]);
     }
   }
@@ -378,14 +369,14 @@ export const deleteFileApi = (data: {
 
 // 创建文件夹
 export const createFileApi = (data: {
-  host_id: string | number, // host的ID
-  id: any // 文件父路径
-  dir: string // 文件夹名称
+  host_id: string | number; // host的ID
+  id: any; // 文件父路径
+  dir: string; // 文件夹名称
 }) => {
   const formData = new FormData();
   for (const k in data) {
+    // eslint-disable-next-line no-prototype-builtins
     if (data.hasOwnProperty(k)) {
-      // @ts-ignore
       formData.append(k, data[k]);
     }
   }
@@ -393,37 +384,36 @@ export const createFileApi = (data: {
 };
 
 // 下载文件
-export const downloadFileApi = (data:{
-  host_id: string | number, // host的ID
-  id: any // 文件路径 如/root/go/robots.txt
+export const downloadFileApi = (data: {
+  host_id: string | number; // host的ID
+  id: any; // 文件路径 如/root/go/robots.txt
 }) => {
   return getApi(`${urlType.download_file}`, { ...data }, { responseType: 'blob', timeout: 1000 });
 };
 
 // 预览文件
-export const previewFileApi = (data:{
-  host_id: string | number, // host的ID
-  id: any // 文件路径 如/root/go/robots.txt
+export const previewFileApi = (data: {
+  host_id: string | number; // host的ID
+  id: any; // 文件路径 如/root/go/robots.txt
 }) => {
   return getApi(`${urlType.preview_file}`, { ...data }, { timeout: 86400000 });
 };
 
 // 新增密钥
-export const addPrivateKeyApi = (data:{
-  name: string, // 某主机秘钥
-  passphrase?: string, // 秘钥的密码
-  key_file: any // 秘钥文件
+export const addPrivateKeyApi = (data: {
+  name: string; // 某主机秘钥
+  passphrase?: string; // 秘钥的密码
+  key_file: any; // 秘钥文件
 }) => {
   const formData = new FormData();
   for (const k in data) {
+    // eslint-disable-next-line no-prototype-builtins
     if (data.hasOwnProperty(k)) {
-      // @ts-ignore
       formData.append(k, data[k]);
     }
   }
   return postApi(urlType.privateKey, formData, { headers: { 'Content-Type': 'multipart/form-data' }});
 };
-
 
 // 获取所有密钥
 export const getPrivateKeysApi = () => {
@@ -436,16 +426,11 @@ export const getPrivateKeyApi = (id: number) => {
 };
 
 // 修改密钥
-export const editPrivateKeyApi = (data: {
-  id: number,
-  name: string,
-  passphrase?: string,
-  key_file?: any
-}) => {
+export const editPrivateKeyApi = (data: { id: number; name: string; passphrase?: string; key_file?: any }) => {
   const formData = new FormData();
   for (const k in data) {
+    // eslint-disable-next-line no-prototype-builtins
     if (data.hasOwnProperty(k)) {
-      // @ts-ignore
       formData.append(k, data[k]);
     }
   }

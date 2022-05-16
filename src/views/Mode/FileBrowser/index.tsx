@@ -436,6 +436,16 @@ const FileBrowserPage = ({ hostList }: tProps) => {
     setFolderChain(res.data.folderChains);
   };
 
+  const updateFileList = useCallback(async () => {
+    const datas = (await fileBrowserApi({ host_id: hostId, id: filePath })) as HTTPResult;
+    // console.log('data', datas);
+    if (datas.code !== '200') {
+      return;
+    }
+    setFiles(datas.data.files);
+    setFolderChain(datas.data.folderChains);
+  }, [hostId, parentDir, dir, filePath]);
+
   const todo = useCallback(async () => {
     setOpen(false);
     let datas = {} as HTTPResult;
@@ -470,7 +480,19 @@ const FileBrowserPage = ({ hostList }: tProps) => {
         onChange={(e) => setDir(e.target.value)}
       />
     ),
-    uploadFiles: <UploadButtons type="host" filePath={filePath} typeId={hostId} todo={todo} />,
+    uploadFiles: (
+      <UploadButtons
+        type="host"
+        filePath={filePath}
+        typeId={hostId}
+        onBeforeUpload={() => {
+          setOpen(false);
+        }}
+        onUploadComplete={updateFileList}
+        // onUploadProgress={onUploadProgress}
+        showUploadProgress={true}
+      />
+    ),
     viewFile: (
       <div style={{ maxHeight: '80vh' }}>
         {language === codeType.md ? (
