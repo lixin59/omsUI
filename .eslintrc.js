@@ -21,6 +21,14 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['react', '@typescript-eslint'],
+  overrides: [ // 单独设定某些文件的规则
+    {
+      files: 'src/api/**/*.ts',
+      rules: {
+        camelcase: 'off' // 不使用驼峰命名
+      }
+    }
+  ],
   rules: {
     'prettier/prettier': 'error',
     'accessor-pairs': 2, // 强制 getter 和 setter 在对象中成对出现
