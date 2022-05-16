@@ -7,15 +7,18 @@ import { TabTypeMap } from '@material-ui/core/Tab';
 const OmsTab = withStyles((theme: Theme) =>
   createStyles({
     root: {
-      'textTransform': 'none',
-      'minWidth': 72,
+      textTransform: 'none',
+      minWidth: 72,
       marginTop: '4px',
       marginBottom: '4px',
-      'fontWeight': 400,
-      'marginLeft': theme.spacing(2),
-      'marginRight': theme.spacing(2),
-      'borderRadius': '8px',
-      'fontFamily': [
+      fontWeight: 400,
+      marginLeft: theme.spacing(2),
+      marginRight: theme.spacing(2),
+      borderRadius: '8px',
+      backgroundColor: theme.palette.tab.main,
+      // boxShadow: `4px 4px 8px ${theme.palette.boxShadowInset.main},
+      //       -4px -4px 8px ${theme.palette.grey.A700}`,
+      fontFamily: [
         '-apple-system',
         'BlinkMacSystemFont',
         '"Segoe UI"',
@@ -35,8 +38,9 @@ const OmsTab = withStyles((theme: Theme) =>
       '&$selected': {
         color: theme.palette.tag.main,
         fontSize: 18,
-        boxShadow: `2px 1px 2px 1px ${theme.palette.boxShadowInset.main} inset`,
-        backgroundColor: theme.palette.grey.A700,
+        boxShadow: `inset 4px 4px 8px ${theme.palette.boxShadowInset.main},
+            inset -4px -4px 8px ${theme.palette.grey.A700}`,
+        // backgroundColor: theme.palette.grey.A700,
         fontWeight: theme.typography.fontWeightMedium
       },
       '&:focus': {

@@ -15,10 +15,12 @@ import { ThemeProvider, createTheme, makeStyles, createStyles } from '@material-
 declare module '@material-ui/core/styles/createPalette' {
   interface Palette {
     tag: Palette['primary'];
+    tab: Palette['primary'];
     boxShadowInset: Palette['primary'];
   }
   interface PaletteOptions {
     tag: PaletteOptions['primary'];
+    tab: PaletteOptions['primary'];
     boxShadowInset: PaletteOptions['primary'];
   }
 }
@@ -58,6 +60,9 @@ const themeLight = createTheme({
     primary: {
       main: '#4caf50'
     },
+    tab: {
+      main: '#F5F5F5'
+    },
     tag: {
       light: '#99CC99',
       main: '#66CCCC'
@@ -78,6 +83,9 @@ const themeDark = createTheme({
     },
     primary: {
       main: '#5fb878'
+    },
+    tab: {
+      main: '#2a2a2a'
     },
     tag: {
       main: '#009999'
