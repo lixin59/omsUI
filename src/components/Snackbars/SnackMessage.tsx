@@ -10,6 +10,7 @@ import CardActions from '@material-ui/core/CardActions';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import LinearProgressWithLabel from '../UploadFileProgress/Linear';
 import { HTTPResult, uploadFileApi } from '../../api/http/httpRequestApi';
 
@@ -17,11 +18,25 @@ const useStyles = makeStyles((theme) => ({
   root: {
     [theme.breakpoints.up('sm')]: {
       minWidth: '344px !important'
-    }
+    },
+    backdropFilter: 'blur(3px)'
   },
   card: {
-    background: '#edffed',
+    background: 'rgba(255, 255, 255, 0.25)',
     width: '100%'
+  },
+  // 文件上传中
+  upLoading: {
+    backgroundColor: theme.palette.snacbar.main,
+    width: '100%'
+  },
+  // 文件上传完成
+  upLoadComplete: {
+    backgroundColor: theme.palette.snacbar.dark,
+    width: '100%'
+  },
+  loading: {
+    color: theme.palette.loading.main
   },
   typography: {
     fontWeight: 'bold'
@@ -44,12 +59,8 @@ const useStyles = makeStyles((theme) => ({
     transform: 'rotate(180deg)'
   },
   collapse: {
-    padding: 16
-  },
-  checkIcon: {
-    fontSize: 20,
-    color: '#b3b3b3',
-    paddingRight: 4
+    padding: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)'
   },
   button: {
     padding: 0,
@@ -59,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
 
 const SnackMessage = forwardRef<
   HTMLDivElement,
-  { id: string | number; message: string | React.ReactNode; total: any[]; data?: any; cb?: any }
+  { id: string | number; message: string | React.ReactNode; total?: any[]; data?: any; cb?: any }
 >((props, ref) => {
   const { id, message, total, data, cb } = props;
 
@@ -100,10 +111,15 @@ const SnackMessage = forwardRef<
 
   return (
     <SnackbarContent ref={ref} className={classes.root}>
-      <Card className={classes.card}>
+      <Card className={progress === 100 ? classes.upLoadComplete : classes.upLoading}>
         <CardActions classes={{ root: classes.actionRoot }}>
+          {progress === 100 ? (
+            <div style={{ fontSize: '22px' }}>✅</div>
+          ) : (
+            <CircularProgress className={classes.loading} value={progress} size={22} />
+          )}
           <Typography variant="subtitle2" className={classes.typography}>
-            {progress === 100 ? `${message}上传成功` : `${message}正在上传`}
+            {progress === 100 ? `成功上传 ${message}` : `正在上传 ${message}`}
           </Typography>
           <div className={classes.icons}>
             <IconButton

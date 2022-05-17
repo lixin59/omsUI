@@ -117,12 +117,17 @@ export default function UploadButtons(props: tProps) {
         remote: filePath,
         files: fileList
       };
+      const id = new Date().getTime();
       enqueueSnackbar(`文件`, {
         autoHideDuration: 10000,
-        key: 121313,
-        // persist: true,
+        anchorOrigin: {
+          vertical: 'bottom',
+          horizontal: 'right'
+        },
+        key: id,
+        persist: true,
         variant: 'warning',
-        content: <SnackMessage id={121313} total={fileNameList} message={fileName} data={data} cb={onUploadComplete} />
+        content: <SnackMessage id={id} total={fileNameList} message={fileName} data={data} cb={onUploadComplete} />
       });
       return;
     }
@@ -134,7 +139,6 @@ export default function UploadButtons(props: tProps) {
     })) as HTTPResult;
     console.log(res);
     if (onUploadComplete) {
-      console.log('ddddddddd');
       onUploadComplete();
     }
   };
