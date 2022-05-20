@@ -19,6 +19,7 @@ import GaugeChart from '../../../components/OmsEcharts/GaugeChart';
 import LiquidfillChart from '../../../components/OmsEcharts/LiquidfillChart';
 import PieChart from '../../../components/OmsEcharts/PieChart';
 import RowBarChart from '../../../components/OmsEcharts/RowBarChart';
+import { bytesToSize } from '../../../utils/calculate';
 
 type tDP = {
   // deleteGroup: ActionCreator<any>;
@@ -169,7 +170,7 @@ const HostMonitorPage = ({ hostList }: tProps) => {
     const webSocket = new WebSocket(`${baseUrl}${url.index}`);
     setWs(webSocket);
     webSocket.onopen = (evt) => {
-      console.log('WebSocket服务器连接成功执行命令');
+      console.log('WebSocket服务器连接成功：主机监控页面');
       // webSocket.send(JSON.stringify({ type: '"WS_CMD' }));
     };
     webSocket.onmessage = (evt) => {
@@ -188,7 +189,7 @@ const HostMonitorPage = ({ hostList }: tProps) => {
     };
     webSocket.onclose = function (evt) {
       console.log('Connection closed.', evt);
-      enqueueSnackbar(` WebSocket连接已关闭 执行命令: ${evt.type}`, {
+      enqueueSnackbar(` WebSocket连接已关闭： 主机监控页面: ${evt.type}`, {
         autoHideDuration: 2000,
         variant: 'error'
       });
@@ -245,15 +246,21 @@ const HostMonitorPage = ({ hostList }: tProps) => {
             <GaugeChart data={status?.cpu.usage} title="cpu使用" />
           </div>
           <div className={classes.box1Content}>
-            <LiquidfillChart data={status?.mem_usage ? status?.mem_usage / 100 : 0} title="内存使用" />
+            <LiquidfillChart
+              data={{
+                name: `${bytesToSize(status?.mem_free || 0)} /${bytesToSize(status?.mem_total || 0)}`,
+                value: Math.round(status?.mem_usage || 0) / 100
+              }}
+              title="内存使用"
+            />
           </div>
           <div className={classes.box1Content}>
             <PieChart
-              data={[
-                { value: status?.swap_total || 0, name: 'swap_total' },
-                { value: status?.swap_free || 0, name: 'swap_free' }
+              dataList={[
+                { value: status?.swap_free || 0, name: 'swap_free' },
+                { value: status?.swap_usage || 0, name: 'swap_usage' }
               ]}
-              title="swap"
+              title={`Swap total: ${bytesToSize(status?.swap_total || 0)}`}
             />
           </div>
           <div className={classes.box1Content}>
