@@ -14,7 +14,7 @@ type tProps = {
   onBeforeUpload?: () => void; // 开始上传之前需要处理的回调
   onUploadComplete?: () => void; // 上传完成后需要处理的回调
   // onUploadProgress?: (progressEvent: any) => void;
-  showUploadProgress: boolean;
+  showUploadProgress?: boolean;
 };
 
 const useStyles = makeStyles((theme: Theme) =>
