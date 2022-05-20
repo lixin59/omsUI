@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       minWidth: '344px !important'
     },
-    backdropFilter: 'blur(3px)'
+    backdropFilter: 'blur(8px)'
   },
   card: {
     background: 'rgba(255, 255, 255, 0.25)',
@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const SnackMessage = forwardRef<
+const SnackMessageUpLoadFileProgress = forwardRef<
   HTMLDivElement,
   { id: string | number; message: string | React.ReactNode; total?: any[]; data?: any; cb?: any }
 >((props, ref) => {
@@ -143,6 +143,6 @@ const SnackMessage = forwardRef<
   );
 });
 
-SnackMessage.displayName = 'SnackMessage';
+SnackMessageUpLoadFileProgress.displayName = 'SnackMessageUpLoadFileProgress';
 
-export default SnackMessage;
+export default SnackMessageUpLoadFileProgress;

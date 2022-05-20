@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { useSnackbar } from 'notistack';
-import SnackMessage from '../Snackbars/SnackMessage';
+import SnackMessage from '../Snackbars/SnackMessageUpLoadFileProgress';
 import { HTTPResult, uploadFileApi } from '../../api/http/httpRequestApi';
 
 type tProps = {
