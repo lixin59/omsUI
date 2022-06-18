@@ -8,11 +8,11 @@ import { useSnackbar } from 'notistack';
 type tProps = {
   id: string;
   // wsUrl: string;
-  ws: WebSocket,
+  ws: WebSocket;
   onCloseTodo?: () => any;
-}
+};
 
-let timers: NodeJS.Timeout | null = null;
+let timers: any = null;
 
 const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -68,12 +68,13 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
     }
 
     term.onResize((event) => {
-      if (timers) { //  防抖 只发送最后一次resize的值
+      if (timers) {
+        //  防抖 只发送最后一次resize的值
         clearTimeout(timers);
         timers = null;
       }
       if (!timers) {
-        timers = setTimeout(function() {
+        timers = setTimeout(function () {
           // console.log(event);
           ws.send(JSON.stringify({ cols: event.cols, rows: event.rows }));
           timers = null;
@@ -97,7 +98,7 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
       });
     };
 
-    ws.onclose = function(evt) {
+    ws.onclose = function (evt) {
       console.log('Connection closed.', evt);
       enqueueSnackbar(` WebSocket连接已关闭: ${evt.type}`, {
         autoHideDuration: 5000,
@@ -146,7 +147,7 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
     };
   }, []);
 
-  return (<div id={id}></div>);
+  return <div id={id}></div>;
 };
 
 export default OmsTerminal;

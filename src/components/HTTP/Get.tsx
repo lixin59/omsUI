@@ -17,7 +17,7 @@ type tState = {
 };
 
 class Get extends React.Component<tProps, tState> {
-  private timer: NodeJS.Timeout | null = null;
+  private timer: any = null;
   constructor(props: tProps) {
     super(props);
     this.state = {
@@ -93,7 +93,7 @@ class Get extends React.Component<tProps, tState> {
   //   return true;
   // }
   componentWillUnmount() {
-    clearTimeout(this.timer as NodeJS.Timeout);
+    clearTimeout(this.timer as number);
   }
 
   render() {
