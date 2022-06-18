@@ -166,6 +166,7 @@ const HostMonitorPage = ({ hostList }: tProps) => {
   const [hostId, setHost] = useState<number>(0);
   const [ws, setWs] = useState<'' | WebSocket>('');
   const [status, setStatus] = useState<null | IHostStatus>(null);
+  const [isConnect, setIsConnect] = useState<boolean>(false);
   useEffect(() => {
     const webSocket = new WebSocket(`${baseUrl}${url.index}`);
     setWs(webSocket);
@@ -174,11 +175,18 @@ const HostMonitorPage = ({ hostList }: tProps) => {
       // webSocket.send(JSON.stringify({ type: '"WS_CMD' }));
     };
     webSocket.onmessage = (evt) => {
-      // console.log('收到消息');
+      // console.log('收到消息', evt);
       // console.log(JSON.parse(evt.data));
-      const { data } = JSON.parse(evt.data);
-      setStatus(data);
-      console.log(data);
+      const data = JSON.parse(evt.data);
+      // console.log(data);
+      if (data.code !== '0') {
+        enqueueSnackbar(` err: ${data.msg}`, {
+          autoHideDuration: 2000,
+          variant: 'error'
+        });
+        return;
+      }
+      setStatus(data.data);
     };
     webSocket.onerror = (evt) => {
       console.warn(evt);
@@ -189,10 +197,10 @@ const HostMonitorPage = ({ hostList }: tProps) => {
     };
     webSocket.onclose = function (evt) {
       console.log('Connection closed.', evt);
-      enqueueSnackbar(` WebSocket连接已关闭： 主机监控页面: ${evt.type}`, {
-        autoHideDuration: 2000,
-        variant: 'error'
-      });
+      // enqueueSnackbar(` WebSocket连接已关闭： 主机监控页面: ${evt.type}`, {
+      //   autoHideDuration: 2000,
+      //   variant: 'error'
+      // });
     };
     return () => {
       webSocket.close();
@@ -200,12 +208,29 @@ const HostMonitorPage = ({ hostList }: tProps) => {
   }, []);
 
   const browseHostMonitor = () => {
-    (ws as WebSocket).send(
-      JSON.stringify({
-        type: 'HOST_STATUS',
-        data: { type: 'host', id: hostId, interval: 2 }
-      })
-    );
+    try {
+      if (isConnect) {
+        (ws as WebSocket).send(
+          JSON.stringify({
+            type: 'HOST_STATUS',
+            event: 'cancel'
+          })
+        );
+      }
+      (ws as WebSocket).send(
+        JSON.stringify({
+          type: 'HOST_STATUS',
+          event: 'connect',
+          data: { type: 'host', id: hostId, interval: 2 }
+        })
+      );
+      setIsConnect(true);
+    } catch (e) {
+      enqueueSnackbar(` err: ${e}`, {
+        autoHideDuration: 4000,
+        variant: 'error'
+      });
+    }
   };
 
   return (

@@ -239,7 +239,7 @@ function Home(props: tProps) {
               gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))',
               gridGap: '20px 20px'
             }}>
-            {hostList.map((i: HostInfo) => {
+            {hostList?.map((i: HostInfo) => {
               return <HostInfoCard hostInfo={i} key={i.id} />;
             })}
           </div>
