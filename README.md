@@ -66,7 +66,7 @@ yarn build
 ```
 
 ## 3.注意 
-## node 版本 14.17.1 , vite 版本 2.6.14
+## node 版本 14.17.1 , vite 版本 2.9.9
 
 ## 开发环境调试设置
 
@@ -108,3 +108,8 @@ yarn build
 
 ![文件浏览](./docs/images/file.png)
 ![文件浏览](./docs/images/file1.png)
+
+### 主机监控
+
+![主机信息](./docs/images/hostMonitor.png)
+![文件系统](./docs/images/fileSystem.png)
