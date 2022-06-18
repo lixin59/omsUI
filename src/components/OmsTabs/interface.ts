@@ -1,14 +1,15 @@
-import React, { ReactNode } from 'react';
+import React, { CSSProperties, ReactNode } from 'react';
 
 export interface StyledTabsProps {
-  className: any,
+  className: any;
   value: number;
+  // eslint-disable-next-line @typescript-eslint/ban-types
   onChange: (event: React.ChangeEvent<{}>, newValue: number) => void;
 }
 
 export interface StyledTabProps {
   label: string;
-  className?: any,
+  className?: any;
 }
 
 export interface TabPanelProps {
@@ -16,4 +17,5 @@ export interface TabPanelProps {
   index: any;
   value: any;
   className?: any;
+  style?: CSSProperties | undefined;
 }

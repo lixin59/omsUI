@@ -29,7 +29,7 @@ const LiquidfillChart = memo((props: tProps) => {
     series: [
       {
         type: 'liquidFill',
-        data: [{ name: '', value: 0.6 }],
+        data: [0],
         // color: ['#294D99', '#156ACF', '#1598ED', '#45BDFF'], // 默认波浪颜色
         color: ['#1598ED'], // 默认波浪颜色
         center: ['50%', '60%'], // 在画布中的位置
@@ -76,9 +76,9 @@ const LiquidfillChart = memo((props: tProps) => {
           insideColor: '#fff',
           fontSize: 16,
           fontWeight: 'bold',
-          formatter: function (param) {
-            return param.value * 100 + '%' + '\n' + '\n' + param.name;
-          },
+          // formatter: function (param) {
+          //   return param.value * 100 + '%' + '\n' + '\n' + param.name;
+          // },
 
           align: 'center',
           baseline: 'middle',

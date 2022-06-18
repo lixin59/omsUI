@@ -12,6 +12,12 @@ import OmsSelect from '../../../components/OmsSelect';
 import OmsMenuItem from '../../../components/OmsSelect/OmsMenuItem';
 import Button from '@material-ui/core/Button';
 import LinkIcon from '@material-ui/icons/Link';
+import Grid from '@material-ui/core/Grid';
+// v5
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import TabPanel from '../../../components/OmsTabs/TabPanel';
+import { a11yProps } from '../../../utils/index';
 
 import { useSnackbar } from 'notistack';
 import { baseUrl, url } from '../../../api/websocket/url';
@@ -20,6 +26,7 @@ import LiquidfillChart from '../../../components/OmsEcharts/LiquidfillChart';
 import PieChart from '../../../components/OmsEcharts/PieChart';
 import RowBarChart from '../../../components/OmsEcharts/RowBarChart';
 import { bytesToSize } from '../../../utils/calculate';
+import LinearProgressWithLabel from '../../../components/UploadFileProgress/Linear';
 
 type tDP = {
   // deleteGroup: ActionCreator<any>;
@@ -69,9 +76,10 @@ type tCpu = {
 };
 
 type tFsInfo = {
-  free: number; // 磁盘剩余空间
   mount_point: string; // 挂载点
-  used: string; // 磁盘已使用空间
+  total: number; // 磁盘总量
+  free: number; // 磁盘剩余空间
+  used: number; // 磁盘已使用空间
 };
 
 interface IHostStatus {
@@ -135,21 +143,32 @@ const useStyles = makeStyles((theme: Theme) => {
       alignItems: 'center',
       justifyContent: 'space-around'
     },
-    box2: {
-      height: '40%',
-      display: 'flex',
-      alignContent: 'space-evenly',
-      alignItems: 'center',
-      justifyContent: 'space-around'
-    },
     box3: {
       overflowY: 'auto',
-      height: '50%',
+      height: '100%',
       width: '100%'
+    },
+    paper: {
+      height: '100%',
+      minHeight: '180px',
+      width: '100%',
+      borderRadius: '20px',
+      boxShadow: '2px 4px 5px 1px rgb(0 0 0 / 14%)'
     },
     box1Content: {
       height: '100%',
       width: '25%'
+    },
+    gridCard: {
+      height: '100%',
+      minHeight: '180px',
+      width: '100%',
+      borderRadius: '20px',
+      boxShadow: '2px 4px 5px 1px rgb(0 0 0 / 14%)',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      alignContent: 'space-evenly'
     },
     box3Content: {
       height: '90%',
@@ -167,6 +186,8 @@ const HostMonitorPage = ({ hostList }: tProps) => {
   const [ws, setWs] = useState<'' | WebSocket>('');
   const [status, setStatus] = useState<null | IHostStatus>(null);
   const [isConnect, setIsConnect] = useState<boolean>(false);
+  const [value, setValue] = React.useState(0);
+
   useEffect(() => {
     const webSocket = new WebSocket(`${baseUrl}${url.index}`);
     setWs(webSocket);
@@ -176,7 +197,7 @@ const HostMonitorPage = ({ hostList }: tProps) => {
     };
     webSocket.onmessage = (evt) => {
       // console.log('收到消息', evt);
-      // console.log(JSON.parse(evt.data));
+      console.log(JSON.parse(evt.data));
       const data = JSON.parse(evt.data);
       // console.log(data);
       if (data.code !== '0') {
@@ -233,6 +254,10 @@ const HostMonitorPage = ({ hostList }: tProps) => {
     }
   };
 
+  const switchTab = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
   return (
     <div className={classes.root}>
       <div className={classes.ControlBox}>
@@ -266,54 +291,114 @@ const HostMonitorPage = ({ hostList }: tProps) => {
           </Typography>
         </div>
         <Divider />
-        <div className={classes.box2}>
-          <div className={classes.box1Content}>
-            <GaugeChart data={status?.cpu.usage} title="cpu使用" />
-          </div>
-          <div className={classes.box1Content}>
-            <LiquidfillChart
-              data={{
-                name: `${bytesToSize(status?.mem_free || 0)} /${bytesToSize(status?.mem_total || 0)}`,
-                value: Math.round(status?.mem_usage || 0) / 100
-              }}
-              title="内存使用"
-            />
-          </div>
-          <div className={classes.box1Content}>
-            <PieChart
-              dataList={[
-                { value: status?.swap_free || 0, name: 'swap_free' },
-                { value: status?.swap_usage || 0, name: 'swap_usage' }
-              ]}
-              title={`Swap total: ${bytesToSize(status?.swap_total || 0)}`}
-            />
-          </div>
-          <div className={classes.box1Content}>
-            <RowBarChart
-              data={[
-                { value: status?.total_procs || 0, name: '总任务数' },
-                { value: status?.running_procs || 0, name: '运行中任务数' }
-              ]}
-              title="任务"
-            />
-          </div>
-        </div>
-        <Divider />
-        <div className={classes.box3}>
-          {status &&
-            status.fs_infos.map((e) => (
-              <div key={e.mount_point} className={classes.box3Content}>
-                <RowBarChart
-                  data={[
-                    { value: e.free || 0, name: '磁盘剩余空间' },
-                    { value: e.used || 0, name: '磁盘已使用空间' }
-                  ]}
-                  title={`磁盘挂载点: ${e.mount_point}`}
-                  color={['#45c5dc', '#971fde']}
-                  xAxisName="字节"
-                />
-              </div>
-            ))}
+        <div style={{ height: '90%' }}>
+          <Tabs style={{ height: '10%' }} value={value} onChange={switchTab} aria-label="basic tabs example">
+            <Tab label="系统资源" {...a11yProps(0)} />
+            <Tab label="文件系统" {...a11yProps(1)} />
+          </Tabs>
+          <TabPanel style={{ height: '90%', overflow: 'auto' }} value={value} index={0}>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <Paper className={classes.gridCard}>
+                  <div style={{ height: '100%', width: '65%' }}>
+                    <GaugeChart data={status?.cpu.usage} title="cpu使用率" />
+                  </div>
+                  <div style={{ height: '100%', width: '35%', paddingTop: '10%' }}>
+                    <Typography variant="body2" gutterBottom>
+                      {`1分钟平均负载: ${status?.load_1 || ''}`}
+                    </Typography>
+                    <Typography variant="body2" gutterBottom>
+                      {`5分钟平均负载: ${status?.load_5 || ''}`}
+                    </Typography>
+                    <Typography variant="body2" gutterBottom>
+                      {`10分钟平均负载: ${status?.load_10 || ''}`}
+                    </Typography>
+                  </div>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Paper className={classes.gridCard}>
+                  <div style={{ height: '100%', width: '65%' }}>
+                    <LiquidfillChart data={Math.round(status?.mem_usage || 0) / 100} title="内存使用" />
+                  </div>
+                  <div style={{ height: '100%', width: '35%', paddingTop: '10%' }}>
+                    <Typography variant="body2" gutterBottom>
+                      {`总大小: ${bytesToSize(status?.mem_total || 0)}`}
+                    </Typography>
+                    <Typography variant="body2" gutterBottom>
+                      {`可使用: ${bytesToSize(status?.mem_free || 0)}`}
+                    </Typography>
+                    <Typography variant="body2" gutterBottom>
+                      {`可使用: ${bytesToSize(status?.mem_free || 0)}`}
+                    </Typography>
+                  </div>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Paper className={classes.gridCard}>
+                  <div style={{ height: '100%', width: '65%' }}>
+                    <PieChart
+                      dataList={[
+                        { value: status?.swap_free || 0, name: 'swap_free' },
+                        { value: status?.swap_usage || 0, name: 'swap_usage' }
+                      ]}
+                      title="Swap"
+                    />
+                  </div>
+                  <div style={{ height: '100%', width: '35%', paddingTop: '10%' }}>
+                    <Typography variant="body2" gutterBottom>
+                      {`swap_total: ${bytesToSize(status?.swap_total || 0)}`}
+                    </Typography>
+                    <Typography variant="body2" gutterBottom>
+                      {`swap_free: ${bytesToSize(status?.swap_free || 0)}`}
+                    </Typography>
+                    <Typography variant="body2" gutterBottom>
+                      {`swap_usage: ${bytesToSize(status?.swap_usage || 0)}`}
+                    </Typography>
+                  </div>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Paper className={classes.gridCard}>
+                  <div style={{ height: '100%', width: '100%', padding: '10px' }}>
+                    <RowBarChart
+                      data={[
+                        { value: status?.total_procs || 0, name: '总任务数' },
+                        { value: status?.running_procs || 0, name: '运行中任务数' }
+                      ]}
+                      title="任务"
+                    />
+                  </div>
+                </Paper>
+              </Grid>
+            </Grid>
+          </TabPanel>
+          <TabPanel style={{ height: '90%' }} value={value} index={1}>
+            <div className={classes.box3}>
+              {status &&
+                status.fs_infos.map((e) => (
+                  // <div key={e.mount_point} className={classes.box3Content}>
+                  //   <RowBarChart
+                  //     data={[
+                  //       { value: e.free || 0, name: '磁盘剩余空间' },
+                  //       { value: e.used || 0, name: '磁盘已使用空间' }
+                  //     ]}
+                  //     title={`磁盘挂载点: ${e.mount_point}`}
+                  //     color={['#45c5dc', '#971fde']}
+                  //     xAxisName="字节"
+                  //   />
+                  // </div>
+                  <LinearProgressWithLabel
+                    key={e.mount_point}
+                    dest={`磁盘挂载点: ${e.mount_point}`}
+                    total={`总量: ${bytesToSize(e.free + e.used)}`}
+                    value={Math.round((e.used / (e.free + e.used)) * 100)}
+                    file={`剩余: ${bytesToSize(e.free)}`}
+                    speed={`已使用: ${bytesToSize(e.used)}`}
+                  />
+                ))}
+            </div>
+          </TabPanel>
         </div>
       </Paper>
     </div>
