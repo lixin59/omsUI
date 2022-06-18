@@ -326,7 +326,7 @@ const HostMonitorPage = ({ hostList }: tProps) => {
                       {`总大小: ${bytesToSize(status?.mem_total || 0)}`}
                     </Typography>
                     <Typography variant="body2" gutterBottom>
-                      {`可使用: ${bytesToSize(status?.mem_free || 0)}`}
+                      {`已使用: ${bytesToSize((status!.mem_total - status!.mem_free) || 0)}`}
                     </Typography>
                     <Typography variant="body2" gutterBottom>
                       {`可使用: ${bytesToSize(status?.mem_free || 0)}`}
