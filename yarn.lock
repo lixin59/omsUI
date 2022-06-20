@@ -3658,6 +3658,11 @@ react-virtualized-auto-sizer@^1.0.5:
   resolved "https://registry.npmmirror.com/react-virtualized-auto-sizer/download/react-virtualized-auto-sizer-1.0.6.tgz#66c5b1c9278064c5ef1699ed40a29c11518f97ca"
   integrity sha1-ZsWxySeAZMXvFpntQKKcEVGPl8o=
 
+react-vnc@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.npmmirror.com/react-vnc/-/react-vnc-0.5.1.tgz#027c127d4ddde718743759e4012bf43c973c940f"
+  integrity sha512-m1yhVKuTZCvdT7ivA4C++wepl6Tm3DYgFZJuk2qWluGgT2xaGQf1gGosNxLTglqgdaSgGTg0BRW172juMRcgAw==
+
 react-window@^1.8.6:
   version "1.8.6"
   resolved "https://registry.nlark.com/react-window/download/react-window-1.8.6.tgz#d011950ac643a994118632665aad0c6382e2a112"

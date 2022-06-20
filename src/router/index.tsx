@@ -16,6 +16,7 @@ const WebSSH = lazy(() => import('../views/Mode/WebSSH'));
 const Command = lazy(() => import('../views/Mode/Command'));
 const FileBrowser = lazy(() => import('../views/Mode/FileBrowser'));
 const HostMonitor = lazy(() => import('../views/Mode/HostMonitor'));
+const VNC = lazy(() => import('../views/Mode/VNC'));
 
 const lazyLoad = (children: ReactNode): ReactNode => {
   return (
@@ -44,7 +45,8 @@ export const URL = {
   webSSH: '/mode/web_ssh',
   command: '/mode/command',
   fileBrowser: '/mode/file_browser',
-  hostMonitor: '/mode/host_monitor'
+  hostMonitor: '/mode/host_monitor',
+  vnc: '/mode/vnc'
 };
 
 const router: RouteObject[] = [
@@ -108,6 +110,10 @@ const router: RouteObject[] = [
           {
             path: URL.hostMonitor,
             element: lazyLoad(<HostMonitor />)
+          },
+          {
+            path: `${URL.vnc}/:id`,
+            element: lazyLoad(<VNC />)
           }
         ]
       },

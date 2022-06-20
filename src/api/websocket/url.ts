@@ -9,5 +9,10 @@ const localhost = testHost || window.location.host;
 export const baseUrl = `ws://${localhost}/ws/`;
 
 export const url = {
-  index: 'index'
+  index: 'index',
+  vnc: 'vnc'
+};
+
+export const websocketURL = {
+  vnc: `${baseUrl}vnc/`
 };

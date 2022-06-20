@@ -71,43 +71,46 @@ function ModeTabs() {
   return (
     <div className={classes.root}>
       <OmsTabs
-        orientation='vertical'
-        variant='scrollable'
+        orientation="vertical"
+        variant="scrollable"
         value={value}
         // indicatorColor="primary"
         // textColor="primary"
         onChange={handleChange}
-        aria-label='Vertical tabs example'
-        className={classes.tabs}
-      >
-        <OmsTab label='任务管理' component={NavLink} to={URL.job} {...a11yProps(0)} />
-        <OmsTab label='隧道管理' component={NavLink} to={URL.tunnel} {...a11yProps(1)} />
-        <OmsTab label='上传文件' component={NavLink} to={URL.uploadFile} {...a11yProps(2)} />
-        <OmsTab label='web SSH' component={NavLink} to={`${URL.webSSH}/0`} {...a11yProps(3)} />
-        <OmsTab label='执行命令' component={NavLink} to={URL.command} {...a11yProps(4)} />
-        <OmsTab label='文件浏览' component={NavLink} to={URL.fileBrowser} {...a11yProps(5)} />
-        <OmsTab label='主机监控' component={NavLink} to={URL.hostMonitor} {...a11yProps(6)} />
+        aria-label="Vertical tabs example"
+        className={classes.tabs}>
+        <OmsTab label="任务管理" component={NavLink} to={URL.job} {...a11yProps(0)} />
+        <OmsTab label="隧道管理" component={NavLink} to={URL.tunnel} {...a11yProps(1)} />
+        <OmsTab label="上传文件" component={NavLink} to={URL.uploadFile} {...a11yProps(2)} />
+        <OmsTab label="web SSH" component={NavLink} to={`${URL.webSSH}/0`} {...a11yProps(3)} />
+        <OmsTab label="执行命令" component={NavLink} to={URL.command} {...a11yProps(4)} />
+        <OmsTab label="文件浏览" component={NavLink} to={URL.fileBrowser} {...a11yProps(5)} />
+        <OmsTab label="主机监控" component={NavLink} to={URL.hostMonitor} {...a11yProps(6)} />
+        <OmsTab label="远程桌面" component={NavLink} to={`${URL.vnc}/0`} {...a11yProps(7)} />
       </OmsTabs>
       <TabPanel className={classes.TabPanel} value={value} index={0}>
-        <Outlet/>
+        <Outlet />
       </TabPanel>
       <TabPanel className={classes.TabPanel} value={value} index={1}>
-        <Outlet/>
+        <Outlet />
       </TabPanel>
       <TabPanel className={classes.TabPanel} value={value} index={2}>
-        <Outlet/>
+        <Outlet />
       </TabPanel>
       <TabPanel className={classes.TabPanel} value={value} index={3}>
-        <Outlet/>
+        <Outlet />
       </TabPanel>
       <TabPanel className={classes.TabPanel} value={value} index={4}>
-        <Outlet/>
+        <Outlet />
       </TabPanel>
       <TabPanel className={classes.TabPanel} value={value} index={5}>
-        <Outlet/>
+        <Outlet />
       </TabPanel>
       <TabPanel className={classes.TabPanel} value={value} index={6}>
-        <Outlet/>
+        <Outlet />
+      </TabPanel>
+      <TabPanel className={classes.TabPanel} value={value} index={7}>
+        <Outlet />
       </TabPanel>
     </div>
   );

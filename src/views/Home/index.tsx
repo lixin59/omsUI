@@ -54,6 +54,7 @@ const baseHostInfo: HostInfo = {
   keyFile: '',
   private_key_id: 0,
   port: 22,
+  vnc_port: 5900,
   group: {
     id: 0,
     name: '',
@@ -149,13 +150,13 @@ function Home(props: tProps) {
       });
       return;
     }
-    if (hostList.some((e) => e.addr === hostInfo.addr)) {
-      enqueueSnackbar(`该主机已存在`, {
-        autoHideDuration: 3000,
-        variant: 'error'
-      });
-      return;
-    }
+    // if (hostList.some((e) => e.addr === hostInfo.addr)) {
+    //   enqueueSnackbar(`该主机已存在`, {
+    //     autoHideDuration: 3000,
+    //     variant: 'error'
+    //   });
+    //   return;
+    // }
     const tags: TagInfo[] = [];
     tlc.forEach((e) => {
       if (e.checked) {
@@ -171,6 +172,7 @@ function Home(props: tProps) {
       user: data.user,
       addr: data.addr,
       port: data.port,
+      vnc_port: data.vnc_port,
       group: data.group.id,
       password: data.password,
       private_key_id: data.private_key_id,
@@ -202,7 +204,7 @@ function Home(props: tProps) {
         data={hostList}
         initStore={initStore}
         apiFn={getHostsApi}
-        delay={500}
+        // delay={500}
         loading={<Loading />}
         dataIsEmpty={
           <OmsError

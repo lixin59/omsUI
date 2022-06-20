@@ -1,7 +1,7 @@
 import { getApi, postApi, deleteApi, putApi } from './api';
 import { urlType, baseUrl } from './requestUrl';
 import { Base64 } from 'js-base64';
-import {AxiosRequestConfig} from "axios";
+import { AxiosRequestConfig } from 'axios';
 
 export interface HTTPResult {
   code: string;
@@ -15,6 +15,7 @@ export interface EditHostPut {
   user?: string;
   addr?: string;
   port?: number;
+  vnc_port?: number;
   group?: number;
   password?: string;
   private_key_id?: any;
@@ -26,6 +27,7 @@ export interface AddHostPost {
   user: string;
   addr: string;
   port: number;
+  vnc_port?: number;
   group: number;
   password: string;
   private_key_id?: any;

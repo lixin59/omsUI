@@ -20,6 +20,14 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
     alignItems: 'center',
     justifyContent: 'space-around'
   },
+  vncButton: {
+    width: '40px',
+    height: '26px',
+    backgroundColor: theme.palette.primary[theme.palette.type],
+    '&:hover': {
+      backgroundColor: theme.palette.primary.main
+    }
+  },
   commandButton: {
     width: '40px',
     height: '26px',
