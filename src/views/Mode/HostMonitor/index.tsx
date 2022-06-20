@@ -27,6 +27,7 @@ import PieChart from '../../../components/OmsEcharts/PieChart';
 import RowBarChart from '../../../components/OmsEcharts/RowBarChart';
 import { bytesToSize } from '../../../utils/calculate';
 import LinearProgressWithLabel from '../../../components/UploadFileProgress/Linear';
+import OmsError from '../../../components/OmsError';
 
 type tDP = {
   // deleteGroup: ActionCreator<any>;
@@ -281,126 +282,135 @@ const HostMonitorPage = ({ hostList }: tProps) => {
           查看
         </Button>
       </div>
-      <Paper className={classes.dashBoard} elevation={2}>
-        <div className={classes.box1}>
-          <Typography variant="h5" gutterBottom>
-            {`主机名：${status?.hostname || ''}`}
-          </Typography>
-          <Typography variant="h5" gutterBottom>
-            {`运行时间：${status?.start_up_time || ''}`}
-          </Typography>
-        </div>
-        <Divider />
-        <div style={{ height: '90%' }}>
-          <Tabs style={{ height: '10%' }} value={value} onChange={switchTab} aria-label="basic tabs example">
-            <Tab label="系统资源" {...a11yProps(0)} />
-            <Tab label="文件系统" {...a11yProps(1)} />
-          </Tabs>
-          <TabPanel style={{ height: '90%', overflow: 'auto' }} value={value} index={0}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <Paper className={classes.gridCard}>
-                  <div style={{ height: '100%', width: '65%' }}>
-                    <GaugeChart data={status?.cpu.usage} title="cpu使用率" />
-                  </div>
-                  <div style={{ height: '100%', width: '35%', paddingTop: '10%' }}>
-                    <Typography variant="body2" gutterBottom>
-                      {`1分钟平均负载: ${status?.load_1 || ''}`}
-                    </Typography>
-                    <Typography variant="body2" gutterBottom>
-                      {`5分钟平均负载: ${status?.load_5 || ''}`}
-                    </Typography>
-                    <Typography variant="body2" gutterBottom>
-                      {`10分钟平均负载: ${status?.load_10 || ''}`}
-                    </Typography>
-                  </div>
-                </Paper>
+      {status ? (
+        <Paper className={classes.dashBoard} elevation={2}>
+          <div className={classes.box1}>
+            <Typography variant="h5" gutterBottom>
+              {`主机名：${status?.hostname || ''}`}
+            </Typography>
+            <Typography variant="h5" gutterBottom>
+              {`运行时间：${status?.start_up_time || ''}`}
+            </Typography>
+          </div>
+          <Divider />
+          <div style={{ height: '90%' }}>
+            <Tabs style={{ height: '10%' }} value={value} onChange={switchTab} aria-label="basic tabs example">
+              <Tab label="系统资源" {...a11yProps(0)} />
+              <Tab label="文件系统" {...a11yProps(1)} />
+            </Tabs>
+            <TabPanel style={{ height: '90%', overflow: 'auto' }} value={value} index={0}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} sm={6}>
+                  <Paper className={classes.gridCard}>
+                    <div style={{ height: '100%', width: '65%' }}>
+                      <GaugeChart data={status?.cpu.usage} title="cpu使用率" />
+                    </div>
+                    <div style={{ height: '100%', width: '35%', paddingTop: '10%' }}>
+                      <Typography variant="body2" gutterBottom>
+                        {`1分钟平均负载: ${status?.load_1 || ''}`}
+                      </Typography>
+                      <Typography variant="body2" gutterBottom>
+                        {`5分钟平均负载: ${status?.load_5 || ''}`}
+                      </Typography>
+                      <Typography variant="body2" gutterBottom>
+                        {`10分钟平均负载: ${status?.load_10 || ''}`}
+                      </Typography>
+                    </div>
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Paper className={classes.gridCard}>
+                    <div style={{ height: '100%', width: '65%' }}>
+                      <LiquidfillChart data={Math.round(status?.mem_usage || 0) / 100} title="内存使用" />
+                    </div>
+                    <div style={{ height: '100%', width: '35%', paddingTop: '10%' }}>
+                      <Typography variant="body2" gutterBottom>
+                        {`总大小: ${bytesToSize(status?.mem_total || 0)}`}
+                      </Typography>
+                      <Typography variant="body2" gutterBottom>
+                        {`已使用: ${bytesToSize(status!.mem_total - status!.mem_free || 0)}`}
+                      </Typography>
+                      <Typography variant="body2" gutterBottom>
+                        {`可使用: ${bytesToSize(status?.mem_free || 0)}`}
+                      </Typography>
+                    </div>
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Paper className={classes.gridCard}>
+                    <div style={{ height: '100%', width: '65%' }}>
+                      <PieChart
+                        dataList={[
+                          { value: status?.swap_free || 0, name: 'swap_free' },
+                          { value: status?.swap_usage || 0, name: 'swap_usage' }
+                        ]}
+                        title="Swap"
+                      />
+                    </div>
+                    <div style={{ height: '100%', width: '35%', paddingTop: '10%' }}>
+                      <Typography variant="body2" gutterBottom>
+                        {`swap_total: ${bytesToSize(status?.swap_total || 0)}`}
+                      </Typography>
+                      <Typography variant="body2" gutterBottom>
+                        {`swap_free: ${bytesToSize(status?.swap_free || 0)}`}
+                      </Typography>
+                      <Typography variant="body2" gutterBottom>
+                        {`swap_usage: ${bytesToSize(status?.swap_usage || 0)}`}
+                      </Typography>
+                    </div>
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Paper className={classes.gridCard}>
+                    <div style={{ height: '100%', width: '100%', padding: '10px' }}>
+                      <RowBarChart
+                        data={[
+                          { value: status?.total_procs || 0, name: '总任务数' },
+                          { value: status?.running_procs || 0, name: '运行中任务数' }
+                        ]}
+                        title="任务"
+                      />
+                    </div>
+                  </Paper>
+                </Grid>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <Paper className={classes.gridCard}>
-                  <div style={{ height: '100%', width: '65%' }}>
-                    <LiquidfillChart data={Math.round(status?.mem_usage || 0) / 100} title="内存使用" />
-                  </div>
-                  <div style={{ height: '100%', width: '35%', paddingTop: '10%' }}>
-                    <Typography variant="body2" gutterBottom>
-                      {`总大小: ${bytesToSize(status?.mem_total || 0)}`}
-                    </Typography>
-                    <Typography variant="body2" gutterBottom>
-                      {`已使用: ${bytesToSize((status!.mem_total - status!.mem_free) || 0)}`}
-                    </Typography>
-                    <Typography variant="body2" gutterBottom>
-                      {`可使用: ${bytesToSize(status?.mem_free || 0)}`}
-                    </Typography>
-                  </div>
-                </Paper>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Paper className={classes.gridCard}>
-                  <div style={{ height: '100%', width: '65%' }}>
-                    <PieChart
-                      dataList={[
-                        { value: status?.swap_free || 0, name: 'swap_free' },
-                        { value: status?.swap_usage || 0, name: 'swap_usage' }
-                      ]}
-                      title="Swap"
+            </TabPanel>
+            <TabPanel style={{ height: '90%' }} value={value} index={1}>
+              <div className={classes.box3}>
+                {status &&
+                  status.fs_infos.map((e) => (
+                    // <div key={e.mount_point} className={classes.box3Content}>
+                    //   <RowBarChart
+                    //     data={[
+                    //       { value: e.free || 0, name: '磁盘剩余空间' },
+                    //       { value: e.used || 0, name: '磁盘已使用空间' }
+                    //     ]}
+                    //     title={`磁盘挂载点: ${e.mount_point}`}
+                    //     color={['#45c5dc', '#971fde']}
+                    //     xAxisName="字节"
+                    //   />
+                    // </div>
+                    <LinearProgressWithLabel
+                      key={e.mount_point}
+                      dest={`磁盘挂载点: ${e.mount_point}`}
+                      total={`总量: ${bytesToSize(e.free + e.used)}`}
+                      value={Math.round((e.used / (e.free + e.used)) * 100)}
+                      file={`剩余: ${bytesToSize(e.free)}`}
+                      speed={`已使用: ${bytesToSize(e.used)}`}
                     />
-                  </div>
-                  <div style={{ height: '100%', width: '35%', paddingTop: '10%' }}>
-                    <Typography variant="body2" gutterBottom>
-                      {`swap_total: ${bytesToSize(status?.swap_total || 0)}`}
-                    </Typography>
-                    <Typography variant="body2" gutterBottom>
-                      {`swap_free: ${bytesToSize(status?.swap_free || 0)}`}
-                    </Typography>
-                    <Typography variant="body2" gutterBottom>
-                      {`swap_usage: ${bytesToSize(status?.swap_usage || 0)}`}
-                    </Typography>
-                  </div>
-                </Paper>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Paper className={classes.gridCard}>
-                  <div style={{ height: '100%', width: '100%', padding: '10px' }}>
-                    <RowBarChart
-                      data={[
-                        { value: status?.total_procs || 0, name: '总任务数' },
-                        { value: status?.running_procs || 0, name: '运行中任务数' }
-                      ]}
-                      title="任务"
-                    />
-                  </div>
-                </Paper>
-              </Grid>
-            </Grid>
-          </TabPanel>
-          <TabPanel style={{ height: '90%' }} value={value} index={1}>
-            <div className={classes.box3}>
-              {status &&
-                status.fs_infos.map((e) => (
-                  // <div key={e.mount_point} className={classes.box3Content}>
-                  //   <RowBarChart
-                  //     data={[
-                  //       { value: e.free || 0, name: '磁盘剩余空间' },
-                  //       { value: e.used || 0, name: '磁盘已使用空间' }
-                  //     ]}
-                  //     title={`磁盘挂载点: ${e.mount_point}`}
-                  //     color={['#45c5dc', '#971fde']}
-                  //     xAxisName="字节"
-                  //   />
-                  // </div>
-                  <LinearProgressWithLabel
-                    key={e.mount_point}
-                    dest={`磁盘挂载点: ${e.mount_point}`}
-                    total={`总量: ${bytesToSize(e.free + e.used)}`}
-                    value={Math.round((e.used / (e.free + e.used)) * 100)}
-                    file={`剩余: ${bytesToSize(e.free)}`}
-                    speed={`已使用: ${bytesToSize(e.used)}`}
-                  />
-                ))}
-            </div>
-          </TabPanel>
-        </div>
-      </Paper>
+                  ))}
+              </div>
+            </TabPanel>
+          </div>
+        </Paper>
+      ) : (
+        <OmsError
+          errInfo="请选择一个主机进行连接"
+          errType="network"
+          imgStyle={{ width: '400px', height: '400px' }}
+          variant="h4"
+        />
+      )}
     </div>
   );
 };
