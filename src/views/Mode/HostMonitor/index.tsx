@@ -26,7 +26,9 @@ import LiquidfillChart from '../../../components/OmsEcharts/LiquidfillChart';
 import PieChart from '../../../components/OmsEcharts/PieChart';
 import RowBarChart from '../../../components/OmsEcharts/RowBarChart';
 import { bytesToSize } from '../../../utils/calculate';
-import LinearProgressWithLabel from '../../../components/UploadFileProgress/Linear';
+// import LinearProgressWithLabel from '../../../components/UploadFileProgress/Linear';
+import hostSvg from '../../../assets/icons/hostmonitor.svg';
+import LineProgress from '../../../components/LineProgress';
 import OmsError from '../../../components/OmsError';
 
 type tDP = {
@@ -379,24 +381,15 @@ const HostMonitorPage = ({ hostList }: tProps) => {
               <div className={classes.box3}>
                 {status &&
                   status.fs_infos.map((e) => (
-                    // <div key={e.mount_point} className={classes.box3Content}>
-                    //   <RowBarChart
-                    //     data={[
-                    //       { value: e.free || 0, name: '磁盘剩余空间' },
-                    //       { value: e.used || 0, name: '磁盘已使用空间' }
-                    //     ]}
-                    //     title={`磁盘挂载点: ${e.mount_point}`}
-                    //     color={['#45c5dc', '#971fde']}
-                    //     xAxisName="字节"
-                    //   />
-                    // </div>
-                    <LinearProgressWithLabel
+                    <LineProgress
                       key={e.mount_point}
-                      dest={`磁盘挂载点: ${e.mount_point}`}
-                      total={`总量: ${bytesToSize(e.free + e.used)}`}
                       value={Math.round((e.used / (e.free + e.used)) * 100)}
-                      file={`剩余: ${bytesToSize(e.free)}`}
-                      speed={`已使用: ${bytesToSize(e.used)}`}
+                      desc={[
+                        `磁盘挂载点: ${e.mount_point}`,
+                        `可使用: ${bytesToSize(e.free)}`,
+                        `已使用: ${bytesToSize(e.used)}`,
+                        `共: ${bytesToSize(e.free + e.used)}`
+                      ]}
                     />
                   ))}
               </div>
@@ -407,8 +400,9 @@ const HostMonitorPage = ({ hostList }: tProps) => {
         <OmsError
           errInfo="请选择一个主机进行连接"
           errType="network"
-          imgStyle={{ width: '400px', height: '400px' }}
+          imgStyle={{ width: '200px', height: '200px', marginTop: '20px' }}
           variant="h4"
+          svgImg={hostSvg}
         />
       )}
     </div>
