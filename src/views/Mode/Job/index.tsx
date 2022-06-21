@@ -22,11 +22,12 @@ type tDP = {
   editJob: ActionCreator<any>;
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 type tOP = {};
 
 type tSP = tOP & {
-  jobList: JobInfo[],
-  hostList: HostInfo[]
+  jobList: JobInfo[];
+  hostList: HostInfo[];
 };
 
 const mapStateToProps = (state: IState, props: tOP): tSP => ({
@@ -44,9 +45,8 @@ const mapDispatch: tDP = {
 type tProps = tSP & tDP;
 
 const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob, toInit }: tProps) => {
-
   useEffect(() => {
-    (async() => {
+    (async () => {
       const res = (await getJobsApi()) as HTTPResult;
       if (res.code !== '200') {
         return;
@@ -63,7 +63,7 @@ const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob, toInit }: tPro
   const [cmd, setCmd] = useState<string>('');
   const [name, setName] = useState<string>('');
 
-  const addNewJob = async() => {
+  const addNewJob = async () => {
     if (type === '') {
       enqueueSnackbar(`请选择一个类型！`, {
         autoHideDuration: 3000,
@@ -92,7 +92,13 @@ const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob, toInit }: tPro
       });
       return;
     }
-    const res = (await addJobApi({ name, type: type as 'cron' | 'task', spec, cmd, host_id: hostId as number })) as HTTPResult;
+    const res = (await addJobApi({
+      name,
+      type: type as 'cron' | 'task',
+      spec,
+      cmd,
+      host_id: hostId as number
+    })) as HTTPResult;
     if (res.code !== '200') {
       enqueueSnackbar(`添加任务失败${res.msg}`, {
         autoHideDuration: 3000,
@@ -111,76 +117,72 @@ const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob, toInit }: tPro
     <div className={classes.itemPage}>
       <div className={classes.ControlBox}>
         <FormControl className={classes.Control}>
-          <InputLabel id='job-select-label'>选择job类型</InputLabel>
+          <InputLabel id="job-select-label">选择job类型</InputLabel>
           <Select
-            labelId='job-select-label'
-            id='job-select'
+            labelId="job-select-label"
+            id="job-select"
             value={type}
-            onChange={(e) => setType(e.target.value as string)}
-          >
+            onChange={(e) => setType(e.target.value as string)}>
             <MenuItem value={'cron'}>cron</MenuItem>
             <MenuItem value={'task'}>task</MenuItem>
           </Select>
         </FormControl>
         <FormControl className={classes.Control}>
-          <InputLabel id='hostid-select-label'>选择主机</InputLabel>
+          <InputLabel id="hostid-select-label">选择主机</InputLabel>
           <Select
-            labelId='hostid-select-label'
-            id='hostid-select'
+            labelId="hostid-select-label"
+            id="hostid-select"
             value={hostId}
-            onChange={(e) => setHost(e.target.value as string)}
-          >
+            onChange={(e) => setHost(e.target.value as string)}>
             {hostList.map((e) => {
-              return (<MenuItem key={e.id} value={e.id}>{e.name}</MenuItem>);
+              return (
+                <MenuItem key={e.id} value={e.id}>
+                  {e.name}
+                </MenuItem>
+              );
             })}
           </Select>
         </FormControl>
         <FormControl className={classes.Control}>
           <TextField
-            size='small'
-            id='cron-job'
-            label='cron表达式'
-            variant='outlined'
+            size="small"
+            id="cron-job"
+            label="cron表达式"
+            variant="outlined"
             value={spec}
-            placeholder='task类型不用添加规则'
+            placeholder="task类型不用添加规则"
             onChange={(e) => setSpec(e.target.value)}
           />
         </FormControl>
         <FormControl className={classes.Control}>
           <TextField
-            size='small'
-            label='Job名称'
-            id='name-job'
-            variant='outlined'
+            size="small"
+            label="Job名称"
+            id="name-job"
+            variant="outlined"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
         </FormControl>
         <FormControl className={classes.Control}>
           <TextField
-            size='small'
-            label='命令'
-            id='cmd-job'
-            variant='outlined'
+            size="small"
+            label="命令"
+            id="cmd-job"
+            variant="outlined"
             value={cmd}
             onChange={(e) => setCmd(e.target.value)}
           />
         </FormControl>
-        <Button
-          className={classes.addButton}
-          onClick={addNewJob}
-        >
+        <Button className={classes.addButton} onClick={addNewJob}>
           增加任务
         </Button>
       </div>
       <div className={classes.shellBox}>
-        <JobTable jobList={jobList} deleteJob={deleteJob} editJob={editJob}/>
+        <JobTable hostList={hostList} jobList={jobList} deleteJob={deleteJob} editJob={editJob} />
       </div>
     </div>
   );
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatch
-)(JobPage);
+export default connect(mapStateToProps, mapDispatch)(JobPage);

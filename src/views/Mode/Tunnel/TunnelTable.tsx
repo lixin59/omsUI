@@ -22,6 +22,7 @@ type tDP = {
   editTunnel: ActionCreator<any>;
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 type tOP = {};
 
 type tSP = tOP & {
@@ -38,6 +39,11 @@ interface Column {
 }
 
 const columns: Column[] = [
+  {
+    id: 'id',
+    label: '主机名称',
+    minWidth: 100
+  },
   {
     id: 'mode',
     label: '隧道模式',
@@ -166,21 +172,12 @@ export default function JobTable({ deleteTunnel, tunnelList, hostList, editTunne
               tunnelList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                    <TableCell key={row.mode} align="center">
-                      {row.mode}
-                    </TableCell>
-                    <TableCell key={row.source} align="center">
-                      {row.source}
-                    </TableCell>
-                    <TableCell key={row.destination} align="center">
-                      {row.destination}
-                    </TableCell>
-                    <TableCell key={String(new Date().getTime())} align="center">
-                      {String(row.status)}
-                    </TableCell>
-                    <TableCell key={row.error_msg} align="center">
-                      {row.error_msg}
-                    </TableCell>
+                    <TableCell align="center">{hostList?.find((h) => h.id === row.host_id)?.name}</TableCell>
+                    <TableCell align="center">{row.mode}</TableCell>
+                    <TableCell align="center">{row.source}</TableCell>
+                    <TableCell align="center">{row.destination}</TableCell>
+                    <TableCell align="center">{String(row.status)}</TableCell>
+                    <TableCell align="center">{row.error_msg}</TableCell>
                     <TableCell align="center">
                       <Button
                         className={classes.editBtn}

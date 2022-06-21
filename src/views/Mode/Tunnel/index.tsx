@@ -22,11 +22,12 @@ type tDP = {
   editTunnel: ActionCreator<any>;
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 type tOP = {};
 
 type tSP = tOP & {
-  tunnelList: TunnelInfo[],
-  hostList: HostInfo[]
+  tunnelList: TunnelInfo[];
+  hostList: HostInfo[];
 };
 
 const mapStateToProps = (state: IState, props: tOP): tSP => ({
@@ -44,9 +45,8 @@ const mapDispatch: tDP = {
 type tProps = tSP & tDP;
 
 const TunnelPage = ({ hostList, tunnelList, addTunnel, editTunnel, deleteTunnel, toInit }: tProps) => {
-
   useEffect(() => {
-    (async() => {
+    (async () => {
       // console.log('tunnelEff');
       const res = (await getTunnelsApi()) as HTTPResult;
       if (res.code !== '200') {
@@ -59,11 +59,11 @@ const TunnelPage = ({ hostList, tunnelList, addTunnel, editTunnel, deleteTunnel,
   const classes = makeStyles(styles)();
   const { enqueueSnackbar } = useSnackbar();
   const [mode, setMode] = useState<string>('');
-  const [hostId, setHost] = useState<string|number>('');
+  const [hostId, setHost] = useState<string | number>('');
   const [source, setSrc] = useState<string>('');
   const [destination, setDest] = useState<string>('');
 
-  const addNew = async() => {
+  const addNew = async () => {
     if (mode === '') {
       enqueueSnackbar(`请选择一个模式！`, {
         autoHideDuration: 3000,
@@ -78,7 +78,12 @@ const TunnelPage = ({ hostList, tunnelList, addTunnel, editTunnel, deleteTunnel,
       });
       return;
     }
-    const res = (await addTunnelApi({ mode: mode as 'local' | 'remote', source, destination, host_id: hostId as number })) as HTTPResult;
+    const res = (await addTunnelApi({
+      mode: mode as 'local' | 'remote',
+      source,
+      destination,
+      host_id: hostId as number
+    })) as HTTPResult;
     if (res.code !== '200') {
       enqueueSnackbar(`添加任务失败${res.msg}`, {
         autoHideDuration: 3000,
@@ -93,65 +98,61 @@ const TunnelPage = ({ hostList, tunnelList, addTunnel, editTunnel, deleteTunnel,
     <div className={classes.itemPage}>
       <div className={classes.ControlBox}>
         <FormControl className={classes.Control}>
-          <InputLabel id='job-select-label'>选择隧道模式</InputLabel>
+          <InputLabel id="job-select-label">选择隧道模式</InputLabel>
           <Select
-            labelId='job-select-label'
-            id='job-select'
+            labelId="job-select-label"
+            id="job-select"
             value={mode}
-            onChange={(e) => setMode(e.target.value as string)}
-          >
+            onChange={(e) => setMode(e.target.value as string)}>
             <MenuItem value={'local'}>local</MenuItem>
             <MenuItem value={'remote'}>remote</MenuItem>
           </Select>
         </FormControl>
         <FormControl className={classes.Control}>
-          <InputLabel id='hostid-select-label'>选择主机</InputLabel>
+          <InputLabel id="hostid-select-label">选择主机</InputLabel>
           <Select
-            labelId='hostid-select-label'
-            id='hostid-select-tunnel'
+            labelId="hostid-select-label"
+            id="hostid-select-tunnel"
             value={hostId}
-            onChange={(e) => setHost(e.target.value as number)}
-          >
+            onChange={(e) => setHost(e.target.value as number)}>
             {hostList.map((e) => {
-              return (<MenuItem key={e.id} value={e.id}>{e.name}</MenuItem>);
+              return (
+                <MenuItem key={e.id} value={e.id}>
+                  {e.name}
+                </MenuItem>
+              );
             })}
           </Select>
         </FormControl>
         <FormControl className={classes.Control}>
           <TextField
-            size='small'
-            id='src-tunnel'
-            label='源地址'
-            variant='outlined'
+            size="small"
+            id="src-tunnel"
+            label="源地址"
+            variant="outlined"
             value={source}
             onChange={(e) => setSrc(e.target.value)}
           />
         </FormControl>
         <FormControl className={classes.Control}>
           <TextField
-            size='small'
-            label='监听地址'
-            id='dest-tunnel'
-            variant='outlined'
+            size="small"
+            label="监听地址"
+            id="dest-tunnel"
+            variant="outlined"
             value={destination}
             onChange={(e) => setDest(e.target.value)}
           />
         </FormControl>
-        <Button
-          className={classes.addButton}
-          onClick={addNew}
-        >
+        <Button className={classes.addButton} onClick={addNew}>
           增加隧道
         </Button>
       </div>
       <div className={classes.shellBox}>
-        <TunnelTable deleteTunnel={deleteTunnel} tunnelList={tunnelList} editTunnel={editTunnel} hostList={hostList}/>
+        <TunnelTable deleteTunnel={deleteTunnel} tunnelList={tunnelList} editTunnel={editTunnel} hostList={hostList} />
       </div>
     </div>
   );
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatch
-)(TunnelPage);
+export default connect(mapStateToProps, mapDispatch)(TunnelPage);

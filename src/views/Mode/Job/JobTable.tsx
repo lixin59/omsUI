@@ -14,7 +14,7 @@ import { ActionCreator } from 'redux';
 import LogDialog from '../../../components/OmsDialog/LogDialog';
 import TipDialog from '../../../components/OmsDialog/TipDialog';
 import { useSnackbar } from 'notistack';
-import { JobInfo } from '../../../store/interface';
+import { HostInfo, JobInfo } from '../../../store/interface';
 import FormDialog from '../../../components/OmsDialog/FormDialog';
 import JobInfoForm from './JobInfoForm';
 import {
@@ -36,6 +36,7 @@ type tDP = {
 type tOP = any;
 
 type tSP = tOP & {
+  hostList: HostInfo[];
   jobList: JobInfo[];
 };
 
@@ -48,6 +49,11 @@ interface Column {
 }
 
 const columns: Column[] = [
+  {
+    id: 'id',
+    label: '主机名称',
+    minWidth: 100
+  },
   {
     id: 'name',
     label: 'job名称',
@@ -85,7 +91,7 @@ const columns: Column[] = [
   }
 ];
 
-export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
+export default function JobTable({ hostList, deleteJob, jobList, editJob }: tProps) {
   const classes = makeStyles(styles)();
   const { enqueueSnackbar } = useSnackbar();
   const [page, setPage] = useState<number>(0);
@@ -268,6 +274,7 @@ export default function JobTable({ deleteJob, jobList, editJob }: tProps) {
               jobList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.name}>
+                    <TableCell align="center">{hostList?.find((h) => h.id === row.host_id)?.name}</TableCell>
                     <TableCell align="center">{row.name}</TableCell>
                     <TableCell align="center">{row.type}</TableCell>
                     <TableCell align="center">{row.spec}</TableCell>
