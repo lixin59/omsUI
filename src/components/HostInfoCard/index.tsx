@@ -78,7 +78,7 @@ function HostInfoCard(props: tProps) {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const titles = '确定要删除这台主机吗？';
-  const text = '如果是不小心点到了删除按钮请点击取消，否则请你考虑清楚在决定是否要删除，后果自负！！！';
+  const text = `主机: ${hostInfo.name}, ip: ${hostInfo.addr}`;
 
   const [open, setOpen] = useState<boolean>(false);
   const [isOpen, setIsoOpen] = useState<boolean>(false);
@@ -207,7 +207,7 @@ function HostInfoCard(props: tProps) {
             className={classes.commandButton}
             variant="contained"
             onClick={() => navigate(`${URL.webSSH}/${hostInfo.id}`)}>
-            命令
+            SSH
           </Button>
           <Button className={classes.editButton} variant="contained" onClick={() => openDialog('edit')}>
             编辑

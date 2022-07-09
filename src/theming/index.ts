@@ -67,6 +67,9 @@ export const themeLight = createTheme({
     primary: {
       main: '#4caf50'
     },
+    secondary: {
+      main: '#0ba8a8'
+    },
     snacbar: {
       light: '#b5f3b5',
       dark: 'rgba(181, 243, 181, 0.1)',
@@ -99,6 +102,9 @@ export const themeDark = createTheme({
     },
     primary: {
       main: '#5fb878'
+    },
+    secondary: {
+      main: '#74ffff'
     },
     snacbar: {
       light: '#659d4d',

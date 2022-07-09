@@ -111,6 +111,7 @@ const HostInfoForm = ({ hostInfo, setHostInfo, groupList, privateKeyList, tlc, s
         margin="dense"
         id="port"
         label="端口号"
+        type="number"
         fullWidth
         value={hostInfo.port}
         onChange={(e) => setHostInfo({ ...hostInfo, port: Number(e.target.value) })}
@@ -119,6 +120,7 @@ const HostInfoForm = ({ hostInfo, setHostInfo, groupList, privateKeyList, tlc, s
         autoFocus
         margin="dense"
         id="vnc_port"
+        type="number"
         label="VNC端口号"
         fullWidth
         value={hostInfo.vnc_port}

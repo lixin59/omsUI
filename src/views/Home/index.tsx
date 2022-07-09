@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer, useState, useCallback } from 'react';
 import HTTP from '../../components/HTTP/index';
 import {
   AddHostPost,
@@ -7,16 +7,22 @@ import {
   HTTPResult,
   getGroupsApi,
   getTagsApi,
-  getPrivateKeysApi
+  getPrivateKeysApi,
+  deleteHostApi,
+  EditHostPut,
+  editHostApi
 } from '../../api/http/httpRequestApi';
 import Loading from '../../components/OmsSkeleton/Loading';
 import OmsError from '../../components/OmsError';
 import { ActionCreator } from 'redux';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import actions from '../../store/action';
+import IconButton from '@material-ui/core/IconButton';
+import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
+import Stack from '@mui/material/Stack';
+import AppsIcon from '@material-ui/icons/Apps';
 import imac from '../../assets/icons/imac.svg';
 import BodyBox from '../../components/Bodybox';
 import HostInfoCard from '../../components/HostInfoCard';
@@ -25,6 +31,10 @@ import { GroupInfo, IState, TagInfo, HostInfo, PrivateKeyInfo } from '../../stor
 import homeStyle from './homStyle';
 import FormDialog from '../../components/OmsDialog/FormDialog';
 import { useSnackbar } from 'notistack';
+import HostInfoTable from '../../components/HostInfoCard/HostInfoTable';
+import TipDialog from '../../components/OmsDialog/TipDialog';
+import Tooltip from '@material-ui/core/Tooltip';
+
 type tDP = {
   initGroup: ActionCreator<any>;
   initTag: ActionCreator<any>;
@@ -85,9 +95,70 @@ const mapDispatch: tDP = {
 
 type tProps = tSP & tDP;
 
+function formInit() {
+  return {
+    open: false,
+    title: ''
+  };
+}
+
+function formReducer(state, action: any) {
+  switch (action.type) {
+    case 'open':
+      return { ...state, open: true };
+    case 'close':
+      return { ...state, open: false };
+    case 'title':
+      return { ...state, title: action.payload };
+    case 'reset':
+      return formInit();
+    default:
+      throw new Error();
+  }
+}
+
+function tipInit() {
+  return {
+    open: false,
+    text: '',
+    title: '',
+    todo: (a) => a
+  };
+}
+
+function tipReducer(state, action: any) {
+  switch (action.type) {
+    case 'open':
+      return { ...state, open: true };
+    case 'close':
+      return { ...state, open: false };
+    case 'text':
+      return { ...state, text: action.payload };
+    case 'title':
+      return { ...state, title: action.payload };
+    case 'todo':
+      return { ...state, todo: action.payload };
+    case 'reset':
+      return tipInit();
+    default:
+      throw new Error();
+  }
+}
+
 function Home(props: tProps) {
-  const { hostList, addHost, initTag, initGroup, initPrivateKey, privateKeyList, groupList, tagList, initStore } =
-    props;
+  const {
+    hostList,
+    addHost,
+    editHost,
+    deleteHost,
+    initTag,
+    initGroup,
+    initPrivateKey,
+    privateKeyList,
+    groupList,
+    tagList,
+    initStore
+  } = props;
 
   useEffect(() => {
     (async () => {
@@ -113,22 +184,118 @@ function Home(props: tProps) {
   const classes = makeStyles(homeStyle)();
   const { enqueueSnackbar } = useSnackbar();
 
-  const [open, setOpen] = useState<boolean>(false);
+  const [id, setId] = useState<number>(0);
+  const [tip, tipDispatch] = useReducer(tipReducer, tipInit(), tipInit);
+  const [form, formDispatch] = useReducer(formReducer, formInit(), formInit);
   const [hostInfo, setHostInfo] = useState<HostInfo>(baseHostInfo);
   const [tlc, setTlc] = useState(tagList?.map((e) => ({ ...e, checked: false })));
+  const [viewType, setViewType] = useState<'card' | 'table'>('card');
 
-  const title = '添加一个新的主机';
-  const content = HostInfoForm({ hostInfo, setHostInfo, privateKeyList, groupList, tlc, setTlc });
+  const addcontent = HostInfoForm({ hostInfo, setHostInfo, privateKeyList, groupList, tlc, setTlc });
+
+  const editContent = HostInfoForm({ hostInfo, setHostInfo, privateKeyList, groupList, tlc, setTlc });
+
+  const viewComponent = {
+    card: (
+      <HTTP.Get
+        data={hostList}
+        initStore={initStore}
+        apiFn={getHostsApi}
+        // delay={500}
+        loading={<Loading />}
+        dataIsEmpty={
+          <OmsError
+            errInfo="您还未添加主机，请在右下角点击“添加主机”按钮添加您的主机。"
+            variant="h5"
+            svgImg={imac}
+            errType="server"
+            imgStyle={{ width: '400px', height: '400px' }}
+            style={{ marginTop: '40px' }}
+          />
+        }
+        error={
+          <div style={{ marginTop: '100px' }}>
+            <OmsError
+              errInfo="请求数据失败，网络异常"
+              variant="h3"
+              errType="server"
+              imgStyle={{ width: '400px', height: '400px' }}
+            />
+          </div>
+        }>
+        {
+          <div
+            style={{
+              width: '90%',
+              margin: '0 auto',
+              paddingTop: '20px',
+              paddingBottom: '20px',
+              display: 'grid',
+              alignContent: 'space-evenly',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              justifyItems: 'center',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))',
+              gridGap: '20px 20px'
+            }}>
+            {hostList?.map((i: HostInfo) => {
+              return <HostInfoCard hostInfo={i} key={i.id} />;
+            })}
+          </div>
+        }
+      </HTTP.Get>
+    ),
+    table: (
+      <HostInfoTable
+        setHostInfo={setHostInfo}
+        setHostId={setId}
+        tipDispatch={tipDispatch}
+        formDispatch={formDispatch}
+      />
+    )
+  };
 
   const handleClickOpen = () => {
-    setOpen(true);
+    formDispatch({ type: 'title', payload: '添加一个新的主机' });
+    formDispatch({ type: 'open' });
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const editNewHost = async () => {
+    const tags: TagInfo[] = [];
+    tlc.forEach((e) => {
+      if (e.checked) {
+        tags.push(e);
+      }
+    });
+    const resData: EditHostPut = {
+      id: hostInfo.id,
+      hostname: hostInfo.name,
+      user: hostInfo.user,
+      addr: hostInfo.addr,
+      port: hostInfo.port,
+      vnc_port: hostInfo.vnc_port,
+      password: hostInfo.password || '',
+      private_key_id: hostInfo.private_key_id,
+      group: hostInfo?.group?.id,
+      tags: JSON.stringify(tags?.map((e) => e.id))
+    };
+    const res = (await editHostApi(resData)) as HTTPResult;
+
+    if (res.code !== '200') {
+      enqueueSnackbar(`主机修改失败: ${res.msg}`, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
+      return;
+    }
+    editHost(res.data);
+    enqueueSnackbar(`主机: ${hostInfo.name} 信息已经修改`, {
+      autoHideDuration: 3000,
+      variant: 'success'
+    });
   };
 
-  const addNewHost = async () => {
+  const addNewHost = useCallback(async () => {
     if (!hostInfo.addr) {
       enqueueSnackbar(`主机地址不能为空`, {
         autoHideDuration: 3000,
@@ -196,68 +363,46 @@ function Home(props: tProps) {
     });
     setHostInfo(baseHostInfo);
     setTlc(tagList?.map((e) => ({ ...e, checked: false })));
-  };
+  }, [hostInfo]);
 
   return (
     <BodyBox>
-      <HTTP.Get
-        data={hostList}
-        initStore={initStore}
-        apiFn={getHostsApi}
-        // delay={500}
-        loading={<Loading />}
-        dataIsEmpty={
-          <OmsError
-            errInfo="您还未添加主机，请在右下角点击“添加主机”按钮添加您的主机。"
-            variant="h5"
-            svgImg={imac}
-            errType="server"
-            imgStyle={{ width: '400px', height: '400px' }}
-            style={{ marginTop: '40px' }}
-          />
-        }
-        error={
-          <div style={{ marginTop: '100px' }}>
-            <OmsError
-              errInfo="请求数据失败，网络异常"
-              variant="h3"
-              errType="server"
-              imgStyle={{ width: '400px', height: '400px' }}
-            />
-          </div>
-        }>
-        {
-          <div
-            style={{
-              width: '90%',
-              margin: '0 auto',
-              paddingTop: '20px',
-              paddingBottom: '20px',
-              display: 'grid',
-              alignContent: 'space-evenly',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              justifyItems: 'center',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))',
-              gridGap: '20px 20px'
-            }}>
-            {hostList?.map((i: HostInfo) => {
-              return <HostInfoCard hostInfo={i} key={i.id} />;
-            })}
-          </div>
-        }
-      </HTTP.Get>
-      <Fab
-        variant="extended"
-        size="medium"
-        color="primary"
-        aria-label="add"
-        className={classes.FabButton}
-        onClick={handleClickOpen}>
-        <AddIcon />
-        添加主机
-      </Fab>
-      <FormDialog open={open} content={content} toClose={handleClose} title={title} todo={addNewHost} />
+      <div style={{ width: '100%', height: '40px', display: 'flex', justifyContent: 'end' }}>
+        <Stack direction="row" spacing={1}>
+          <Tooltip title="添加主机" placement="top-start">
+            <IconButton aria-label="hostCard" color="secondary" onClick={handleClickOpen}>
+              <AddIcon />
+            </IconButton>
+          </Tooltip>
+          <IconButton
+            aria-label="hostCard"
+            color={viewType === 'card' ? 'primary' : 'default'}
+            onClick={() => setViewType('card')}>
+            <AppsIcon />
+          </IconButton>
+          <IconButton
+            aria-label="hostTable"
+            color={viewType === 'table' ? 'primary' : 'default'}
+            onClick={() => setViewType('table')}>
+            <FormatListBulletedIcon />
+          </IconButton>
+        </Stack>
+      </div>
+      {viewComponent[viewType]}
+      <FormDialog
+        open={form.open}
+        content={id ? editContent : addcontent}
+        toClose={() => formDispatch({ type: 'close' })}
+        title={form.title}
+        todo={id ? editNewHost : addNewHost}
+      />
+      <TipDialog
+        open={tip.open}
+        text={tip.text}
+        title={tip.title}
+        toClose={() => tipDispatch({ type: 'close' })}
+        todo={tip.todo}
+      />
     </BodyBox>
   );
 }
