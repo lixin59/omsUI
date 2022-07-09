@@ -1,34 +1,34 @@
-import { createTheme } from '@material-ui/core/styles'; // 5.x.x 版本
-
-// declare module '@mui/material/styles' {
-//   interface Theme {
-//     status: {
-//       danger: string;
-//     };
-//   }
-//   // 允许配置文件使用 `createTheme`
-//   interface ThemeOptions {
-//     status?: {
-//       danger?: string;
-//     };
-//   }
-//   interface Palette {
-//     loading: Palette['primary'];
-//     snacbar: Palette['primary'];
-//     tag: Palette['primary'];
-//     tab: Palette['primary'];
-//     type: 'light' | 'dark';
-//     boxShadowInset: Palette['primary'];
-//   }
-//   interface PaletteOptions {
-//     loading: PaletteOptions['primary'];
-//     snacbar: PaletteOptions['primary'];
-//     tag: PaletteOptions['primary'];
-//     tab: PaletteOptions['primary'];
-//     type: 'light' | 'dark';
-//     boxShadowInset: PaletteOptions['primary'];
-//   }
-// }
+import { createTheme } from '@material-ui/core/styles'; // 4.x.x 版本
+import { createTheme as createThemeV5 } from '@mui/material/styles'; // 5.x.x 版本
+declare module '@mui/material/styles' {
+  interface Theme {
+    status: {
+      danger: string;
+    };
+  }
+  // 允许配置文件使用 `createTheme`
+  interface ThemeOptions {
+    status?: {
+      danger?: string;
+    };
+  }
+  interface Palette {
+    loading: Palette['primary'];
+    snacbar: Palette['primary'];
+    tag: Palette['primary'];
+    tab: Palette['primary'];
+    type: 'light' | 'dark';
+    boxShadowInset: Palette['primary'];
+  }
+  interface PaletteOptions {
+    loading: PaletteOptions['primary'];
+    snacbar: PaletteOptions['primary'];
+    tag: PaletteOptions['primary'];
+    tab: PaletteOptions['primary'];
+    type: 'light' | 'dark';
+    boxShadowInset: PaletteOptions['primary'];
+  }
+}
 
 declare module '@material-ui/core/styles/createPalette' {
   interface Palette {
@@ -124,3 +124,6 @@ export const themeDark = createTheme({
     }
   }
 });
+
+export const themeLightV5 = createThemeV5(themeLight);
+export const themeDarkV5 = createThemeV5(themeDark);

@@ -11,9 +11,9 @@ import GitHubIcon from '@material-ui/icons/GitHub';
 import OmsSnackbar from './components/Snackbars';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import ThemeSwitch from './components/OmsSwitch/ThemeSwitchInput';
-import { ThemeProvider, makeStyles, createStyles } from '@material-ui/core/styles'; // 4.x.x 版本
-// import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'; // 5.x.x 版本
-import { themeLight, themeDark } from './theming';
+import { ThemeProvider, makeStyles, createStyles, StylesProvider } from '@material-ui/core/styles'; // 4.x.x 版本
+import { ThemeProvider as ThemeProviderV5 } from '@mui/material/styles'; // 5.x.x 版本
+import { themeLight, themeDark, themeLightV5, themeDarkV5 } from './theming';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -49,14 +49,16 @@ function App() {
   return (
     <div className="App">
       <ThemeProvider theme={light ? themeLight : themeDark}>
-        <CssBaseline />
-        <OmsSnackbar>
-          <OmsRouter />
-        </OmsSnackbar>
-        <div className={classes.githubIconBox}>
-          <GitHubIcon onClick={openGithub} />
-          <ThemeSwitch checked={light} onChange={() => setLight((prev) => !prev)} />
-        </div>
+        <ThemeProviderV5 theme={light ? themeLightV5 : themeDarkV5}>
+          <CssBaseline />
+          <OmsSnackbar>
+            <OmsRouter />
+          </OmsSnackbar>
+          <div className={classes.githubIconBox}>
+            <GitHubIcon onClick={openGithub} />
+            <ThemeSwitch checked={light} onChange={() => setLight((prev) => !prev)} />
+          </div>
+        </ThemeProviderV5>
       </ThemeProvider>
     </div>
   );
