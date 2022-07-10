@@ -24,7 +24,9 @@ export default function LogDialog({ open = false, title, text = '', toClose }: t
   useEffect(() => {
     try {
       const div = msgRef.current as HTMLDivElement;
-      div.scrollTop = div.scrollHeight;
+      if (div) {
+        div.scrollTop = div.scrollHeight;
+      }
       // msgRef?.current?.scrollToBottom(); // 收到新消息滚动条自动滚到底部
     } catch (e) {
       console.log(e);

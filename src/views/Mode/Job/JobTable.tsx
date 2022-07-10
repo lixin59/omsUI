@@ -115,7 +115,7 @@ export default function JobTable({ hostList, deleteJob, jobList, editJob }: tPro
   const title = '确定要删除这个任务吗？';
   const text = '如果不想删除可以点击取消';
 
-  const content = JobInfoForm({ Info, setInfo });
+  const content = JobInfoForm({ Info, setInfo, hostList });
 
   const startJob = async (info: JobInfo) => {
     const { id, name } = info;
