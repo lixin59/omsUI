@@ -26,9 +26,9 @@ type tDP = {
 type tOP = {};
 
 type tSP = tOP & {
-  hostList: HostInfo[],
-  groupList: GroupInfo[],
-  tagList: TagInfo[]
+  hostList: HostInfo[];
+  groupList: GroupInfo[];
+  tagList: TagInfo[];
 };
 
 const mapStateToProps = (state: IState, props: tOP): tSP => ({
@@ -119,19 +119,21 @@ const itemType = {
 };
 
 interface WSdata {
-  host_id: number
-  hostname: string,
-  msg: string,
-  status: boolean
+  host_id: number;
+  hostname: string;
+  msg: string;
+  status: boolean;
 }
 
 function init() {
-  return [{
-    host_id: 0,
-    hostname: '',
-    msg: '',
-    status: false
-  }];
+  return [
+    {
+      host_id: 0,
+      hostname: '',
+      msg: '',
+      status: false
+    }
+  ];
 }
 
 function reducer(state: WSdata[], action: any) {
@@ -182,12 +184,12 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
         variant: 'error'
       });
     };
-    webSocket.onclose = function(evt) {
+    webSocket.onclose = function (evt) {
       console.log('Connection closed.', evt);
-      enqueueSnackbar(` WebSocket连接已关闭 执行命令: ${evt.type}`, {
-        autoHideDuration: 2000,
-        variant: 'error'
-      });
+      // enqueueSnackbar(` WebSocket连接已关闭 执行命令: ${evt.type}`, {
+      //   autoHideDuration: 2000,
+      //   variant: 'error'
+      // });
     };
     return () => {
       webSocket.close();
@@ -220,37 +222,38 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
       <div className={classes.ControlBox}>
         <FormControl className={classes.Control}>
           <OmsLabel>请选择类型</OmsLabel>
-          <OmsSelect
-            id='type-select'
-            value={type}
-            onChange={(e) => setType(e.target.value as string)}
-          >
+          <OmsSelect id="type-select" value={type} onChange={(e) => setType(e.target.value as string)}>
             <OmsMenuItem value={'host'}>主机</OmsMenuItem>
             <OmsMenuItem value={'group'}>组</OmsMenuItem>
             <OmsMenuItem value={'tag'}>标签</OmsMenuItem>
           </OmsSelect>
         </FormControl>
         <FormControl className={classes.Control}>
-          <OmsLabel>{itemType[(selectType(false) as tItem)]}</OmsLabel>
+          <OmsLabel>{itemType[selectType(false) as tItem]}</OmsLabel>
           <OmsSelect
             disabled={!type}
-            labelId='typeItem-select-label'
-            id='typeItem-select-label'
+            labelId="typeItem-select-label"
+            id="typeItem-select-label"
             value={id}
-            onChange={handleChange}
-          >
-            {selectType(true).length > 0 ? (selectType(true) as Array<any>).map((e) => {
-              return (<OmsMenuItem key={e.name} value={e.id}>{e.name}</OmsMenuItem>);
-            }) : null }
+            onChange={handleChange}>
+            {selectType(true).length > 0
+              ? (selectType(true) as Array<any>).map((e) => {
+                return (
+                  <OmsMenuItem key={e.name} value={e.id}>
+                    {e.name}
+                  </OmsMenuItem>
+                );
+              })
+              : null}
           </OmsSelect>
         </FormControl>
         <TextField
           style={{ marginTop: '12px' }}
           className={classes.Control}
-          size='small'
-          id='cmd-disabled'
-          label='请输入执行的命令'
-          variant='outlined'
+          size="small"
+          id="cmd-disabled"
+          label="请输入执行的命令"
+          variant="outlined"
           value={cmd}
           onChange={(e) => setCmd(e.target.value)}
         />
@@ -258,35 +261,34 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
           disabled={!(!!type && !!id && !!cmd)}
           className={classes.sendButton}
           startIcon={<SendIcon />}
-          onClick={sendCommand}
-        >
-        下发命令
+          onClick={sendCommand}>
+          下发命令
         </Button>
         <Button
           className={classes.clearButton}
           startIcon={<ClearIcon />}
-          onClick={() => { dispatch({ type: 'reset' }); }}
-        >
+          onClick={() => {
+            dispatch({ type: 'reset' });
+          }}>
           清屏
         </Button>
       </div>
       <div ref={msgRef} className={classes.shellBox}>
-        {msgList.length > 0 ? msgList.map((e: WSdata) => (
-          <>
-            <div key={new Date().getTime() + 1} className={classes.hostname}>
-              {e.hostname}
-            </div>
-            <div key={new Date().getTime() - 1} className={classes.shellMsg}>
-              {e.msg}
-            </div>
-          </>
-        )) : null}
+        {msgList.length > 0
+          ? msgList.map((e: WSdata) => (
+            <>
+              <div key={new Date().getTime() + 1} className={classes.hostname}>
+                {e.hostname}
+              </div>
+              <div key={new Date().getTime() - 1} className={classes.shellMsg}>
+                {e.msg}
+              </div>
+            </>
+          ))
+          : null}
       </div>
     </div>
   );
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatch
-)(Command);
+export default connect(mapStateToProps, mapDispatch)(Command);

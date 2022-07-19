@@ -100,10 +100,10 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
 
     ws.onclose = function (evt) {
       console.log('Connection closed.', evt);
-      enqueueSnackbar(` WebSocket连接已关闭: ${evt.type}`, {
-        autoHideDuration: 5000,
-        variant: 'error'
-      });
+      // enqueueSnackbar(` WebSocket连接已关闭: ${evt.type}`, {
+      //   autoHideDuration: 5000,
+      //   variant: 'error'
+      // });
       term.dispose();
       if (onCloseTodo) {
         onCloseTodo();

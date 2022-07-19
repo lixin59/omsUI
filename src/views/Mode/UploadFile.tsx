@@ -27,9 +27,9 @@ type tDP = {
 type tOP = {};
 
 type tSP = tOP & {
-  hostList: HostInfo[],
-  groupList: GroupInfo[],
-  tagList: TagInfo[]
+  hostList: HostInfo[];
+  groupList: GroupInfo[];
+  tagList: TagInfo[];
 };
 
 const mapStateToProps = (state: IState, props: tOP): tSP => ({
@@ -77,15 +77,15 @@ const useStyles = makeStyles((theme: Theme) =>
 type tItem = 'hostList' | 'groupList' | 'tagList' | 'default';
 
 type tUploadFile = {
-  id: string,
-  current: string,
-  dest: string,
-  file: string,
-  percent: number,
-  speed: string,
-  status: 'running' | 'done' | 'failed' | string,
-  total: string
-}
+  id: string;
+  current: string;
+  dest: string;
+  file: string;
+  percent: number;
+  speed: string;
+  status: 'running' | 'done' | 'failed' | string;
+  total: string;
+};
 
 const itemType = {
   hostList: '请选择主机',
@@ -94,13 +94,13 @@ const itemType = {
   default: '请选择子选项'
 };
 
-let oldList:any[] = [];
+let oldList: any[] = [];
 
 const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [type, setType] = useState<string>('');
-  const [item, setItem] = useState<number| string>('');
+  const [item, setItem] = useState<number | string>('');
   const [filePath, setFilePath] = useState<string>('');
   // const [ws, setWs] = useState<'' | WebSocket>('');
   const [uploadList, setUploadList] = useState<tUploadFile[]>([]);
@@ -134,12 +134,12 @@ const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
         variant: 'error'
       });
     };
-    webSocket.onclose = function(evt) {
+    webSocket.onclose = function (evt) {
       console.log('Connection closed.', evt);
-      enqueueSnackbar(` WebSocket连接已关闭 上传文件: ${evt.type}`, {
-        autoHideDuration: 2000,
-        variant: 'error'
-      });
+      // enqueueSnackbar(` WebSocket连接已关闭 上传文件: ${evt.type}`, {
+      //   autoHideDuration: 2000,
+      //   variant: 'error'
+      // });
     };
     return () => {
       webSocket.close();
@@ -170,62 +170,62 @@ const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
       <div className={classes.ControlBox}>
         <FormControl className={classes.Control}>
           <OmsLabel>请选择类型</OmsLabel>
-          <OmsSelect
-            id='type-select'
-            value={type}
-            onChange={(e) => setType(e.target.value as string)}
-          >
+          <OmsSelect id="type-select" value={type} onChange={(e) => setType(e.target.value as string)}>
             <OmsMenuItem value={'host'}>主机</OmsMenuItem>
             <OmsMenuItem value={'group'}>组</OmsMenuItem>
             <OmsMenuItem value={'tag'}>标签</OmsMenuItem>
           </OmsSelect>
         </FormControl>
         <FormControl className={classes.Control}>
-          <OmsLabel>{itemType[(selectType(false) as tItem)]}</OmsLabel>
+          <OmsLabel>{itemType[selectType(false) as tItem]}</OmsLabel>
           <OmsSelect
             disabled={!type}
-            labelId='typeItem-select-label'
-            id='typeItem-select-label'
+            labelId="typeItem-select-label"
+            id="typeItem-select-label"
             value={item}
-            onChange={handleChange}
-          >
-            {selectType(true).length > 0 ? (selectType(true) as Array<TagInfo | GroupInfo | HostInfo>).map((e) => {
-              return (<OmsMenuItem key={e.name} value={e.id}>{e.name}</OmsMenuItem>);
-            }) : null }
+            onChange={handleChange}>
+            {selectType(true).length > 0
+              ? (selectType(true) as Array<TagInfo | GroupInfo | HostInfo>).map((e) => {
+                return (
+                  <OmsMenuItem key={e.name} value={e.id}>
+                    {e.name}
+                  </OmsMenuItem>
+                );
+              })
+              : null}
           </OmsSelect>
         </FormControl>
       </div>
       <div className={classes.ControlBox}>
         <TextField
           className={classes.Control}
-          size='small'
-          id='outlined-disabled'
-          label='请输入远程端文件存储的路径'
-          variant='outlined'
+          size="small"
+          id="outlined-disabled"
+          label="请输入远程端文件存储的路径"
+          variant="outlined"
           value={filePath}
           onChange={(e) => setFilePath(e.target.value)}
         />
-        <UploadButtons filePath={filePath} typeId={item as number} type={type as 'host' | 'group' | 'tag'}/>
+        <UploadButtons filePath={filePath} typeId={item as number} type={type as 'host' | 'group' | 'tag'} />
       </div>
       <div className={classes.shellBox}>
-        {uploadList && uploadList.map((e) => {
-          return (
-            <LinearProgressWithLabel
-              key={e.id}
-              dest={e.dest}
-              total={e.total}
-              value={e.percent}
-              file={e.file}
-              speed={e.speed}
-              status={e.status}
-            />);
-        })}
+        {uploadList &&
+          uploadList.map((e) => {
+            return (
+              <LinearProgressWithLabel
+                key={e.id}
+                dest={e.dest}
+                total={e.total}
+                value={e.percent}
+                file={e.file}
+                speed={e.speed}
+                status={e.status}
+              />
+            );
+          })}
       </div>
     </div>
   );
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatch
-)(UploadFile);
+export default connect(mapStateToProps, mapDispatch)(UploadFile);

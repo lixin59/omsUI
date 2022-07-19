@@ -62,6 +62,12 @@ function ModeTabs() {
     if (hash.pathname === URL.fileBrowser) {
       setValue(5);
     }
+    if (hash.pathname === URL.hostMonitor) {
+      setValue(6);
+    }
+    if (hash.pathname.includes(URL.vnc)) {
+      setValue(7);
+    }
   }, [hash]);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
