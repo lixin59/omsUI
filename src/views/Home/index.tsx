@@ -189,7 +189,8 @@ function Home(props: tProps) {
   const [form, formDispatch] = useReducer(formReducer, formInit(), formInit);
   const [hostInfo, setHostInfo] = useState<HostInfo>(baseHostInfo);
   const [tlc, setTlc] = useState(tagList?.map((e) => ({ ...e, checked: false })));
-  const [viewType, setViewType] = useState<'card' | 'table'>('card');
+  const viewTypeLocal = (localStorage.getItem('viewType') as 'card' | 'table') || 'card';
+  const [viewType, setViewType] = useState<'card' | 'table'>(viewTypeLocal);
 
   const addcontent = HostInfoForm({ hostInfo, setHostInfo, privateKeyList, groupList, tlc, setTlc });
 
@@ -377,13 +378,19 @@ function Home(props: tProps) {
           <IconButton
             aria-label="hostCard"
             color={viewType === 'card' ? 'primary' : 'default'}
-            onClick={() => setViewType('card')}>
+            onClick={() => {
+              setViewType('card');
+              localStorage.setItem('viewType', 'card');
+            }}>
             <AppsIcon />
           </IconButton>
           <IconButton
             aria-label="hostTable"
             color={viewType === 'table' ? 'primary' : 'default'}
-            onClick={() => setViewType('table')}>
+            onClick={() => {
+              setViewType('table');
+              localStorage.setItem('viewType', 'table');
+            }}>
             <FormatListBulletedIcon />
           </IconButton>
         </Stack>
