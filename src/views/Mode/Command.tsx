@@ -13,6 +13,15 @@ import OmsMenuItem from '../../components/OmsSelect/OmsMenuItem';
 import { useSnackbar } from 'notistack';
 import { baseUrl, url } from '../../api/websocket/url';
 import TextField from '@material-ui/core/TextField';
+import { Terminal } from 'xterm';
+import { FitAddon } from 'xterm-addon-fit';
+import { WebLinksAddon } from 'xterm-addon-web-links';
+import {
+  ANSI_COLOR_CYAN,
+  ANSI_COLOR_MAGENTA,
+  ANSI_COLOR_RESET,
+  ANSI_COLOR_YELLOW
+} from '../../components/OmsTerminal/constant';
 
 type tDP = {
   // deleteGroup: ActionCreator<any>;
@@ -23,6 +32,7 @@ type tDP = {
   // editTag: ActionCreator<any>;
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 type tOP = {};
 
 type tSP = tOP & {
@@ -85,11 +95,11 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     shellBox: {
       marginTop: '20px',
-      padding: '20px',
+      // padding: '20px',
       width: '100%',
       height: '70%',
-      overflow: 'auto',
-      backgroundColor: '#000000'
+      overflow: 'auto'
+      // backgroundColor: '#000000'
     },
     hostname: {
       width: '100%',
@@ -154,19 +164,21 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
   const [id, setId] = useState<string>('');
   const [cmd, setCmd] = useState<string>('');
   const [ws, setWs] = useState<'' | WebSocket>('');
+  const [terminal, setTerminal] = useState<null | Terminal>(null);
 
-  const [msgList, dispatch] = useReducer(reducer, init(), init);
+  // const [msgList, dispatch] = useReducer(reducer, init(), init);
 
-  const msgRef = useRef<any>(null);
+  // const msgRef = useRef<any>(null);
 
-  useEffect(() => {
-    const div = msgRef.current as HTMLDivElement;
-    div.scrollTop = div.scrollHeight;
-  }, [msgList]);
+  // useEffect(() => {
+  //   const div = msgRef.current as HTMLDivElement;
+  //   div.scrollTop = div.scrollHeight;
+  // }, [msgList]);
 
   useEffect(() => {
     const webSocket = new WebSocket(`${baseUrl}${url.index}`);
     setWs(webSocket);
+
     webSocket.onopen = (evt) => {
       console.log('WebSocket服务器连接成功执行命令');
       // webSocket.send(JSON.stringify({ type: '"WS_CMD' }));
@@ -175,7 +187,9 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
       // console.log('收到消息');
       // console.log(JSON.parse(evt.data));
       const { data } = JSON.parse(evt.data);
-      dispatch({ type: 'add', payload: data });
+      term.writeln(`${ANSI_COLOR_YELLOW}(${data.host_id} ${data.hostname})${ANSI_COLOR_RESET}`);
+      term.writeln(data.msg);
+      // dispatch({ type: 'add', payload: data });
     };
     webSocket.onerror = (evt) => {
       console.warn(evt);
@@ -191,8 +205,45 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
       //   variant: 'error'
       // });
     };
+
+    const term = new Terminal();
+    const fitAddon = new FitAddon();
+    term.loadAddon(new WebLinksAddon());
+    term.loadAddon(fitAddon);
+    setTerminal(term);
+    term.open(document.getElementById('commandTerminal') as HTMLElement);
+    term.writeln(`${ANSI_COLOR_CYAN}请输入命令\x1B[0m `);
+    // term.focus();
+    fitAddon.fit();
+
+    // term.onResize((event) => {
+    //   if (timers) {
+    //     //  防抖 只发送最后一次resize的值
+    //     clearTimeout(timers);
+    //     timers = null;
+    //   }
+    //   if (!timers) {
+    //     timers = setTimeout(function () {
+    //       // console.log(event);
+    //       ws.send(JSON.stringify({ cols: event.cols, rows: event.rows }));
+    //       timers = null;
+    //     }, 500);
+    //   }
+    // });
+    const termResize = () => {
+      // console.log(document.body.clientWidth);
+      // console.log(document.body.clientHeight);
+      // const cols = Math.ceil((document.body.clientWidth - 100) / 14);
+      // const rows = Math.ceil((document.body.clientHeight / 20) - 10);
+      // term.resize(cols, rows);
+      fitAddon.fit();
+    };
+    window.addEventListener('resize', termResize);
+
     return () => {
       webSocket.close();
+      term.dispose();
+      window.removeEventListener('resize', termResize);
     };
   }, []);
 
@@ -268,24 +319,26 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
           className={classes.clearButton}
           startIcon={<ClearIcon />}
           onClick={() => {
-            dispatch({ type: 'reset' });
+            // dispatch({ type: 'reset' });
+            terminal?.clear();
           }}>
           清屏
         </Button>
       </div>
-      <div ref={msgRef} className={classes.shellBox}>
-        {msgList.length > 0
-          ? msgList.map((e: WSdata) => (
-            <>
-              <div key={new Date().getTime() + 1} className={classes.hostname}>
-                {e.hostname}
-              </div>
-              <div key={new Date().getTime() - 1} className={classes.shellMsg}>
-                {e.msg}
-              </div>
-            </>
-          ))
-          : null}
+      <div className={classes.shellBox}>
+        {/* {msgList.length > 0*/}
+        {/*  ? msgList.map((e: WSdata) => (*/}
+        {/*    <>*/}
+        {/*      /!* <div key={new Date().getTime() + 1} className={classes.hostname}>*!/*/}
+        {/*      /!*  {e.hostname}*!/*/}
+        {/*      /!* </div>*!/*/}
+        {/*      /!* <div key={new Date().getTime() - 1} className={classes.shellMsg}>*!/*/}
+        {/*      /!*  {e.msg}*!/*/}
+        {/*      /!* </div>*!/*/}
+        {/*    </>*/}
+        {/*  ))*/}
+        {/*  : null}*/}
+        <div id="commandTerminal" />
       </div>
     </div>
   );
