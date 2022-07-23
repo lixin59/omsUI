@@ -206,7 +206,7 @@ function Home(props: tProps) {
         loading={<Loading />}
         dataIsEmpty={
           <OmsError
-            errInfo="您还未添加主机，请在右下角点击“添加主机”按钮添加您的主机。"
+            errInfo="您还未添加主机，请点击“+”按钮添加您的主机。"
             variant="h5"
             svgImg={imac}
             errType="server"

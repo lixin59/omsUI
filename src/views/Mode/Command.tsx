@@ -97,7 +97,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: '20px',
       // padding: '20px',
       width: '100%',
-      height: '70%',
+      height: '90%',
       overflow: 'auto'
       // backgroundColor: '#000000'
     },
@@ -179,10 +179,10 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
     const webSocket = new WebSocket(`${baseUrl}${url.index}`);
     setWs(webSocket);
 
-    webSocket.onopen = (evt) => {
-      console.log('WebSocket服务器连接成功执行命令');
-      // webSocket.send(JSON.stringify({ type: '"WS_CMD' }));
-    };
+    // webSocket.onopen = (evt) => {
+    //   console.log('WebSocket服务器连接成功执行命令');
+    //   // webSocket.send(JSON.stringify({ type: '"WS_CMD' }));
+    // };
     webSocket.onmessage = (evt) => {
       // console.log('收到消息');
       // console.log(JSON.parse(evt.data));
@@ -192,29 +192,45 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
       // dispatch({ type: 'add', payload: data });
     };
     webSocket.onerror = (evt) => {
-      console.warn(evt);
       enqueueSnackbar(` WebSocket服务器连接失败: ${evt.type}`, {
         autoHideDuration: 2000,
         variant: 'error'
       });
     };
-    webSocket.onclose = function (evt) {
-      console.log('Connection closed.', evt);
-      // enqueueSnackbar(` WebSocket连接已关闭 执行命令: ${evt.type}`, {
-      //   autoHideDuration: 2000,
-      //   variant: 'error'
-      // });
-    };
+    // webSocket.onclose = function (evt) {
+    //   // enqueueSnackbar(` WebSocket连接已关闭 执行命令: ${evt.type}`, {
+    //   //   autoHideDuration: 2000,
+    //   //   variant: 'error'
+    //   // });
+    // };
 
-    const term = new Terminal();
+    const term = new Terminal({ rows: 30, cols: 120 });
     const fitAddon = new FitAddon();
     term.loadAddon(new WebLinksAddon());
     term.loadAddon(fitAddon);
     setTerminal(term);
     term.open(document.getElementById('commandTerminal') as HTMLElement);
-    term.writeln(`${ANSI_COLOR_CYAN}请输入命令\x1B[0m `);
+    term.writeln('');
+    term.writeln('        \x1b[1;33m   　　　　　    /|');
+    term.writeln('        \x1b[1;33m     /＼　　    ∠＿/   ⚡ ⚡ ⚡');
+    term.writeln('        \x1b[1;33m    /　│　　  ／　／    /＼  ');
+    term.writeln('        \x1b[1;33m   │　Z ＿,＜　 ／　   /　 〉  ');
+    term.writeln('        \x1b[1;33m   │　　　　　ヽ　　  /　　/ ');
+    term.writeln('        \x1b[1;33m    Y　　　　　 ヽ　〈　　/ ');
+    term.writeln('        \x1b[1;33m    | ●　､　●　　 ＼ ＼ 〈  ');
+    term.writeln('        \x1b[1;33m    🔴　  v　  🔴　  | ／／ ');
+    term.writeln('        \x1b[1;33m    　>ｰ ､_　  ィ   │ ＼＼ ');
+    term.writeln('        \x1b[1;33m  　  / へ　　 /　ﾉ  |／ﾉ ');
+    term.writeln('        \x1b[1;33m  　  ヽ_ﾉ 💻  (_／   | ﾉ  ');
+    term.writeln('        \x1b[1;33m  　 　/　　　　　  ／ ');
+    term.writeln('        \x1b[1;33m  　  |__r￣￣|＿／ ');
+    term.writeln('        \x1b[1;33m　       ⌨️    🖱️️   \x1B[0m ');
     // term.focus();
-    fitAddon.fit();
+    // fitAddon.fit();
+
+    const timer = setTimeout(() => {
+      fitAddon.fit();
+    }, 600);
 
     // term.onResize((event) => {
     //   if (timers) {
@@ -231,8 +247,6 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
     //   }
     // });
     const termResize = () => {
-      // console.log(document.body.clientWidth);
-      // console.log(document.body.clientHeight);
       // const cols = Math.ceil((document.body.clientWidth - 100) / 14);
       // const rows = Math.ceil((document.body.clientHeight / 20) - 10);
       // term.resize(cols, rows);
@@ -241,6 +255,7 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
     window.addEventListener('resize', termResize);
 
     return () => {
+      clearTimeout(timer);
       webSocket.close();
       term.dispose();
       window.removeEventListener('resize', termResize);
@@ -288,13 +303,11 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
             value={id}
             onChange={handleChange}>
             {selectType(true).length > 0
-              ? (selectType(true) as Array<any>).map((e) => {
-                return (
-                  <OmsMenuItem key={e.name} value={e.id}>
-                    {e.name}
-                  </OmsMenuItem>
-                );
-              })
+              ? (selectType(true) as Array<any>).map((e) => (
+                <OmsMenuItem key={e.name} value={e.id}>
+                  {e.name}
+                </OmsMenuItem>
+              ))
               : null}
           </OmsSelect>
         </FormControl>
