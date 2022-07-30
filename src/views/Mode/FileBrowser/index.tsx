@@ -494,11 +494,11 @@ const FileBrowserPage = ({ hostList }: tProps) => {
       />
     ),
     viewFile: (
-      <div style={{ maxHeight: '80vh' }}>
+      <div style={{ maxHeight: '80vh', display: 'flex', justifyContent: 'space-evenly' }}>
         {language === codeType.md ? (
           <OmsViewMarkdown textContent={Base64.decode(code)} darkMode={darkMode} />
         ) : imgType[language] ? (
-          <img src={`data:image/bmp;base64,${code}`} style={{ width: '100%', height: '100%' }} alt="图片预览" />
+          <img src={`data:image/bmp;base64,${code}`} style={{ maxHeight: '74vh' }} alt="图片预览" />
         ) : (
           <OmsSyntaxHighlight textContent={Base64.decode(code)} language={language} darkMode={darkMode} />
         )}
