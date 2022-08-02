@@ -2,25 +2,28 @@ import * as actionType from './action-types';
 import { GroupInfo, HostInfo, JobInfo, PrivateKeyInfo, TagInfo, TunnelInfo } from './interface';
 
 const actions = {
-  initHostInfo(value:HostInfo[]) {
+  getHostList() {
+    return { type: actionType.WILL_GET_HOST_LIST };
+  },
+  initHostInfo(value: HostInfo[]) {
     return { type: actionType.WILL_INIT_HOST, value };
   },
-  initGroupInfo(value:GroupInfo[]) {
+  initGroupInfo(value: GroupInfo[]) {
     return { type: actionType.groupActions.INIT, value };
   },
-  initTagInfo(value:TagInfo[]) {
+  initTagInfo(value: TagInfo[]) {
     return { type: actionType.tagActions.INIT, value };
   },
-  initJobInfo(value:JobInfo[]) {
+  initJobInfo(value: JobInfo[]) {
     return { type: actionType.jobActions.INIT, value };
   },
-  initTunnelInfo(value:TunnelInfo[]) {
+  initTunnelInfo(value: TunnelInfo[]) {
     return { type: actionType.tunnelActions.INIT, value };
   },
   initPrivateKeyInfo(value: PrivateKeyInfo[]) {
     return { type: actionType.privateKeyActions.INIT, value };
   },
-  addPrivateKeyInfo(value:PrivateKeyInfo) {
+  addPrivateKeyInfo(value: PrivateKeyInfo) {
     return { type: actionType.privateKeyActions.ADD, value };
   },
   deletePrivateKeyInfo(value: number) {

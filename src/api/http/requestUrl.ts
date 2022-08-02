@@ -23,5 +23,9 @@ export const urlType = {
   fileBrowser: '/tools/browse',
   deleteFile: '/tools/delete',
   mkdir: '/tools/mkdir',
+  tools: {
+    export: '/tools/export',
+    import: '/tools/import'
+  },
   privateKey: '/private_key'
 };

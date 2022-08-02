@@ -34,6 +34,16 @@ import { useSnackbar } from 'notistack';
 import HostInfoTable from '../../components/HostInfoCard/HostInfoTable';
 import TipDialog from '../../components/OmsDialog/TipDialog';
 import Tooltip from '@material-ui/core/Tooltip';
+import IosShareIcon from '@mui/icons-material/IosShare';
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
+import { baseUrl, urlType } from '../../api/http/requestUrl';
+import { downloadFile } from '../../utils';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
+import Button from '@material-ui/core/Button';
+import ImportAssetsFile from '../../components/Button/ImportAssetsFile';
 
 type tDP = {
   initGroup: ActionCreator<any>;
@@ -43,6 +53,7 @@ type tDP = {
   addHost: ActionCreator<any>;
   editHost: ActionCreator<any>;
   initStore: ActionCreator<any>;
+  getHostList: ActionCreator<any>;
 };
 
 type tOP = any;
@@ -90,7 +101,8 @@ const mapDispatch: tDP = {
   deleteHost: actions.deleteHostInfo,
   addHost: actions.addHostInfo,
   editHost: actions.editHostInfo,
-  initStore: actions.initHostInfo
+  initStore: actions.initHostInfo,
+  getHostList: actions.getHostList
 };
 
 type tProps = tSP & tDP;
@@ -150,7 +162,7 @@ function Home(props: tProps) {
     hostList,
     addHost,
     editHost,
-    deleteHost,
+    getHostList,
     initTag,
     initGroup,
     initPrivateKey,
@@ -191,6 +203,7 @@ function Home(props: tProps) {
   const [tlc, setTlc] = useState(tagList?.map((e) => ({ ...e, checked: false })));
   const viewTypeLocal = (localStorage.getItem('viewType') as 'card' | 'table') || 'card';
   const [viewType, setViewType] = useState<'card' | 'table'>(viewTypeLocal);
+  const [open, setOpen] = useState<boolean>(false);
 
   const addcontent = HostInfoForm({ hostInfo, setHostInfo, privateKeyList, groupList, tlc, setTlc });
 
@@ -370,6 +383,22 @@ function Home(props: tProps) {
     <BodyBox>
       <div style={{ width: '100%', height: '40px', display: 'flex', justifyContent: 'end' }}>
         <Stack direction="row" spacing={1}>
+          <Tooltip title="导入数据" placement="top-start">
+            <IconButton aria-label="hostCard" color="secondary" onClick={() => setOpen(true)}>
+              <SystemUpdateAltIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="导出数据" placement="top-start">
+            <IconButton
+              aria-label="hostCard"
+              color="secondary"
+              onClick={() => {
+                const url = `${baseUrl}${urlType.tools.export}`;
+                downloadFile(url, 'oms');
+              }}>
+              <IosShareIcon />
+            </IconButton>
+          </Tooltip>
           <Tooltip title="添加主机" placement="top-start">
             <IconButton aria-label="hostCard" color="secondary" onClick={handleClickOpen}>
               <AddIcon />
@@ -410,6 +439,26 @@ function Home(props: tProps) {
         toClose={() => tipDispatch({ type: 'close' })}
         todo={tip.todo}
       />
+      <Dialog open={open} onClose={() => setOpen(false)} aria-labelledby="file-browser" fullWidth maxWidth={'sm'}>
+        <DialogContent
+          style={{ minHeight: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'center ' }}
+          dividers>
+          <DialogContentText>
+            <ImportAssetsFile
+              onBeforeUpload={() => {
+                setOpen(false);
+              }}
+              onUploadComplete={getHostList}
+              // showUploadProgress={true}
+            />
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)} color="primary">
+            关闭
+          </Button>
+        </DialogActions>
+      </Dialog>
     </BodyBox>
   );
 }

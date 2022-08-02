@@ -86,8 +86,8 @@ export interface UploadFilePost {
 }
 
 // 获取所有主机信息
-export const getHostsApi = (config: any = {}) => {
-  return getApi(urlType.host, config);
+export const getHostsApi = (): Promise<HTTPResult> => {
+  return getApi(urlType.host);
 };
 
 // 通过id获取主机信息
