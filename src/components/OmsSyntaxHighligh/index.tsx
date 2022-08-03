@@ -1,21 +1,20 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus, coyWithoutShadows, darcula } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { vscDarkPlus, materialLight, darcula } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useSnackbar } from 'notistack';
 import IconButton from '@material-ui/core/IconButton';
-import CopyAllIcon from '@mui/icons-material/CopyAll';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
+import FileCopyTwoToneIcon from '@mui/icons-material/FileCopyTwoTone';
 import Tooltip from '@material-ui/core/Tooltip';
 
 type tProps = {
-  textContent: string;
+  textContent: string | ReactNode;
   language: string;
   darkMode?: boolean;
 };
 
 const them = {
   dark: vscDarkPlus,
-  light: coyWithoutShadows
+  light: materialLight
 };
 
 const OmsSyntaxHighlight = (props: tProps) => {
@@ -24,7 +23,7 @@ const OmsSyntaxHighlight = (props: tProps) => {
     them.light = darcula;
   }
   if (typeof darkMode === 'boolean') {
-    them.light = coyWithoutShadows;
+    them.light = materialLight;
   }
 
   const { enqueueSnackbar } = useSnackbar();
@@ -57,25 +56,29 @@ const OmsSyntaxHighlight = (props: tProps) => {
   };
 
   return (
-    <>
-      <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
-        <Tooltip title="复制内容" placement="left-start">
-          <IconButton aria-label="hostCard" color="secondary" size="small" onClick={() => copy(textContent)}>
-            <CopyAllIcon />
-          </IconButton>
-        </Tooltip>
+    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+      <Tooltip
+        title="复制内容"
+        placement="left-start"
+        style={{ position: 'absolute', top: '6px', right: '0px', zIndex: 9999 }}>
+        <IconButton aria-label="hostCard" color="secondary" size="small" onClick={() => copy(textContent as string)}>
+          <FileCopyTwoToneIcon />
+        </IconButton>
+      </Tooltip>
+      <div style={{ width: '100%' }}>
+        <SyntaxHighlighter
+          lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
+          showLineNumbers={true}
+          lineNumberStyle={{ color: '#ddd', fontSize: 10 }}
+          style={darkMode ? them.dark : them.light}
+          language={language}
+          wrapLines={true}
+          wrapLongLines={true}
+          PreTag="div">
+          {String(textContent).replace(/\n$/, '')}
+        </SyntaxHighlighter>
       </div>
-      <SyntaxHighlighter
-        lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
-        showLineNumbers={true}
-        lineNumberStyle={{ color: '#ddd', fontSize: 10 }}
-        style={darkMode ? them.dark : them.light}
-        language={language}
-        wrapLines={true}
-        PreTag="div">
-        {String(textContent).replace(/\n$/, '')}
-      </SyntaxHighlighter>
-    </>
+    </div>
   );
 };
 
