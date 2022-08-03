@@ -9,6 +9,7 @@ const About = lazy(() => import('../views/About'));
 const Grouping = lazy(() => import('../views/Group/Grouping'));
 const Tag = lazy(() => import('../views/Group/Tag'));
 const PrivateKey = lazy(() => import('../views/Group/PrivateKey'));
+const Playbook = lazy(() => import('../views/Group/playbook/index'));
 const Job = lazy(() => import('../views/Mode/Job/index'));
 const Tunnel = lazy(() => import('../views/Mode/Tunnel/index'));
 const UploadFile = lazy(() => import('../views/Mode/UploadFile'));
@@ -39,6 +40,7 @@ export const URL = {
   groupTable: '/group/group_table',
   tagTable: '/group/tagTable',
   privateKey: '/group/private_key',
+  playbook: '/group/playbook',
   job: '/mode/job',
   tunnel: '/mode/tunnel',
   uploadFile: '/mode/upload_file',
@@ -75,6 +77,10 @@ const router: RouteObject[] = [
           {
             path: URL.privateKey,
             element: lazyLoad(<PrivateKey />)
+          },
+          {
+            path: URL.playbook,
+            element: lazyLoad(<Playbook />)
           }
         ]
       },

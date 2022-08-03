@@ -27,5 +27,10 @@ export const urlType = {
     export: '/tools/export',
     import: '/tools/import'
   },
+  playbook: {
+    schema: '/schema', // get
+    upload_file: '/cache/upload', // post
+    player: '/player'
+  },
   privateKey: '/private_key'
 };

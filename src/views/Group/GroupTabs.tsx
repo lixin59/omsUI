@@ -24,11 +24,12 @@ type tDP = {
   editTag: ActionCreator<any>;
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 type tOP = {};
 
 type tSP = tOP & {
-  groupList: GroupInfo[],
-  tagList: TagInfo[]
+  groupList: GroupInfo[];
+  tagList: TagInfo[];
 };
 
 const mapStateToProps = (state: IState, props: tOP): tSP => ({
@@ -49,8 +50,7 @@ const mapDispatch: tDP = {
 
 type tProps = tSP & tDP;
 
-function ModeTabs({ initGroup, initTag
-}: tProps) {
+function ModeTabs({ initGroup, initTag }: tProps) {
   const navigate = useNavigate();
   const hash = useLocation();
 
@@ -68,10 +68,13 @@ function ModeTabs({ initGroup, initTag
     if (hash.pathname === URL.privateKey) {
       setValue(2);
     }
+    if (hash.pathname === URL.playbook) {
+      setValue(3);
+    }
   }, [hash]);
 
   useEffect(() => {
-    (async() => {
+    (async () => {
       const res = (await getGroupsApi()) as HTTPResult;
       const res1 = (await getTagsApi()) as HTTPResult;
       if (res.code !== '200') {
@@ -88,40 +91,40 @@ function ModeTabs({ initGroup, initTag
   const classes = makeStyles(styles)();
   const [value, setValue] = useState(0);
 
-  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+  const handleChange = (event: React.ChangeEvent<any>, newValue: number) => {
     setValue(newValue);
   };
 
   return (
     <div className={classes.root}>
       <OmsTabs
-        orientation='vertical'
-        variant='scrollable'
+        orientation="vertical"
+        variant="scrollable"
         value={value}
         // indicatorColor="primary"
         // textColor="primary"
         onChange={handleChange}
-        aria-label='Vertical tabs example'
-        className={classes.tabs}
-      >
-        <OmsTab label='分组' component={NavLink} to={URL.groupTable} {...a11yProps(0)} />
-        <OmsTab label='标签' component={NavLink} to={URL.tagTable} {...a11yProps(1)} />
-        <OmsTab label='密钥' component={NavLink} to={URL.privateKey} {...a11yProps(1)} />
+        aria-label="Vertical tabs example"
+        className={classes.tabs}>
+        <OmsTab label="分组" component={NavLink} to={URL.groupTable} {...a11yProps(0)} />
+        <OmsTab label="标签" component={NavLink} to={URL.tagTable} {...a11yProps(1)} />
+        <OmsTab label="密钥" component={NavLink} to={URL.privateKey} {...a11yProps(2)} />
+        <OmsTab label="剧本" component={NavLink} to={URL.playbook} {...a11yProps(3)} />
       </OmsTabs>
       <TabPanel className={classes.TabPanel} value={value} index={0}>
-        <Outlet/>
+        <Outlet />
       </TabPanel>
       <TabPanel className={classes.TabPanel} value={value} index={1}>
-        <Outlet/>
+        <Outlet />
       </TabPanel>
       <TabPanel className={classes.TabPanel} value={value} index={2}>
-        <Outlet/>
+        <Outlet />
+      </TabPanel>
+      <TabPanel className={classes.TabPanel} value={value} index={3}>
+        <Outlet />
       </TabPanel>
     </div>
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatch
-)(ModeTabs);
+export default connect(mapStateToProps, mapDispatch)(ModeTabs);
