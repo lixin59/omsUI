@@ -1,5 +1,5 @@
 import * as actionType from './action-types';
-import { GroupInfo, HostInfo, JobInfo, PrivateKeyInfo, TagInfo, TunnelInfo } from './interface';
+import { GroupInfo, HostInfo, JobInfo, PlayerInfo, PrivateKeyInfo, TagInfo, TunnelInfo } from './interface';
 
 const actions = {
   getHostList() {
@@ -76,6 +76,9 @@ const actions = {
   },
   editJobInfo(value: JobInfo) {
     return { type: actionType.WILL_EDIT_Job, value };
+  },
+  initPlayerInfo() {
+    return { type: actionType.WILL_INIT_PLAYER };
   }
 };
 

@@ -12,6 +12,7 @@ export interface IState {
   tunnelList: TunnelInfo[];
   jobList: JobInfo[];
   privateKeyList: PrivateKeyInfo[];
+  playerList: PlayerInfo[];
 }
 
 export interface HostInfo {
@@ -68,4 +69,14 @@ export interface PrivateKeyInfo {
   name: string;
   passphrase?: string;
   key_file?: any;
+}
+
+type tStepType = 'cmd' | 'shell' | 'file'; // 插件类型
+
+type tStep = { name: string; type: tStepType; seq: number; params: string };
+
+export interface PlayerInfo {
+  id: number;
+  name: string;
+  steps: tStep[];
 }

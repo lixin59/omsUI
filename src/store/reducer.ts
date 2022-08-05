@@ -1,5 +1,23 @@
-import { GroupInfo, HostAction, TagInfo, HostInfo, TunnelInfo, JobInfo, IState, PrivateKeyInfo } from './interface';
-import { groupActions, hostActions, tagActions, tunnelActions, jobActions, privateKeyActions } from './action-types';
+import {
+  GroupInfo,
+  HostAction,
+  TagInfo,
+  HostInfo,
+  TunnelInfo,
+  JobInfo,
+  IState,
+  PrivateKeyInfo,
+  PlayerInfo
+} from './interface';
+import {
+  groupActions,
+  hostActions,
+  tagActions,
+  tunnelActions,
+  jobActions,
+  privateKeyActions,
+  playerActions
+} from './action-types';
 // import { getGroupsApi, getJobsApi, getTagsApi, getTunnelsApi, HTTPResult } from '../api/http/httpRequestApi';
 // import { hostInfo } from '../views/Home/typings';
 
@@ -150,7 +168,8 @@ const initialState: IState = {
   tagList: [],
   tunnelList: [],
   jobList: [],
-  privateKeyList: []
+  privateKeyList: [],
+  playerList: []
   // groupList: res.data || [],
   // tagList: rest.data || [],
   // tunnelList: tunnel.data || [],
@@ -161,178 +180,184 @@ const initialState: IState = {
 const reducer = (state = initialState, action: HostAction) => {
   switch (action.type) {
     case hostActions.INIT: {
-      return ({
+      return {
         ...state,
         hostList: action.value
-      });
+      };
     }
     case hostActions.DELETE_HOST_INFO: {
-      return ({
+      return {
         ...state,
         hostList: state.hostList.filter((item: HostInfo) => item.id !== action.value)
-      });
+      };
     }
     case hostActions.ADD_HOST_INFO: {
-      return ({
+      return {
         ...state,
         hostList: [...state.hostList, action.value]
-      });
+      };
     }
     case hostActions.EDIT_HOST_INFO: {
-      state.hostList.forEach((e: HostInfo, i, arr:HostInfo[]) => {
+      state.hostList.forEach((e: HostInfo, i, arr: HostInfo[]) => {
         if (e.id === action.value.id) {
           arr[i] = action.value;
         }
       });
-      return ({
+      return {
         ...state,
         hostList: [...state.hostList]
-      });
+      };
     }
     case groupActions.INIT: {
-      return ({
+      return {
         ...state,
         groupList: action.value
-      });
+      };
     }
     case groupActions.DELETE_GROUP_INFO: {
-      return ({
+      return {
         ...state,
         groupList: state.groupList.filter((item: GroupInfo) => item.id !== action.value)
-      });
+      };
     }
     case groupActions.ADD_GROUP_INFO: {
-      return ({
+      return {
         ...state,
         groupList: [...state.groupList, action.value]
-      });
+      };
     }
     case groupActions.EDIT_GROUP_INFO: {
-      state.groupList.forEach((e:GroupInfo, i:number, arr:GroupInfo[]) => {
+      state.groupList.forEach((e: GroupInfo, i: number, arr: GroupInfo[]) => {
         if (e.id === action.value.id) {
           arr[i] = action.value;
         }
       });
-      return ({
+      return {
         ...state,
         groupList: [...state.groupList]
-      });
+      };
     }
     case tagActions.INIT: {
-      return ({
+      return {
         ...state,
         tagList: action.value
-      });
+      };
     }
     case tagActions.DELETE_TAG_INFO: {
-      return ({
+      return {
         ...state,
         tagList: state.tagList.filter((item: TagInfo) => item.id !== action.value)
-      });
+      };
     }
     case tagActions.ADD_TAG_INFO: {
-      return ({
+      return {
         ...state,
         tagList: [...state.tagList, action.value]
-      });
+      };
     }
     case tagActions.EDIT_TAG_INFO: {
-      state.tagList.forEach((e:TagInfo, i:number, arr:TagInfo[]) => {
+      state.tagList.forEach((e: TagInfo, i: number, arr: TagInfo[]) => {
         if (e.id === action.value.id) {
           arr[i] = action.value;
         }
       });
-      return ({
+      return {
         ...state,
         tagList: [...state.tagList]
-      });
+      };
     }
     case tunnelActions.INIT: {
-      return ({
+      return {
         ...state,
         tunnelList: action.value
-      });
+      };
     }
     case tunnelActions.DELETE: {
-      return ({
+      return {
         ...state,
         tunnelList: state.tunnelList.filter((item: TunnelInfo) => item.id !== action.value)
-      });
+      };
     }
     case tunnelActions.ADD: {
-      return ({
+      return {
         ...state,
         tunnelList: [...state.tunnelList, action.value]
-      });
+      };
     }
     case tunnelActions.EDIT: {
-      state.tunnelList.forEach((e:TunnelInfo, i:number, arr: TunnelInfo[]) => {
+      state.tunnelList.forEach((e: TunnelInfo, i: number, arr: TunnelInfo[]) => {
         if (e.id === action.value.id) {
           arr[i] = action.value;
         }
       });
-      return ({
+      return {
         ...state,
         tunnelList: [...state.tunnelList]
-      });
+      };
     }
     case jobActions.INIT: {
-      return ({
+      return {
         ...state,
         jobList: action.value
-      });
+      };
     }
     case jobActions.DELETE: {
-      return ({
+      return {
         ...state,
         jobList: state.jobList.filter((item: JobInfo) => item.id !== action.value)
-      });
+      };
     }
     case jobActions.ADD: {
-      return ({
+      return {
         ...state,
         jobList: [...state.jobList, action.value]
-      });
+      };
     }
     case jobActions.EDIT: {
-      state.jobList.forEach((e:JobInfo, i:number, arr:JobInfo[]) => {
+      state.jobList.forEach((e: JobInfo, i: number, arr: JobInfo[]) => {
         if (e.id === action.value.id) {
           arr[i] = action.value;
         }
       });
-      return ({
+      return {
         ...state,
         jobList: [...state.jobList]
-      });
+      };
     }
     case privateKeyActions.INIT: {
-      return ({
+      return {
         ...state,
         privateKeyList: action.value
-      });
+      };
     }
     case privateKeyActions.DELETE: {
-      return ({
+      return {
         ...state,
         privateKeyList: state.privateKeyList.filter((item: PrivateKeyInfo) => item.id !== action.value)
-      });
+      };
     }
     case privateKeyActions.ADD: {
-      return ({
+      return {
         ...state,
         privateKeyList: [...state.privateKeyList, action.value]
-      });
+      };
     }
     case privateKeyActions.EDIT: {
-      state.privateKeyList.forEach((e:PrivateKeyInfo, i:number, arr:PrivateKeyInfo[]) => {
+      state.privateKeyList.forEach((e: PrivateKeyInfo, i: number, arr: PrivateKeyInfo[]) => {
         if (e.id === action.value.id) {
           arr[i] = action.value;
         }
       });
-      return ({
+      return {
         ...state,
         privateKeyList: [...state.privateKeyList]
-      });
+      };
+    }
+    case playerActions.INIT: {
+      return {
+        ...state,
+        playerList: action.value
+      };
     }
     default:
       return state;

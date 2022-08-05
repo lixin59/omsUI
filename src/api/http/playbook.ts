@@ -24,11 +24,9 @@ interface UploadStepFileResp extends HTTPResult {
   };
 }
 
-type tStep = { name: string; type: tStepType; seq: number; params: string };
-
 interface Player {
   name: string;
-  steps: tStep[];
+  steps: string; // stringify(steps: tStep[])
 }
 
 // 获取JSON schema数据
@@ -67,7 +65,23 @@ export const addPlayerApi = (data: Player, config?: AxiosRequestConfig): Promise
       formData.append(k, data[k]);
     }
   }
-  return postApi(urlType.playbook.upload_file, formData, {
+  return postApi(urlType.playbook.player, formData, {
+    ...config,
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 86400000 // 一天
+  });
+};
+
+// 编辑player
+export const editPlayerApi = (data: { id: number } & Player, config?: AxiosRequestConfig): Promise<HTTPResult> => {
+  const formData = new FormData();
+  for (const k in data) {
+    // eslint-disable-next-line no-prototype-builtins
+    if (data.hasOwnProperty(k)) {
+      formData.append(k, data[k]);
+    }
+  }
+  return putApi(`${urlType.playbook.player}`, formData, {
     ...config,
     headers: { 'Content-Type': 'multipart/form-data' },
     timeout: 86400000 // 一天

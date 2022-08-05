@@ -20,6 +20,11 @@ export const WILL_DELETE_Job = 'WILL_DELETE_Job';
 export const WILL_ADD_Job = 'WILL_ADD_Job'; // 更新数据
 export const WILL_EDIT_Job = 'WILL_EDIT_Job'; // 编辑标签信息
 
+export const WILL_DELETE_PLAYER = 'WILL_DELETE_PLAYER';
+export const WILL_ADD_PLAYER = 'WILL_ADD_PLAYER';
+export const WILL_EDIT_PLAYER = 'WILL_EDIT_PLAYER';
+export const WILL_INIT_PLAYER = 'WILL_INIT_PLAYER';
+
 export enum hostActions {
   INIT = 'INIT_HOST_INFO',
   DELETE_HOST_INFO = 'DELETE_HOST_INFO',
@@ -60,4 +65,11 @@ export enum privateKeyActions {
   DELETE = 'DELETE_PRIVATE_KEY_INFO',
   ADD = 'ADD_PRIVATE_KEY_INFO',
   EDIT = 'EDIT_PRIVATE_KEY_INFO'
+}
+
+export enum playerActions {
+  INIT = 'INIT_PLAYER_INFO',
+  DELETE = 'DELETE_PLAYER_INFO',
+  ADD = 'ADD_PLAYER_INFO',
+  EDIT = 'EDIT_PLAYER_INFO'
 }

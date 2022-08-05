@@ -1,8 +1,8 @@
 import React, { ChangeEvent, useState } from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import Button from '@mui/material/Button';
+import TextField from '../OmsTextField/index';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useSnackbar } from 'notistack';
 import { uploadStepFileApi } from '../../api/http/playbook';
 import LinearProgressWithLabel from '../UploadFileProgress/Linear';
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignContent: 'space-evenly',
       alignItems: 'center',
-      justifyContent: 'space-around',
+      justifyContent: 'space-between',
       '& > *': {
         margin: theme.spacing(1)
       }
@@ -26,7 +26,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function FileWidget(props: WidgetProps) {
-  const { multiple, autofocus, onChange } = props;
+  const { id, multiple, autofocus, onChange } = props;
+  console.log('id', id)
   const classes = useStyles();
   const [fileList, setFileList] = useState<null | FileList>(null);
   const [fileName, setFileName] = useState<string>('未选择任何文件');
@@ -86,11 +87,14 @@ export default function FileWidget(props: WidgetProps) {
           autoHideDuration: 5000,
           variant: 'error'
         });
+        setProgress(0);
         return;
       }
       if (multiple) {
+        console.log('多个文件', res.data)
         onChange(res.data.files.map((f) => f.cache_path));
       } else {
+        console.log('1个文件', res.data)
         onChange(res.data.files[0].cache_path);
       }
     } catch (e) {
@@ -98,21 +102,22 @@ export default function FileWidget(props: WidgetProps) {
         autoHideDuration: 5000,
         variant: 'error'
       });
+      setProgress(0);
     }
   };
   return (
     <>
       <div className={classes.root}>
-        <TextField size="small" disabled id="select-file" variant="outlined" value={fileName} />
+        <TextField size="small" style={{minWidth: '400px'}} disabled id="select-file" variant="outlined" value={fileName} />
         <input
           className={classes.input}
-          id="contained-button-file"
+          id={id}
           type="file"
           onChange={(e) => changeFile(e)}
           autoFocus={autofocus}
           multiple={multiple}
         />
-        <label htmlFor="contained-button-file">
+        <label htmlFor={id}>
           <Button variant="contained" component="span">
             选择文件
           </Button>
