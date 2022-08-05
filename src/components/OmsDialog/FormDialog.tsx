@@ -4,17 +4,18 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
+import { DialogProps } from '@material-ui/core/Dialog/Dialog';
 
-type tProps = {
-  open: boolean,
-  title: string,
-  content: ReactNode,
-  toClose: () => any,
-  todo?: () => any
-}
+type tProps = DialogProps & {
+  open: boolean;
+  title: string;
+  content: ReactNode;
+  toClose: () => any;
+  todo?: () => any;
+};
 
-export default function FormDialog({ open = false, title, content, toClose, todo }: tProps) {
-
+export default function FormDialog(props: tProps) {
+  const { open = false, title, content, toClose, todo } = props;
   const closeDialog = () => {
     if (toClose) {
       toClose();
@@ -29,16 +30,14 @@ export default function FormDialog({ open = false, title, content, toClose, todo
   };
 
   return (
-    <Dialog open={open} onClose={closeDialog} aria-labelledby='form-dialog'>
-      <DialogTitle id='form-dialog'>{title}</DialogTitle>
-      <DialogContent>
-        {content || null}
-      </DialogContent>
+    <Dialog {...props} open={open} onClose={closeDialog} aria-labelledby="form-dialog">
+      <DialogTitle id="form-dialog">{title}</DialogTitle>
+      <DialogContent>{content || null}</DialogContent>
       <DialogActions>
-        <Button onClick={closeDialog} color='primary'>
+        <Button onClick={closeDialog} color="primary">
           取消
         </Button>
-        <Button onClick={determine} color='primary'>
+        <Button onClick={determine} color="primary">
           确认
         </Button>
       </DialogActions>

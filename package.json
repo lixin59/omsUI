@@ -49,6 +49,8 @@
     "@mui/material": "^5.8.4",
     "@mui/x-data-grid": "^5.13.0",
     "@mui/x-data-grid-generator": "^5.13.0",
+    "@rjsf/core": "^4.2.2",
+    "@rjsf/material-ui": "^4.2.2",
     "axios": "^0.24.0",
     "chonky": "^2.3.0",
     "chonky-icon-fontawesome": "^2.3.0",

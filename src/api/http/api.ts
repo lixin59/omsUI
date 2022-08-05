@@ -134,7 +134,7 @@ export const postApi = (url: string, data: any, config = {}): Promise<any> => {
 };
 
 /* 统一封装delete请求  */
-export const deleteApi = (url: string, config = {}) => {
+export const deleteApi = (url: string, config = {}): Promise<any> => {
   return new Promise((resolve, reject) => {
     instance({
       method: 'delete',
@@ -151,7 +151,7 @@ export const deleteApi = (url: string, config = {}) => {
 };
 
 /* 统一封装put请求  */
-export const putApi = (url: string, data: any, config = {}) => {
+export const putApi = (url: string, data: any, config = {}): Promise<any> => {
   return new Promise((resolve, reject) => {
     instance({
       method: 'put',
