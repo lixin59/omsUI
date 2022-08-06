@@ -11,7 +11,7 @@ type tProps = DialogProps & {
   title: string;
   content: ReactNode;
   toClose: () => any;
-  todo?: () => any;
+  todo: () => any;
 };
 
 export default function FormDialog(props: tProps) {
@@ -22,11 +22,12 @@ export default function FormDialog(props: tProps) {
     }
   };
 
-  const determine = () => {
-    if (todo) {
-      todo();
+  const determine = async () => {
+    const canClose = await todo();
+    console.log('canClose', canClose);
+    if (canClose) {
+      toClose();
     }
-    toClose();
   };
 
   return (

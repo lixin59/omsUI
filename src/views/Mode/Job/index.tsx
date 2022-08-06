@@ -252,6 +252,7 @@ const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob, toInit }: tPro
       autoHideDuration: 3000,
       variant: 'success'
     });
+    return true;
   }, [Info]);
   const addNewJob = useCallback(async () => {
     // if (Info.type === '') {
@@ -310,6 +311,7 @@ const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob, toInit }: tPro
       status: '',
       host_id: 0
     });
+    return true;
   }, [Info]);
 
   const openForm = () => {

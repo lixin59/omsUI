@@ -115,6 +115,7 @@ export default function JobTable({ deleteTunnel, tunnelList, hostList, editTunne
       autoHideDuration: 3000,
       variant: 'success'
     });
+    return true;
   }, [Info]);
 
   const title = '确定要删除这个隧道吗？';

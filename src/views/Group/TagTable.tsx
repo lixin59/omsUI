@@ -86,6 +86,7 @@ export default function TagTable({ deleteTag, tagList, editTag }: tProps) {
       autoHideDuration: 3000,
       variant: 'success'
     });
+    return true;
   }, [Info]);
 
   const toDelete = useCallback(async () => {

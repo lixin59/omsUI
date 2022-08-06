@@ -145,6 +145,7 @@ function HostInfoCard(props: tProps) {
       autoHideDuration: 3000,
       variant: 'success'
     });
+    return true;
   };
 
   const tagDelete = async (id: number) => {
@@ -163,14 +164,14 @@ function HostInfoCard(props: tProps) {
     const res = (await editHostApi(data)) as HTTPResult;
 
     if (res.code !== '200') {
-      enqueueSnackbar(`主机修改失败: ${res.msg}`, {
+      enqueueSnackbar(`主机: ${hostInfo.name}标签删除失败: ${res.msg}`, {
         autoHideDuration: 3000,
         variant: 'error'
       });
       return;
     }
     editHost(res.data);
-    enqueueSnackbar(`主机: ${hostInfo.name} 信息已经修改`, {
+    enqueueSnackbar(`主机: ${hostInfo.name}标签删除成功`, {
       autoHideDuration: 3000,
       variant: 'success'
     });

@@ -266,6 +266,7 @@ const Playbook = (props: tProps) => {
         variant: 'error'
       });
     }
+    return true;
   }, [form.playerName, form.steps]);
 
   const openForm = async (isAdd: boolean) => {

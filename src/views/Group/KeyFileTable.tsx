@@ -90,6 +90,7 @@ export default function KeyFileTable({ deletePrivateKey, privateKeyList, editPri
       autoHideDuration: 3000,
       variant: 'success'
     });
+    return true;
   }, [Info]);
 
   const toDelete = useCallback(async () => {

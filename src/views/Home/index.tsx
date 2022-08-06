@@ -274,7 +274,7 @@ function Home(props: tProps) {
     formDispatch({ type: 'open' });
   };
 
-  const editNewHost = async () => {
+  const editNewHost = useCallback(async () => {
     const tags: TagInfo[] = [];
     tlc.forEach((e) => {
       if (e.checked) {
@@ -307,7 +307,9 @@ function Home(props: tProps) {
       autoHideDuration: 3000,
       variant: 'success'
     });
-  };
+    setHostInfo(baseHostInfo);
+    return true;
+  }, [hostInfo]);
 
   const addNewHost = useCallback(async () => {
     if (!hostInfo.addr) {
@@ -377,6 +379,7 @@ function Home(props: tProps) {
     });
     setHostInfo(baseHostInfo);
     setTlc(tagList?.map((e) => ({ ...e, checked: false })));
+    return true;
   }, [hostInfo]);
 
   return (
@@ -428,7 +431,10 @@ function Home(props: tProps) {
       <FormDialog
         open={form.open}
         content={id ? editContent : addcontent}
-        toClose={() => formDispatch({ type: 'close' })}
+        toClose={() => {
+          formDispatch({ type: 'close' });
+          setHostInfo(baseHostInfo);
+        }}
         title={form.title}
         todo={id ? editNewHost : addNewHost}
       />

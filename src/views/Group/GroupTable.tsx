@@ -87,6 +87,7 @@ export default function GroupTable({ groupList, deleteGroup, editGroup }: tProps
       autoHideDuration: 3000,
       variant: 'success'
     });
+    return true;
   }, [Info]);
 
   const title = '确定要删除这个分组吗？';
