@@ -4,10 +4,12 @@ export const WILL_DELETE = 'WILL_DELETE';
 export const WILL_ADD = 'WILL_ADD'; // 更新数据
 export const WILL_EDIT_HOST = 'WILL_EDIT_HOST'; // 编辑主机信息
 
+export const WILL_INIT_GROUP = 'WILL_INIT_GROUP';
 export const WILL_DELETE_GROUP = 'WILL_DELETE_GROUP';
 export const WILL_ADD_GROUP = 'WILL_ADD_GROUP'; // 更新数据
 export const WILL_EDIT_GROUP = 'WILL_EDIT_GROUP'; // 编辑分组信息
 
+export const WILL_INIT_TAG = 'WILL_INIT_TAG';
 export const WILL_DELETE_TAG = 'WILL_DELETE_TAG';
 export const WILL_ADD_TAG = 'WILL_ADD_TAG'; // 更新数据
 export const WILL_EDIT_TAG = 'WILL_EDIT_TAG'; // 编辑标签信息

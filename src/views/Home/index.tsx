@@ -8,7 +8,6 @@ import {
   getGroupsApi,
   getTagsApi,
   getPrivateKeysApi,
-  deleteHostApi,
   EditHostPut,
   editHostApi
 } from '../../api/http/httpRequestApi';
@@ -49,9 +48,6 @@ type tDP = {
   initGroup: ActionCreator<any>;
   initTag: ActionCreator<any>;
   initPrivateKey: ActionCreator<any>;
-  deleteHost: ActionCreator<any>;
-  addHost: ActionCreator<any>;
-  editHost: ActionCreator<any>;
   initStore: ActionCreator<any>;
   getHostList: ActionCreator<any>;
 };
@@ -98,9 +94,6 @@ const mapDispatch: tDP = {
   initGroup: actions.initGroupInfo,
   initTag: actions.initTagInfo,
   initPrivateKey: actions.initPrivateKeyInfo,
-  deleteHost: actions.deleteHostInfo,
-  addHost: actions.addHostInfo,
-  editHost: actions.editHostInfo,
   initStore: actions.initHostInfo,
   getHostList: actions.getHostList
 };
@@ -158,19 +151,8 @@ function tipReducer(state, action: any) {
 }
 
 function Home(props: tProps) {
-  const {
-    hostList,
-    addHost,
-    editHost,
-    getHostList,
-    initTag,
-    initGroup,
-    initPrivateKey,
-    privateKeyList,
-    groupList,
-    tagList,
-    initStore
-  } = props;
+  const { hostList, getHostList, initTag, initGroup, initPrivateKey, privateKeyList, groupList, tagList, initStore } =
+    props;
 
   useEffect(() => {
     (async () => {
@@ -302,7 +284,7 @@ function Home(props: tProps) {
       });
       return;
     }
-    editHost(res.data);
+    getHostList();
     enqueueSnackbar(`主机: ${hostInfo.name} 信息已经修改`, {
       autoHideDuration: 3000,
       variant: 'success'
@@ -372,7 +354,7 @@ function Home(props: tProps) {
       });
       return;
     }
-    addHost(res.data);
+    getHostList();
     enqueueSnackbar(`主机: ${res.data.name} 已添加`, {
       autoHideDuration: 3000,
       variant: 'success'

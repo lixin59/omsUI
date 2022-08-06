@@ -13,16 +13,15 @@ import actions from '../../store/action';
 import { connect } from 'react-redux';
 
 type tDP = {
-  deleteTag: ActionCreator<any>;
-  addTag: ActionCreator<any>;
-  editTag: ActionCreator<any>;
+  updateTagList: ActionCreator<any>;
   initTag: ActionCreator<any>;
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 type tOP = {};
 
 type tSP = tOP & {
-  tagList: TagInfo[]
+  tagList: TagInfo[];
 };
 
 type tProps = tSP & tDP;
@@ -33,9 +32,7 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
 });
 const mapDispatch: tDP = {
   initTag: actions.initTagInfo,
-  deleteTag: actions.deleteTagInfo,
-  addTag: actions.addTagInfo,
-  editTag: actions.editTagInfo
+  updateTagList: actions.updateTagList
 };
 
 const Tag = (props: tProps) => {
@@ -43,7 +40,7 @@ const Tag = (props: tProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const [tag, setTag] = useState<string>('');
 
-  const addNewTag = async() => {
+  const addNewTag = async () => {
     if (!tag) {
       enqueueSnackbar(`标签名称不能为空`, {
         autoHideDuration: 3000,
@@ -66,7 +63,7 @@ const Tag = (props: tProps) => {
       });
       return;
     }
-    props.addTag(res.data);
+    props.updateTagList();
     enqueueSnackbar(`标签: ${res.data.name}添加成功！`, {
       autoHideDuration: 3000,
       variant: 'success'
@@ -78,29 +75,23 @@ const Tag = (props: tProps) => {
       <div className={classes.ControlBox}>
         <FormControl className={classes.Control}>
           <TextField
-            size='small'
-            id='tag-name'
-            label='标签名称'
-            variant='outlined'
+            size="small"
+            id="tag-name"
+            label="标签名称"
+            variant="outlined"
             value={tag}
             onChange={(e) => setTag(e.target.value)}
           />
         </FormControl>
-        <Button
-          className={classes.addButton}
-          onClick={addNewTag}
-        >
+        <Button className={classes.addButton} onClick={addNewTag}>
           添加标签
         </Button>
       </div>
       <div className={classes.shellBox}>
-        <TagTable {...props}/>
+        <TagTable {...props} />
       </div>
     </div>
   );
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatch
-)(Tag);
+export default connect(mapStateToProps, mapDispatch)(Tag);

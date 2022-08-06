@@ -40,12 +40,6 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
   tagList: state.tagList
 });
 const mapDispatch: tDP = {
-  // deleteGroup: actions.deleteGroupInfo,
-  // addGroup: actions.addGroupInfo,
-  // editGroup: actions.editGroupInfo,
-  // deleteTag: actions.deleteTagInfo,
-  // addTag: actions.addTagInfo,
-  // editTag: actions.editTagInfo,
 };
 
 type tProps = tSP & tDP;

@@ -16,16 +16,15 @@ import { connect } from 'react-redux';
 import actions from '../../store/action';
 
 type tDP = {
-  deleteGroup: ActionCreator<any>;
-  addGroup: ActionCreator<any>;
-  editGroup: ActionCreator<any>;
+  updateGroupList: ActionCreator<any>;
   initGroup: ActionCreator<any>;
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 type tOP = {};
 
 type tSP = tOP & {
-  groupList: GroupInfo[]
+  groupList: GroupInfo[];
 };
 
 type tProps = tSP & tDP;
@@ -36,9 +35,7 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
 });
 const mapDispatch: tDP = {
   initGroup: actions.initGroupInfo,
-  deleteGroup: actions.deleteGroupInfo,
-  addGroup: actions.addGroupInfo,
-  editGroup: actions.editGroupInfo
+  updateGroupList: actions.updateGroupList
 };
 
 const Grouping = (props: tProps) => {
@@ -51,7 +48,7 @@ const Grouping = (props: tProps) => {
     setPattern(event.target.value as string);
   };
 
-  const addNewGroup = async() => {
+  const addNewGroup = async () => {
     if (mode === '') {
       enqueueSnackbar(`请选择一个模式！`, {
         autoHideDuration: 3000,
@@ -88,7 +85,7 @@ const Grouping = (props: tProps) => {
       });
       return;
     }
-    props.addGroup(res.data);
+    props.updateGroupList();
     enqueueSnackbar(`分组: ${res.data.name}添加成功！`, {
       autoHideDuration: 3000,
       variant: 'success'
@@ -99,53 +96,42 @@ const Grouping = (props: tProps) => {
     <div className={classes.itemPage}>
       <div className={classes.ControlBox}>
         <FormControl className={classes.Control}>
-          <InputLabel id='pattern-select-label'>选择模式</InputLabel>
-          <Select
-            labelId='pattern-select-label'
-            id='pattern-select'
-            value={mode}
-            onChange={handleChange}
-          >
+          <InputLabel id="pattern-select-label">选择模式</InputLabel>
+          <Select labelId="pattern-select-label" id="pattern-select" value={mode} onChange={handleChange}>
             <MenuItem value={0}>主机模式</MenuItem>
             <MenuItem value={1}>规则模式</MenuItem>
           </Select>
         </FormControl>
         <FormControl className={classes.Control}>
           <TextField
-            size='small'
-            id='Matching-rules'
-            label='匹配规则'
-            variant='outlined'
+            size="small"
+            id="Matching-rules"
+            label="匹配规则"
+            variant="outlined"
             value={params}
-            placeholder='主机模式不用添加规则'
+            placeholder="主机模式不用添加规则"
             onChange={(e) => setParams(e.target.value)}
           />
         </FormControl>
         <FormControl className={classes.Control}>
           <TextField
-            size='small'
-            id='grouping'
-            label='分组名称'
-            variant='outlined'
+            size="small"
+            id="grouping"
+            label="分组名称"
+            variant="outlined"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
         </FormControl>
-        <Button
-          className={classes.addButton}
-          onClick={addNewGroup}
-        >
+        <Button className={classes.addButton} onClick={addNewGroup}>
           增加分组
         </Button>
       </div>
       <div className={classes.shellBox}>
-        <GroupTable {...props}/>
+        <GroupTable {...props} />
       </div>
     </div>
   );
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatch
-)(Grouping);
+export default connect(mapStateToProps, mapDispatch)(Grouping);

@@ -151,9 +151,7 @@ const columns = [
 type tDP = {
   initGroup: ActionCreator<any>;
   initTag: ActionCreator<any>;
-  deleteHost: ActionCreator<any>;
-  addHost: ActionCreator<any>;
-  editHost: ActionCreator<any>;
+  upHostList: ActionCreator<any>;
   initStore: ActionCreator<any>;
 };
 
@@ -177,9 +175,7 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
 const mapDispatch: tDP = {
   initGroup: actions.initGroupInfo,
   initTag: actions.initTagInfo,
-  deleteHost: actions.deleteHostInfo,
-  addHost: actions.addHostInfo,
-  editHost: actions.editHostInfo,
+  upHostList: actions.getHostList,
   initStore: actions.initHostInfo
 };
 
@@ -192,7 +188,7 @@ type tProps = tSP &
   };
 
 function HostInfoTable(props: tProps) {
-  const { hostList, deleteHost, tipDispatch, formDispatch, setHostId, setHostInfo } = props;
+  const { hostList, upHostList, tipDispatch, formDispatch, setHostId, setHostInfo } = props;
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -215,7 +211,7 @@ function HostInfoTable(props: tProps) {
               });
               return;
             }
-            deleteHost(id);
+            upHostList();
             enqueueSnackbar(`主机: ${name} 已被删除`, {
               autoHideDuration: 3000,
               variant: 'success'

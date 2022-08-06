@@ -35,9 +35,7 @@ import { URL } from '../../router/index';
 type tDP = {
   initGroup: ActionCreator<any>;
   initTag: ActionCreator<any>;
-  deleteHost: ActionCreator<any>;
-  addHost: ActionCreator<any>;
-  editHost: ActionCreator<any>;
+  getHostList: ActionCreator<any>;
   initStore: ActionCreator<any>;
 };
 
@@ -61,9 +59,7 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
 const mapDispatch: tDP = {
   initGroup: actions.initGroupInfo,
   initTag: actions.initTagInfo,
-  deleteHost: actions.deleteHostInfo,
-  addHost: actions.addHostInfo,
-  editHost: actions.editHostInfo,
+  getHostList: actions.getHostList,
   initStore: actions.initHostInfo
 };
 
@@ -73,7 +69,7 @@ type tProps = tSP &
   };
 
 function HostInfoCard(props: tProps) {
-  const { hostInfo, deleteHost, editHost, groupList, tagList, privateKeyList } = props;
+  const { hostInfo, getHostList, groupList, tagList, privateKeyList } = props;
   const classes = makeStyles(styles)();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -140,7 +136,7 @@ function HostInfoCard(props: tProps) {
       });
       return;
     }
-    editHost(res.data);
+    getHostList();
     enqueueSnackbar(`主机: ${hostInfo.name} 信息已经修改`, {
       autoHideDuration: 3000,
       variant: 'success'
@@ -170,7 +166,7 @@ function HostInfoCard(props: tProps) {
       });
       return;
     }
-    editHost(res.data);
+    getHostList();
     enqueueSnackbar(`主机: ${hostInfo.name}标签删除成功`, {
       autoHideDuration: 3000,
       variant: 'success'
@@ -187,7 +183,7 @@ function HostInfoCard(props: tProps) {
       });
       return;
     }
-    deleteHost(hostInfo.id);
+    getHostList();
     enqueueSnackbar(`主机: ${hostInfo.name} 已被删除`, {
       autoHideDuration: 3000,
       variant: 'success'

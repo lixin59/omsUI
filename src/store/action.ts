@@ -1,5 +1,6 @@
 import * as actionType from './action-types';
-import { GroupInfo, HostInfo, JobInfo, PlayerInfo, PrivateKeyInfo, TagInfo, TunnelInfo } from './interface';
+import { GroupInfo, HostInfo, JobInfo, PrivateKeyInfo, TagInfo, TunnelInfo } from './interface';
+import {WILL_INIT_GROUP, WILL_INIT_TAG} from "./action-types";
 
 const actions = {
   getHostList() {
@@ -32,23 +33,11 @@ const actions = {
   editPrivateKeyInfo(value: PrivateKeyInfo) {
     return { type: actionType.privateKeyActions.EDIT, value };
   },
-  deleteHostInfo(value: number) {
-    return { type: actionType.WILL_DELETE, value };
+  updateGroupList() {
+    return { type: actionType.WILL_INIT_GROUP };
   },
-  addHostInfo(value: HostInfo) {
-    return { type: actionType.WILL_ADD, value };
-  },
-  editHostInfo(value: HostInfo) {
-    return { type: actionType.WILL_EDIT_HOST, value };
-  },
-  deleteGroupInfo(value: number) {
-    return { type: actionType.WILL_DELETE_GROUP, value };
-  },
-  addGroupInfo(value: GroupInfo) {
-    return { type: actionType.WILL_ADD_GROUP, value };
-  },
-  editGroupInfo(value: GroupInfo) {
-    return { type: actionType.WILL_EDIT_GROUP, value };
+  updateTagList() {
+    return { type: actionType.WILL_INIT_TAG };
   },
   deleteTagInfo(value: number) {
     return { type: actionType.WILL_DELETE_TAG, value };

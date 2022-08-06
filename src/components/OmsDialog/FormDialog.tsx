@@ -24,7 +24,6 @@ export default function FormDialog(props: tProps) {
 
   const determine = async () => {
     const canClose = await todo();
-    console.log('canClose', canClose);
     if (canClose) {
       toClose();
     }

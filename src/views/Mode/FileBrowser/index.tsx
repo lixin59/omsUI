@@ -75,12 +75,6 @@ const codeType = {
 };
 
 type tDP = {
-  // deleteGroup: ActionCreator<any>;
-  // addGroup: ActionCreator<any>;
-  // editGroup: ActionCreator<any>;
-  // deleteTag: ActionCreator<any>;
-  // addTag: ActionCreator<any>;
-  // editTag: ActionCreator<any>;
 };
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -99,12 +93,6 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
   tagList: state.tagList
 });
 const mapDispatch: tDP = {
-  // deleteGroup: actions.deleteGroupInfo,
-  // addGroup: actions.addGroupInfo,
-  // editGroup: actions.editGroupInfo,
-  // deleteTag: actions.deleteTagInfo,
-  // addTag: actions.addTagInfo,
-  // editTag: actions.editTagInfo,
 };
 
 type tProps = tSP & tDP;

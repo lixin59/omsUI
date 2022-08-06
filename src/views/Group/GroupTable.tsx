@@ -19,9 +19,7 @@ import GroupForm from './Form/GroupFrom';
 import { editGroupApi, deleteGroupApi, HTTPResult } from '../../api/http/httpRequestApi';
 
 type tDP = {
-  deleteGroup: ActionCreator<any>;
-  addGroup: ActionCreator<any>;
-  editGroup: ActionCreator<any>;
+  updateGroupList: ActionCreator<any>;
 };
 
 type tOP = any;
@@ -57,7 +55,7 @@ const columns: Column[] = [
   }
 ];
 
-export default function GroupTable({ groupList, deleteGroup, editGroup }: tProps) {
+export default function GroupTable({ groupList, updateGroupList }: tProps) {
   const classes = makeStyles(styles)();
   const { enqueueSnackbar } = useSnackbar();
   const [page, setPage] = useState<number>(0);
@@ -82,7 +80,7 @@ export default function GroupTable({ groupList, deleteGroup, editGroup }: tProps
       });
       return;
     }
-    editGroup(res.data);
+    updateGroupList();
     enqueueSnackbar(`分组: ${Info.name} 修改成功${res.msg}`, {
       autoHideDuration: 3000,
       variant: 'success'
@@ -108,7 +106,7 @@ export default function GroupTable({ groupList, deleteGroup, editGroup }: tProps
       });
       return;
     }
-    deleteGroup(Info.id);
+    updateGroupList();
     enqueueSnackbar(`分组: ${Info.name} 已被删除`, {
       autoHideDuration: 3000,
       variant: 'success'

@@ -20,9 +20,7 @@ import FormDialog from '../../components/OmsDialog/FormDialog';
 import TagForm from './Form/TagForm';
 
 type tDP = {
-  deleteTag: ActionCreator<any>;
-  addTag: ActionCreator<any>;
-  editTag: ActionCreator<any>;
+  updateTagList: ActionCreator<any>;
 };
 
 type tOP = any;
@@ -48,7 +46,7 @@ const columns: Column[] = [
   }
 ];
 
-export default function TagTable({ deleteTag, tagList, editTag }: tProps) {
+export default function TagTable({ tagList, updateTagList }: tProps) {
   const classes = makeStyles(styles)();
   const { enqueueSnackbar } = useSnackbar();
   const [page, setPage] = useState<number>(0);
@@ -81,7 +79,7 @@ export default function TagTable({ deleteTag, tagList, editTag }: tProps) {
       });
       return;
     }
-    editTag(res.data);
+    updateTagList();
     enqueueSnackbar(`标签: ${Info.name} 修改成功${res.msg}`, {
       autoHideDuration: 3000,
       variant: 'success'
@@ -98,7 +96,7 @@ export default function TagTable({ deleteTag, tagList, editTag }: tProps) {
       });
       return;
     }
-    deleteTag(Info.id);
+    updateTagList();
     enqueueSnackbar(`标签: ${Info.name} 已被删除`, {
       autoHideDuration: 3000,
       variant: 'success'

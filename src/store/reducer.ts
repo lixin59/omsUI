@@ -1,14 +1,4 @@
-import {
-  GroupInfo,
-  HostAction,
-  TagInfo,
-  HostInfo,
-  TunnelInfo,
-  JobInfo,
-  IState,
-  PrivateKeyInfo,
-  PlayerInfo
-} from './interface';
+import { HostAction, TunnelInfo, JobInfo, IState } from './interface';
 import {
   groupActions,
   hostActions,
@@ -185,85 +175,16 @@ const reducer = (state = initialState, action: HostAction) => {
         hostList: action.value
       };
     }
-    case hostActions.DELETE_HOST_INFO: {
-      return {
-        ...state,
-        hostList: state.hostList.filter((item: HostInfo) => item.id !== action.value)
-      };
-    }
-    case hostActions.ADD_HOST_INFO: {
-      return {
-        ...state,
-        hostList: [...state.hostList, action.value]
-      };
-    }
-    case hostActions.EDIT_HOST_INFO: {
-      state.hostList.forEach((e: HostInfo, i, arr: HostInfo[]) => {
-        if (e.id === action.value.id) {
-          arr[i] = action.value;
-        }
-      });
-      return {
-        ...state,
-        hostList: [...state.hostList]
-      };
-    }
     case groupActions.INIT: {
       return {
         ...state,
         groupList: action.value
       };
     }
-    case groupActions.DELETE_GROUP_INFO: {
-      return {
-        ...state,
-        groupList: state.groupList.filter((item: GroupInfo) => item.id !== action.value)
-      };
-    }
-    case groupActions.ADD_GROUP_INFO: {
-      return {
-        ...state,
-        groupList: [...state.groupList, action.value]
-      };
-    }
-    case groupActions.EDIT_GROUP_INFO: {
-      state.groupList.forEach((e: GroupInfo, i: number, arr: GroupInfo[]) => {
-        if (e.id === action.value.id) {
-          arr[i] = action.value;
-        }
-      });
-      return {
-        ...state,
-        groupList: [...state.groupList]
-      };
-    }
     case tagActions.INIT: {
       return {
         ...state,
         tagList: action.value
-      };
-    }
-    case tagActions.DELETE_TAG_INFO: {
-      return {
-        ...state,
-        tagList: state.tagList.filter((item: TagInfo) => item.id !== action.value)
-      };
-    }
-    case tagActions.ADD_TAG_INFO: {
-      return {
-        ...state,
-        tagList: [...state.tagList, action.value]
-      };
-    }
-    case tagActions.EDIT_TAG_INFO: {
-      state.tagList.forEach((e: TagInfo, i: number, arr: TagInfo[]) => {
-        if (e.id === action.value.id) {
-          arr[i] = action.value;
-        }
-      });
-      return {
-        ...state,
-        tagList: [...state.tagList]
       };
     }
     case tunnelActions.INIT: {
@@ -328,29 +249,6 @@ const reducer = (state = initialState, action: HostAction) => {
       return {
         ...state,
         privateKeyList: action.value
-      };
-    }
-    case privateKeyActions.DELETE: {
-      return {
-        ...state,
-        privateKeyList: state.privateKeyList.filter((item: PrivateKeyInfo) => item.id !== action.value)
-      };
-    }
-    case privateKeyActions.ADD: {
-      return {
-        ...state,
-        privateKeyList: [...state.privateKeyList, action.value]
-      };
-    }
-    case privateKeyActions.EDIT: {
-      state.privateKeyList.forEach((e: PrivateKeyInfo, i: number, arr: PrivateKeyInfo[]) => {
-        if (e.id === action.value.id) {
-          arr[i] = action.value;
-        }
-      });
-      return {
-        ...state,
-        privateKeyList: [...state.privateKeyList]
       };
     }
     case playerActions.INIT: {
