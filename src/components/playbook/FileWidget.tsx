@@ -27,7 +27,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function FileWidget(props: WidgetProps) {
   const { id, multiple, autofocus, onChange } = props;
-  console.log('id', id)
   const classes = useStyles();
   const [fileList, setFileList] = useState<null | FileList>(null);
   const [fileName, setFileName] = useState<string>('未选择任何文件');
@@ -57,7 +56,6 @@ export default function FileWidget(props: WidgetProps) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       setFileName(`${e.target?.files.length}个文件`);
-      console.log(e.target?.files);
       const arr: any[] = [];
       for (let i = 0; i < e!.target!.files!.length; i++) {
         arr.push(e!.target!.files![i]!.name);
@@ -70,7 +68,6 @@ export default function FileWidget(props: WidgetProps) {
   function onUploadProgress(progressEvent) {
     const progressdata = ((progressEvent.loaded / progressEvent.total) * 100) | 0;
     setProgress(progressdata);
-    // console.log(progressEvent);
   }
   const uploadFile = async () => {
     try {
@@ -91,10 +88,8 @@ export default function FileWidget(props: WidgetProps) {
         return;
       }
       if (multiple) {
-        console.log('多个文件', res.data)
         onChange(res.data.files.map((f) => f.cache_path));
       } else {
-        console.log('1个文件', res.data)
         onChange(res.data.files[0].cache_path);
       }
     } catch (e) {
@@ -108,7 +103,14 @@ export default function FileWidget(props: WidgetProps) {
   return (
     <>
       <div className={classes.root}>
-        <TextField size="small" style={{minWidth: '400px'}} disabled id="select-file" variant="outlined" value={fileName} />
+        <TextField
+          size="small"
+          style={{ minWidth: '400px' }}
+          disabled
+          id="select-file"
+          variant="outlined"
+          value={fileName}
+        />
         <input
           className={classes.input}
           id={id}

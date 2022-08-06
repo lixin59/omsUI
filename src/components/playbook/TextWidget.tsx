@@ -9,6 +9,7 @@ export default function TextWidget(props: WidgetProps) {
   };
   return (
     <TextField
+      style={{ width: '100%' }}
       id={id}
       label={label}
       variant="outlined"

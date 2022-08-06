@@ -21,7 +21,7 @@ import TextField from '../../../components/OmsTextField/index';
 import Typography from '@mui/material/Typography';
 import TipDialog from '../../../components/OmsDialog/TipDialog';
 import FormDialog from '../../../components/OmsDialog/FormDialog';
-import Form from '@rjsf/material-ui';
+import Form from '@rjsf/core';
 import {
   addPlayerApi,
   deletePlayerApi,
@@ -318,7 +318,7 @@ const Playbook = (props: tProps) => {
           </List>
         </Paper>
         {form.schemaList.length > 0 ? (
-          <Paper elevation={3} style={{ maxWidth: '700px', padding: '10px', paddingRight: '0px' }}>
+          <Paper elevation={3} style={{ maxWidth: '700px', padding: '10px' }}>
             <Grid container spacing={1}>
               <Grid item xs={4}>
                 <Typography variant="h6" gutterBottom component="div">

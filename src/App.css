@@ -24,3 +24,8 @@ div[class^="listFileEntryProperty"] {
   box-sizing: border-box;
   white-space: nowrap;
 }
+
+fieldset {
+  /* 去掉添加剧本表单中fieldset标签默认的边框 */
+  border: none;
+}

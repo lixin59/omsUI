@@ -9,6 +9,7 @@ export default function TextareaWidget(props: WidgetProps) {
   };
   return (
     <TextField
+      style={{ width: '100%' }}
       id={id}
       label={label}
       multiline
