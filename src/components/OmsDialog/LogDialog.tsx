@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 // import DialogTitle from '@material-ui/core/DialogTitle';
 // import DialogContent from '@material-ui/core/DialogContent';
@@ -8,6 +8,9 @@ import Button from '@material-ui/core/Button';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { makeStyles } from '@material-ui/core/styles';
 import styles from './styles';
+import { Terminal } from 'xterm';
+import { FitAddon } from 'xterm-addon-fit';
+import DialogContent from '@material-ui/core/DialogContent';
 
 type tProps = {
   open: boolean;
@@ -20,18 +23,41 @@ export default function LogDialog({ open = false, title, text = '', toClose }: t
   // const [isOpen, setIsOpen] = useState<boolean>(open);
   const classes = makeStyles(styles)();
   const msgRef = useRef<any>(null);
+  // const [terminal, setTerminal] = useState<null | Terminal>(null);
+
+  // useEffect(() => {
+  //   try {
+  //     // const div = msgRef.current as HTMLDivElement;
+  //     // if (div) {
+  //     //   div.scrollTop = div.scrollHeight;
+  //     // }
+  //     // msgRef?.current?.scrollToBottom(); // 收到新消息滚动条自动滚到底部
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // }, [text, msgRef]);
 
   useEffect(() => {
-    try {
-      const div = msgRef.current as HTMLDivElement;
-      if (div) {
-        div.scrollTop = div.scrollHeight;
-      }
-      // msgRef?.current?.scrollToBottom(); // 收到新消息滚动条自动滚到底部
-    } catch (e) {
-      console.log(e);
-    }
-  }, [text, msgRef]);
+    const term = new Terminal();
+    const fitAddon = new FitAddon();
+    term.loadAddon(fitAddon);
+
+    const timer = setTimeout(() => {
+      fitAddon.fit();
+      term.open(document.getElementById('logTerminal') as HTMLElement);
+      term.writeln(text);
+    }, 60);
+    const termResize = () => {
+      fitAddon.fit();
+    };
+    msgRef?.current?.addEventListener('resize', termResize);
+
+    return () => {
+      clearTimeout(timer);
+      term.dispose();
+      msgRef?.current?.removeEventListener('resize', termResize);
+    };
+  }, [open, msgRef]);
 
   const closeDialog = () => {
     if (toClose) {
@@ -43,10 +69,9 @@ export default function LogDialog({ open = false, title, text = '', toClose }: t
   return (
     <Dialog open={open} onClose={closeDialog} fullWidth maxWidth="md">
       <DialogTitle className={classes.dialogTitle}>{title}</DialogTitle>
-      {/* <div style={{ whiteSpace: 'pre-line', wordWrap: 'break-word', wordBreak: 'break-all' }}>*/}
-      <div ref={msgRef} className={classes.dialogContent}>
-        {text}
-      </div>
+      <DialogContent>
+        <div id="logTerminal" ref={msgRef} />
+      </DialogContent>
       <DialogActions className={classes.dialogActions}>
         <Button onClick={closeDialog} className={classes.dialogActionButton}>
           关闭

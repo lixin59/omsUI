@@ -61,7 +61,10 @@ export interface JobInfo {
   spec: string;
   cmd: string;
   status: string;
-  host_id: number;
+  cmd_type: 'cmd' | 'player';
+  cmd_id: number;
+  execute_type: 'host' | 'group' | 'tag';
+  execute_id: number;
 }
 
 export interface PrivateKeyInfo {

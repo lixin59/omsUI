@@ -16,7 +16,10 @@ export const urlType = {
   job: '/job',
   jobStart: 'job/start',
   jobStop: 'job/stop',
-  jobLogs: 'job/tail',
+  jobLog: {
+    info: '/task/instance/log/get',
+    list: '/task/instance'
+  },
   upload_file: '/tools/upload',
   download_file: '/tools/download',
   preview_file: '/tools/preview',

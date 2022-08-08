@@ -18,6 +18,7 @@ export const WILL_DELETE_Tunnel = 'WILL_DELETE_Tunnel';
 export const WILL_ADD_Tunnel = 'WILL_ADD_Tunnel'; // 更新数据
 export const WILL_EDIT_Tunnel = 'WILL_EDIT_Tunnel'; // 编辑标签信息
 
+export const WILL_INIT_Job = 'WILL_INIT_Job';
 export const WILL_DELETE_Job = 'WILL_DELETE_Job';
 export const WILL_ADD_Job = 'WILL_ADD_Job'; // 更新数据
 export const WILL_EDIT_Job = 'WILL_EDIT_Job'; // 编辑标签信息

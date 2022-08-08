@@ -1,6 +1,6 @@
 import * as actionType from './action-types';
 import { GroupInfo, HostInfo, JobInfo, PrivateKeyInfo, TagInfo, TunnelInfo } from './interface';
-import {WILL_INIT_GROUP, WILL_INIT_TAG} from "./action-types";
+import { WILL_INIT_GROUP, WILL_INIT_TAG } from './action-types';
 
 const actions = {
   getHostList() {
@@ -39,14 +39,8 @@ const actions = {
   updateTagList() {
     return { type: actionType.WILL_INIT_TAG };
   },
-  deleteTagInfo(value: number) {
-    return { type: actionType.WILL_DELETE_TAG, value };
-  },
-  addTagInfo(value: TagInfo) {
-    return { type: actionType.WILL_ADD_TAG, value };
-  },
-  editTagInfo(value: TagInfo) {
-    return { type: actionType.WILL_EDIT_TAG, value };
+  updateJobList() {
+    return { type: actionType.WILL_INIT_Job };
   },
   deleteTunnelInfo(value: number) {
     return { type: actionType.WILL_DELETE_Tunnel, value };
@@ -56,15 +50,6 @@ const actions = {
   },
   editTunnelInfo(value: TunnelInfo) {
     return { type: actionType.WILL_EDIT_Tunnel, value };
-  },
-  addJobInfo(value: JobInfo) {
-    return { type: actionType.WILL_ADD_Job, value };
-  },
-  deleteJobInfo(value: string) {
-    return { type: actionType.WILL_DELETE_Job, value };
-  },
-  editJobInfo(value: JobInfo) {
-    return { type: actionType.WILL_EDIT_Job, value };
   },
   initPlayerInfo() {
     return { type: actionType.WILL_INIT_PLAYER };

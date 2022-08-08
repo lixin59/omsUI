@@ -7,15 +7,15 @@ import styles from './style';
 import { ActionCreator } from 'redux';
 import { useSnackbar } from 'notistack';
 import { connect } from 'react-redux';
-import { HostInfo, IState, JobInfo } from '../../../store/interface';
+import { GroupInfo, HostInfo, IState, JobInfo, PlayerInfo, TagInfo } from '../../../store/interface';
 import actions from '../../../store/action';
 import {
   addJobApi,
   deleteJobApi,
   editJobApi,
-  getJobsApi,
   HTTPResult,
-  jobLogsUrlApi,
+  jobLogApi,
+  jobLogListApi,
   jobStartApi,
   jobStopApi
 } from '../../../api/http/httpRequestApi';
@@ -30,13 +30,13 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import TipDialog from '../../../components/OmsDialog/TipDialog';
 import LogDialog from '../../../components/OmsDialog/LogDialog';
-import axios, { CancelTokenSource } from 'axios';
 
 type tDP = {
-  toInit: ActionCreator<any>;
-  deleteJob: ActionCreator<any>;
-  addJob: ActionCreator<any>;
-  editJob: ActionCreator<any>;
+  updateJobList: ActionCreator<any>;
+  updateGroupList: ActionCreator<any>;
+  updateTagList: ActionCreator<any>;
+  updatePlayerInfo: ActionCreator<any>;
+  updateHostList: ActionCreator<any>;
 };
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -45,18 +45,25 @@ type tOP = {};
 type tSP = tOP & {
   jobList: JobInfo[];
   hostList: HostInfo[];
+  tagList: TagInfo[];
+  groupList: GroupInfo[];
+  playerList: PlayerInfo[];
 };
 
 const mapStateToProps = (state: IState, props: tOP): tSP => ({
   ...props,
   jobList: state.jobList,
-  hostList: state.hostList
+  hostList: state.hostList,
+  tagList: state.tagList,
+  groupList: state.groupList,
+  playerList: state.playerList
 });
 const mapDispatch: tDP = {
-  toInit: actions.initJobInfo,
-  deleteJob: actions.deleteJobInfo,
-  addJob: actions.addJobInfo,
-  editJob: actions.editJobInfo
+  updateJobList: actions.updateJobList,
+  updateGroupList: actions.updateGroupList,
+  updateTagList: actions.updateTagList,
+  updatePlayerInfo: actions.initPlayerInfo,
+  updateHostList: actions.getHostList
 };
 
 type tProps = tSP & tDP;
@@ -114,15 +121,26 @@ function tipReducer(state, action: any) {
   }
 }
 
-const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob, toInit }: tProps) => {
+const JobPage = (props: tProps) => {
+  const {
+    hostList,
+    jobList,
+    tagList,
+    groupList,
+    playerList,
+    updateJobList,
+    updateGroupList,
+    updateTagList,
+    updateHostList,
+    updatePlayerInfo
+  } = props;
+
   useEffect(() => {
-    (async () => {
-      const res = (await getJobsApi()) as HTTPResult;
-      if (res.code !== '200') {
-        return;
-      }
-      toInit(res.data);
-    })();
+    updateJobList();
+    updateGroupList();
+    updateTagList();
+    updateHostList();
+    updatePlayerInfo();
   }, []);
 
   const classes = makeStyles(styles)();
@@ -131,23 +149,33 @@ const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob, toInit }: tPro
   const [tip, tipDispatch] = useReducer(tipReducer, tipInit(), tipInit);
   const [openLog, setOpenLog] = useState<boolean>(false);
   const [logData, setLogData] = useState<any>('');
-  const [cancelToken, setCancelToken] = useState<CancelTokenSource | null>(null);
+  const [logList, setLogList] = useState<any>([]);
   const [Info, setInfo] = useState<JobInfo>({
     id: 0,
     name: '',
-    type: 'cron',
+    type: 'task',
     spec: '',
     cmd: '',
     status: '',
-    host_id: 0
+    cmd_type: 'cmd',
+    cmd_id: 0,
+    execute_type: 'host',
+    execute_id: 0
   });
 
-  const formContent = JobInfoForm({ Info, hostList, setInfo });
+  const execute = { host: hostList, group: groupList, tag: tagList };
+
+  const formContent = JobInfoForm({
+    Info,
+    setInfo,
+    execute,
+    playerList
+  });
 
   const startJob = async (info: JobInfo) => {
     const { id, name } = info;
     const res = (await jobStartApi(id)) as HTTPResult;
-    editJob(res.data);
+    updateJobList();
     if (res.code !== '200') {
       enqueueSnackbar(`任务: ${name} 启动失败${res.msg}`, {
         autoHideDuration: 3000,
@@ -171,54 +199,42 @@ const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob, toInit }: tPro
       });
       return;
     }
-    editJob(res.data);
+    updateJobList();
     enqueueSnackbar(`任务: ${name} 停止成功${res.msg}`, {
       autoHideDuration: 3000,
       variant: 'success'
     });
   };
 
-  const fetchRepos = (url: string) => {
-    if (cancelToken) {
-      // console.log('取消上一次请求');
-      cancelToken.cancel('Operation canceled due to new request.');
-    }
-    const source = axios.CancelToken.source(); // 声明一个source对象
-    setCancelToken(source);
-
-    axios
-      .get(url, {
-        onDownloadProgress: (progressEvent) => {
-          const dataChunk = progressEvent.currentTarget.response;
-          setLogData(dataChunk);
-          // console.log(dataChunk);
-        },
-        cancelToken: source.token
-      })
-      .catch((error) => {
-        if (axios.isCancel(error)) {
-          console.log('Request canceled', error);
-        } else {
-          console.log(error);
-        }
-      });
-    // source.cancel('Operation canceled by the user.');
-  };
-
   const jobLogs = async (info: JobInfo) => {
     const { id } = info;
-    const url = jobLogsUrlApi(id);
-    fetchRepos(url);
+    const res = await jobLogListApi(id);
+    if (res.code !== '200') {
+      enqueueSnackbar(`任务: ${id} 日志列表获取失败${res.msg}`, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
+      return;
+    }
+    setLogList(res.data.data);
+  };
+
+  const getJobLog = async (id: number) => {
+    const res = await jobLogApi(id);
+    if (res.code !== '200') {
+      enqueueSnackbar(`id: ${id} 日志信息获取失败${res.msg}`, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
+      return;
+    }
+    setLogData(res.data);
     setOpenLog(true);
   };
 
   const toCloseLog = useCallback(() => {
-    if (cancelToken) {
-      // console.log(cancelToken.cancel);
-      cancelToken.cancel('cancel http');
-    }
     setOpenLog(false);
-  }, [cancelToken]);
+  }, [logData]);
 
   const toDelete = useCallback(async () => {
     const res = (await deleteJobApi(Info.id)) as HTTPResult;
@@ -229,8 +245,7 @@ const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob, toInit }: tPro
       });
       return;
     }
-    // console.log('res', res);
-    deleteJob(Info.id);
+    updateJobList();
     enqueueSnackbar(`任务: ${Info.name} 已被删除`, {
       autoHideDuration: 3000,
       variant: 'success'
@@ -246,8 +261,7 @@ const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob, toInit }: tPro
       });
       return;
     }
-    // console.log('res', res);
-    editJob(res.data);
+    updateJobList();
     enqueueSnackbar(`任务: ${Info.name} 修改成功${res.msg}`, {
       autoHideDuration: 3000,
       variant: 'success'
@@ -276,19 +290,15 @@ const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob, toInit }: tPro
       });
       return;
     }
-    // if (jobList.some((e) => e.name === name)) {
-    //   enqueueSnackbar(`该Job已存在！`, {
-    //     autoHideDuration: 3000,
-    //     variant: 'warning'
-    //   });
-    //   return;
-    // }
     const res = (await addJobApi({
       name: Info.name,
       type: Info.type as 'cron' | 'task',
       spec: Info.spec,
       cmd: Info.cmd,
-      host_id: Info.host_id as number
+      cmd_type: Info.cmd_type,
+      cmd_id: Info.cmd_id,
+      execute_type: Info.execute_type,
+      execute_id: Info.execute_id as number
     })) as HTTPResult;
     if (res.code !== '200') {
       enqueueSnackbar(`添加任务失败${res.msg}`, {
@@ -297,7 +307,7 @@ const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob, toInit }: tPro
       });
       return;
     }
-    addJob(res.data);
+    updateJobList();
     enqueueSnackbar(`任务：${res.data.name} 添加成功${res.msg}`, {
       autoHideDuration: 3000,
       variant: 'success'
@@ -305,11 +315,14 @@ const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob, toInit }: tPro
     setInfo({
       id: 0,
       name: '',
-      type: 'cron',
+      type: 'task',
       spec: '',
       cmd: '',
       status: '',
-      host_id: 0
+      cmd_type: 'cmd',
+      cmd_id: 0,
+      execute_type: 'host',
+      execute_id: 0
     });
     return true;
   }, [Info]);
@@ -324,7 +337,8 @@ const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob, toInit }: tPro
     return list?.map((j) => {
       return {
         ...j,
-        hostName: hostList?.find((h) => h.id === j.host_id)?.name
+        executeName: execute[j.execute_type]?.find((h) => h.id === j.execute_id)?.name,
+        cmd: j.cmd_type === 'cmd' ? j.cmd : playerList.find((p) => p.id === j.cmd_id)?.name
       };
     });
   };
@@ -333,37 +347,47 @@ const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob, toInit }: tPro
     {
       field: 'id',
       headerName: 'id',
-      minWidth: 80
+      maxWidth: 40
     },
     {
       field: 'type',
-      headerName: 'job类型',
-      minWidth: 100
+      headerName: '任务类型',
+      maxWidth: 140
+    },
+    {
+      field: 'name',
+      headerName: '任务名称',
+      minWidth: 140
+    },
+    {
+      field: 'execute_type',
+      headerName: '执行对象类型',
+      maxWidth: 140
+    },
+    {
+      field: 'executeName',
+      headerName: '执行对象',
+      maxWidth: 140
+    },
+    {
+      field: 'cmd_type',
+      headerName: '命令类型',
+      maxWidth: 140
+    },
+    {
+      field: 'cmd',
+      headerName: '命令/剧本名',
+      maxWidth: 140
     },
     {
       field: 'status',
       headerName: '状态',
-      minWidth: 100
-    },
-    {
-      field: 'hostName',
-      headerName: '主机名称',
-      minWidth: 140
-    },
-    {
-      field: 'name',
-      headerName: 'job名称',
-      minWidth: 140
+      maxWidth: 140
     },
     {
       field: 'spec',
       headerName: 'cron表达式',
-      minWidth: 160
-    },
-    {
-      field: 'cmd',
-      headerName: '命令',
-      minWidth: 160
+      maxWidth: 140
     },
     {
       field: 'action',
@@ -402,9 +426,9 @@ const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob, toInit }: tPro
             label="停止"
           />,
           <GridActionsCellItem
-            key={params.row.id + '查看日志'}
+            key={params.row.id + '查看日志列表'}
             icon={
-              <Tooltip title="查看日志" placement="top-start">
+              <Tooltip title="查看日志列表" placement="top-start">
                 <EventNoteIcon
                   onClick={() => {
                     jobLogs(params.row);
@@ -412,7 +436,7 @@ const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob, toInit }: tPro
                 />
               </Tooltip>
             }
-            label="查看日志"
+            label="查看日志列表"
           />,
           <GridActionsCellItem
             key={params.row.id + 'Edit'}
@@ -453,6 +477,63 @@ const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob, toInit }: tPro
       }
     }
   ];
+  const columnsLog = [
+    {
+      field: 'id',
+      headerName: 'id',
+      maxWidth: 40
+    },
+    {
+      field: 'job_id',
+      headerName: '任务id',
+      maxWidth: 140
+    },
+    {
+      field: 'start_time',
+      headerName: '开始时间',
+      minWidth: 240,
+      valueGetter: (params) => {
+        return new Date(params.row.start_time).toLocaleString('chinese', { hour12: false });
+      }
+    },
+    {
+      field: 'end_time',
+      headerName: '结束时间',
+      minWidth: 240,
+      valueGetter: (params) => {
+        return new Date(params.row.end_time).toLocaleString('chinese', { hour12: false });
+      }
+    },
+    {
+      field: 'status',
+      headerName: '执行状态',
+      maxWidth: 140
+    },
+    {
+      field: 'action',
+      headerName: '操作',
+      minWidth: 240,
+      type: 'actions',
+      getActions: (params: GridRowParams) => {
+        const { id } = params.row;
+        return [
+          <GridActionsCellItem
+            key={params.row.id + '查看日志'}
+            icon={
+              <Tooltip title="查看日志" placement="top-start">
+                <EventNoteIcon
+                  onClick={() => {
+                    getJobLog(id);
+                  }}
+                />
+              </Tooltip>
+            }
+            label="查看日志"
+          />
+        ];
+      }
+    }
+  ];
 
   return (
     <div className={classes.itemPage}>
@@ -466,6 +547,13 @@ const JobPage = ({ hostList, jobList, addJob, editJob, deleteJob, toInit }: tPro
           <OmsTable columns={columns} rows={getJobRows(jobList)}></OmsTable>
         </Card>
       </div>
+      {logList.length > 0 ? (
+        <div style={{ width: '100%', height: '100%', margin: '0 auto', marginTop: '40px' }}>
+          <Card style={{ width: '100%', height: '100%', margin: '0 auto', marginTop: '20px' }}>
+            <OmsTable columns={columnsLog} rows={logList}></OmsTable>
+          </Card>
+        </div>
+      ) : null}
       <LogDialog open={openLog} title={'任务日志'} text={logData} toClose={toCloseLog} />
       <TipDialog
         open={tip.open}

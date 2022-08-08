@@ -2,6 +2,7 @@ import { getApi, postApi, deleteApi, putApi } from './api';
 import { urlType, baseUrl } from './requestUrl';
 import { Base64 } from 'js-base64';
 import { AxiosRequestConfig } from 'axios';
+import { JobInfo } from '../../store/interface';
 
 export interface HTTPResult {
   code: string;
@@ -67,7 +68,10 @@ export interface AddJobPost {
   type: 'cron' | 'task';
   spec: string;
   cmd: string;
-  host_id: number;
+  cmd_type: 'cmd' | 'player';
+  cmd_id: number;
+  execute_type: 'host' | 'group' | 'tag';
+  execute_id: number;
 }
 
 export interface EditJobPut {
@@ -246,7 +250,7 @@ export const deleteTunnelApi = (id: number) => {
 };
 
 // 获取所有 job
-export const getJobsApi = () => {
+export const getJobsApi = (): Promise<JobInfo> => {
   return getApi(urlType.job);
 };
 
@@ -310,15 +314,35 @@ export const jobStopApi = (id: number) => {
   return postApi(`${urlType.jobStop}`, formData);
 };
 
-// 查看job日志
-export const jobLogsApi = (id: number) => {
-  return getApi(`${urlType.jobLogs}`, { id });
-  // return `${baseUrl}${urlType.jobLogs}?id=${id}`;
+interface JobLogListRes extends HTTPResult {
+  data: {
+    data: Array<{
+      end_time: string;
+      id: number;
+      job_id: number;
+      log_data: string;
+      log_path: string;
+      start_time: string;
+      status: string;
+      uid: string;
+    }>;
+    page_num: number;
+    total: number;
+  };
+}
+
+// 查看job日志列表
+export const jobLogListApi = (job_id: number, page_size = 10, page_num = 1): Promise<JobLogListRes> => {
+  return getApi(urlType.jobLog.list, { job_id, page_size, page_num });
 };
 
-export const jobLogsUrlApi = (id: number) => {
-  // return getApi(`${urlType.jobLogs}`, { id });
-  return `${baseUrl}/${urlType.jobLogs}?id=${id}`;
+interface JobLogRes extends HTTPResult {
+  data: string;
+}
+
+// 查看job日志信息
+export const jobLogApi = (instanceId: number): Promise<JobLogRes> => {
+  return getApi(urlType.jobLog.info, { id: instanceId });
 };
 
 // 文件分发 上传文件
