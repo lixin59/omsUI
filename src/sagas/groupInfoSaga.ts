@@ -1,6 +1,6 @@
 import { call, take, race, put } from 'redux-saga/effects';
 import * as actionType from '../store/action-types';
-import { tagActions } from '../store/action-types';
+import { groupActions } from '../store/action-types';
 import { getGroupsApi } from '../api/http/httpRequestApi';
 
 export default function* groupInfoSaga() {
@@ -17,7 +17,7 @@ export default function* groupInfoSaga() {
         if (res.code !== '200') {
           return;
         }
-        yield put({ type: tagActions.INIT, value: res.data });
+        yield put({ type: groupActions.INIT, value: res.data });
       }
       // if (addGroup) {
       //   console.log(addGroup);
