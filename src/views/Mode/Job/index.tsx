@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useReducer, useState } from 'react';
+import React, { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
@@ -163,6 +163,8 @@ const JobPage = (props: tProps) => {
     execute_id: 0
   });
 
+  const divRef = useRef<null | HTMLDivElement>(null);
+
   const execute = { host: hostList, group: groupList, tag: tagList };
 
   const formContent = JobInfoForm({
@@ -217,6 +219,14 @@ const JobPage = (props: tProps) => {
       return;
     }
     setLogList(res.data.data);
+    try {
+      const div = divRef.current as HTMLDivElement;
+      if (div) {
+        div.scrollTop = div.scrollHeight;
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const getJobLog = async (id: number) => {
@@ -481,7 +491,7 @@ const JobPage = (props: tProps) => {
     {
       field: 'id',
       headerName: 'id',
-      maxWidth: 40
+      minWidth: 40
     },
     {
       field: 'job_id',
@@ -536,7 +546,7 @@ const JobPage = (props: tProps) => {
   ];
 
   return (
-    <div className={classes.itemPage}>
+    <div className={classes.itemPage} ref={divRef} style={{ overflowY: 'scroll' }}>
       <div className={classes.ControlBox}>
         <Button className={classes.addButton} onClick={openForm}>
           添加任务
