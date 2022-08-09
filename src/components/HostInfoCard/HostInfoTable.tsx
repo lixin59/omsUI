@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import OmsTable from '../OmsTable/index';
 import Card from '@material-ui/core/Card';
 import { GroupInfo, HostInfo, IState, PrivateKeyInfo, TagInfo } from '../../store/interface';
@@ -152,7 +152,6 @@ type tDP = {
   initGroup: ActionCreator<any>;
   initTag: ActionCreator<any>;
   upHostList: ActionCreator<any>;
-  initStore: ActionCreator<any>;
 };
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -175,8 +174,7 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
 const mapDispatch: tDP = {
   initGroup: actions.initGroupInfo,
   initTag: actions.initTagInfo,
-  upHostList: actions.getHostList,
-  initStore: actions.initHostInfo
+  upHostList: actions.getHostList
 };
 
 type tProps = tSP &
@@ -191,6 +189,10 @@ function HostInfoTable(props: tProps) {
   const { hostList, upHostList, tipDispatch, formDispatch, setHostId, setHostInfo } = props;
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    upHostList();
+  }, []);
 
   const getHostList = (hostList: HostInfo[]) => {
     return hostList?.map((h) => {
