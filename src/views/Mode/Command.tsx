@@ -23,8 +23,8 @@ import {
   ANSI_COLOR_YELLOW
 } from '../../components/OmsTerminal/constant';
 
-type tDP = {
-};
+// eslint-disable-next-line @typescript-eslint/ban-types
+type tDP = {};
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type tOP = {};
@@ -41,8 +41,7 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
   groupList: state.groupList,
   tagList: state.tagList
 });
-const mapDispatch: tDP = {
-};
+const mapDispatch: tDP = {};
 
 type tProps = tSP & tDP;
 
@@ -199,7 +198,7 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
     setTerminal(term);
     term.open(document.getElementById('commandTerminal') as HTMLElement);
     term.writeln('');
-    term.writeln('        \x1b[1;33m   　　　　　    /|');
+    term.writeln('        \x1b[1;33m   　　　　　     /|');
     term.writeln('        \x1b[1;33m     /＼　　    ∠＿/   ⚡ ⚡ ⚡');
     term.writeln('        \x1b[1;33m    /　│　　  ／　／    /＼  ');
     term.writeln('        \x1b[1;33m   │　Z ＿,＜　 ／　   /　 〉  ');
@@ -293,7 +292,7 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
             {selectType(true).length > 0
               ? (selectType(true) as Array<any>).map((e) => (
                 <OmsMenuItem key={e.name} value={e.id}>
-                  {e.name}
+                  {`${e.name} ${e?.addr ? e.addr : ''}`}
                 </OmsMenuItem>
               ))
               : null}

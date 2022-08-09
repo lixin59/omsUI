@@ -25,12 +25,13 @@ type tDP = {
   // editTag: ActionCreator<any>;
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 type tOP = {};
 
 type tSP = tOP & {
-  hostList: HostInfo[],
-  groupList: GroupInfo[],
-  tagList: TagInfo[]
+  hostList: HostInfo[];
+  groupList: GroupInfo[];
+  tagList: TagInfo[];
 };
 
 const mapStateToProps = (state: IState, props: tOP): tSP => ({
@@ -39,8 +40,7 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
   groupList: state.groupList,
   tagList: state.tagList
 });
-const mapDispatch: tDP = {
-};
+const mapDispatch: tDP = {};
 
 type tProps = tSP & tDP;
 
@@ -140,13 +140,16 @@ const WebSSH = ({ hostList, groupList, tagList }: tProps) => {
         <FormControl className={classes.Control}>
           <OmsLabel>请选择主机</OmsLabel>
           <OmsSelect
-            labelId='typeItem-select-label'
-            id='typeItem-select-label'
+            labelId="typeItem-select-label"
+            id="typeItem-select-label"
             value={item || ''}
-            onChange={handleChange}
-          >
+            onChange={handleChange}>
             {hostList.map((e) => {
-              return (<OmsMenuItem key={e.name} value={e.id}>{e.name}</OmsMenuItem>);
+              return (
+                <OmsMenuItem key={e.name} value={e.id}>
+                  {`${e.name}: ${e.addr}`}
+                </OmsMenuItem>
+              );
             })}
           </OmsSelect>
         </FormControl>
@@ -154,28 +157,27 @@ const WebSSH = ({ hostList, groupList, tagList }: tProps) => {
           disabled={!item || !!ws}
           className={classes.LinkButton}
           startIcon={<LinkIcon />}
-          onClick={() => connectHost(item)}
-        >
+          onClick={() => connectHost(item)}>
           连接
         </Button>
-        <Button
-          disabled={!ws}
-          className={classes.LinkOffButton}
-          startIcon={<LinkOffIcon />}
-          onClick={closeHost}
-        >
+        <Button disabled={!ws} className={classes.LinkOffButton} startIcon={<LinkOffIcon />} onClick={closeHost}>
           断开
         </Button>
       </div>
       <div className={classes.shellBox}>
-        {ws ? (<OmsTerminal id='terminal' ws={ws as WebSocket} onCloseTodo={() => setWs('')}/>)
-          : (<OmsError errInfo='请选择一个主机进行连接' errType='network' imgStyle={{ width: '400px', height: '400px' }} variant='h4'/>)}
+        {ws ? (
+          <OmsTerminal id="terminal" ws={ws as WebSocket} onCloseTodo={() => setWs('')} />
+        ) : (
+          <OmsError
+            errInfo="请选择一个主机进行连接"
+            errType="network"
+            imgStyle={{ width: '400px', height: '400px' }}
+            variant="h4"
+          />
+        )}
       </div>
     </div>
   );
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatch
-)(WebSSH);
+export default connect(mapStateToProps, mapDispatch)(WebSSH);

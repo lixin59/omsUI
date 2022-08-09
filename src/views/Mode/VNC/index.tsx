@@ -44,8 +44,7 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
   groupList: state.groupList,
   tagList: state.tagList
 });
-const mapDispatch: tDP = {
-};
+const mapDispatch: tDP = {};
 
 type tProps = tSP & tDP;
 
@@ -206,7 +205,7 @@ const VNC = ({ hostList, groupList, tagList }: tProps) => {
             {hostList.map((e) => {
               return (
                 <OmsMenuItem key={e.name} value={e.id}>
-                  {e.name}
+                  {`${e.name}: ${e.addr}`}
                 </OmsMenuItem>
               );
             })}
