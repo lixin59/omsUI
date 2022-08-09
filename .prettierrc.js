@@ -10,5 +10,6 @@ module.exports = {
   jsxBracketSameLine: true, // jsx > 是否另起一行
   arrowParens: 'always', // (x) => {} 是否要有小括号
   requirePragma: false, // 不需要写文件开头的 @prettier
-  insertPragma: false // 不需要自动在文件开头插入 @prettier
+  insertPragma: false, // 不需要自动在文件开头插入 @prettier
+  endOfLine: 'auto'
 }
