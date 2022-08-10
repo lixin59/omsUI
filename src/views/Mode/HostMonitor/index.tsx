@@ -30,14 +30,11 @@ import { bytesToSize } from '../../../utils/calculate';
 import hostSvg from '../../../assets/icons/hostmonitor.svg';
 import LineProgress from '../../../components/LineProgress';
 import OmsError from '../../../components/OmsError';
+import { ActionCreator } from 'redux';
+import actions from '../../../store/action';
 
 type tDP = {
-  // deleteGroup: ActionCreator<any>;
-  // addGroup: ActionCreator<any>;
-  // editGroup: ActionCreator<any>;
-  // deleteTag: ActionCreator<any>;
-  // addTag: ActionCreator<any>;
-  // editTag: ActionCreator<any>;
+  updateHostList: ActionCreator<any>;
 };
 
 type tOP = any;
@@ -54,7 +51,9 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
   groupList: state.groupList,
   tagList: state.tagList
 });
-const mapDispatch: tDP = {};
+const mapDispatch: tDP = {
+  updateHostList: actions.getHostList
+};
 
 type tProps = tSP & tDP;
 
@@ -175,7 +174,7 @@ const useStyles = makeStyles((theme: Theme) => {
   });
 });
 
-const HostMonitorPage = ({ hostList }: tProps) => {
+const HostMonitorPage = ({ hostList, updateHostList }: tProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [hostId, setHost] = useState<number>(0);
@@ -183,6 +182,10 @@ const HostMonitorPage = ({ hostList }: tProps) => {
   const [status, setStatus] = useState<null | IHostStatus>(null);
   const [isConnect, setIsConnect] = useState<boolean>(false);
   const [value, setValue] = React.useState(0);
+
+  useEffect(() => {
+    updateHostList();
+  }, []);
 
   useEffect(() => {
     const webSocket = new WebSocket(`${baseUrl}${url.index}`);

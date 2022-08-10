@@ -18,8 +18,7 @@ import FormDialog from '../../../components/OmsDialog/FormDialog';
 import TunnelInfoForm from './TunnelInfoForm';
 import { deleteTunnelApi, editTunnelApi, HTTPResult } from '../../../api/http/httpRequestApi';
 type tDP = {
-  deleteTunnel: ActionCreator<any>;
-  editTunnel: ActionCreator<any>;
+  toInit: ActionCreator<any>;
 };
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -81,7 +80,7 @@ const columns: Column[] = [
   }
 ];
 
-export default function JobTable({ deleteTunnel, tunnelList, hostList, editTunnel }: tProps) {
+export default function JobTable({ toInit, tunnelList, hostList }: tProps) {
   const classes = makeStyles(styles)();
   const { enqueueSnackbar } = useSnackbar();
   const [page, setPage] = useState<number>(0);
@@ -110,7 +109,7 @@ export default function JobTable({ deleteTunnel, tunnelList, hostList, editTunne
       return;
     }
     // console.log('res', res);
-    editTunnel(res.data);
+    toInit();
     enqueueSnackbar(`修改成功${res.msg}`, {
       autoHideDuration: 3000,
       variant: 'success'
@@ -139,7 +138,7 @@ export default function JobTable({ deleteTunnel, tunnelList, hostList, editTunne
       return;
     }
     // console.log('res', res);
-    deleteTunnel(Info.id);
+    toInit();
     enqueueSnackbar(`隧道id: ${Info.id} 已被删除`, {
       autoHideDuration: 3000,
       variant: 'success'

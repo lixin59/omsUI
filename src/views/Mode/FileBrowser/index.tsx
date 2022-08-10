@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { GroupInfo, HostInfo, IState, TagInfo } from '../../../store/interface';
 import {
@@ -42,6 +42,8 @@ import { getFileType } from '../../../utils';
 import OmsViewMarkdown from '../../../components/OmsViewMarkdown';
 import OmsSyntaxHighlight from '../../../components/OmsSyntaxHighligh';
 import { FileData } from 'chonky/src/types/file.types';
+import actions from '../../../store/action';
+import { ActionCreator } from 'redux';
 
 const imgType = {
   jpeg: 'jpeg',
@@ -74,7 +76,9 @@ const codeType = {
   ...imgType
 };
 
-type tDP = {};
+type tDP = {
+  updateHostList: ActionCreator<any>;
+};
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type tOP = {};
@@ -91,13 +95,15 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
   groupList: state.groupList,
   tagList: state.tagList
 });
-const mapDispatch: tDP = {};
+const mapDispatch: tDP = {
+  updateHostList: actions.getHostList
+};
 
 type tProps = tSP & tDP;
 
 setChonkyDefaults({ iconComponent: FileIcon });
 
-const FileBrowserPage = ({ hostList }: tProps) => {
+const FileBrowserPage = ({ hostList, updateHostList }: tProps) => {
   let darkMode = false;
 
   const useStyles = makeStyles((theme: Theme) => {
@@ -152,6 +158,10 @@ const FileBrowserPage = ({ hostList }: tProps) => {
   const [code, setCode] = useState<string>('');
   const [files, setFiles] = useState<FileArray>([]);
   const [folderChain, setFolderChain] = useState<FileArray>([]);
+
+  useEffect(() => {
+    updateHostList();
+  }, []);
 
   const deleteAction = defineFileAction(
     {

@@ -7,6 +7,7 @@ type tStepType = 'cmd' | 'shell' | 'file'; // 插件类型
 
 export type tSchemaInfo = {
   type: tStepType;
+  desc: string;
   schema: {
     required: string[];
     properties: any;

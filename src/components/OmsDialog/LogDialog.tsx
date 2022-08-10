@@ -44,8 +44,10 @@ export default function LogDialog({ open = false, title, text = '', toClose }: t
 
     const timer = setTimeout(() => {
       fitAddon.fit();
-      term.open(document.getElementById('logTerminal') as HTMLElement);
-      term.writeln(text);
+      if (msgRef.current) {
+        term.open(document.getElementById('logTerminal') as HTMLElement);
+        term.writeln(text);
+      }
     }, 60);
     const termResize = () => {
       fitAddon.fit();

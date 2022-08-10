@@ -313,7 +313,7 @@ const Playbook = (props: tProps) => {
                     </IconButton>
                   </Tooltip>
                 }>
-                <ListItemText primary={e.type} />
+                <ListItemText primary={`${e.type}: ${e?.desc || ''}`} />
               </ListItem>
             ))}
           </List>
@@ -425,7 +425,7 @@ const Playbook = (props: tProps) => {
             key={id + 'playbook_info'}
             icon={
               <Tooltip title="详情信息" placement="top-start">
-                <InfoIcon color="primary" fontSize="medium" onClick={() => {}} />
+                <InfoIcon color="primary" fontSize="medium" />
               </Tooltip>
             }
             label="详情信息"

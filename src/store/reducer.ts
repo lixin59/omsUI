@@ -1,4 +1,4 @@
-import { HostAction, TunnelInfo, IState } from './interface';
+import { HostAction, IState } from './interface';
 import {
   groupActions,
   hostActions,
@@ -191,29 +191,6 @@ const reducer = (state = initialState, action: HostAction) => {
       return {
         ...state,
         tunnelList: action.value
-      };
-    }
-    case tunnelActions.DELETE: {
-      return {
-        ...state,
-        tunnelList: state.tunnelList.filter((item: TunnelInfo) => item.id !== action.value)
-      };
-    }
-    case tunnelActions.ADD: {
-      return {
-        ...state,
-        tunnelList: [...state.tunnelList, action.value]
-      };
-    }
-    case tunnelActions.EDIT: {
-      state.tunnelList.forEach((e: TunnelInfo, i: number, arr: TunnelInfo[]) => {
-        if (e.id === action.value.id) {
-          arr[i] = action.value;
-        }
-      });
-      return {
-        ...state,
-        tunnelList: [...state.tunnelList]
       };
     }
     case jobActions.INIT: {

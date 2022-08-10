@@ -16,15 +16,15 @@ import TextField from '@material-ui/core/TextField';
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { WebLinksAddon } from 'xterm-addon-web-links';
-import {
-  ANSI_COLOR_CYAN,
-  ANSI_COLOR_MAGENTA,
-  ANSI_COLOR_RESET,
-  ANSI_COLOR_YELLOW
-} from '../../components/OmsTerminal/constant';
+import { ANSI_COLOR_RESET, ANSI_COLOR_YELLOW } from '../../components/OmsTerminal/constant';
+import actions from '../../store/action';
+import { ActionCreator } from 'redux';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-type tDP = {};
+type tDP = {
+  updateGroupList: ActionCreator<any>;
+  updateTagList: ActionCreator<any>;
+  updateHostList: ActionCreator<any>;
+};
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type tOP = {};
@@ -41,7 +41,11 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
   groupList: state.groupList,
   tagList: state.tagList
 });
-const mapDispatch: tDP = {};
+const mapDispatch: tDP = {
+  updateGroupList: actions.updateGroupList,
+  updateTagList: actions.updateTagList,
+  updateHostList: actions.getHostList
+};
 
 type tProps = tSP & tDP;
 
@@ -144,7 +148,8 @@ function reducer(state: WSdata[], action: any) {
   }
 }
 
-const Command = ({ hostList, groupList, tagList }: tProps) => {
+const Command = (props: tProps) => {
+  const { hostList, groupList, tagList, updateHostList, updateTagList, updateGroupList } = props;
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [type, setType] = useState<string>('');
@@ -163,6 +168,12 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
   // }, [msgList]);
 
   useEffect(() => {
+    updateHostList();
+    updateTagList();
+    updateGroupList();
+  }, []);
+
+  useEffect(() => {
     const webSocket = new WebSocket(`${baseUrl}${url.index}`);
     setWs(webSocket);
 
@@ -172,10 +183,14 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
     // };
     webSocket.onmessage = (evt) => {
       // console.log('收到消息');
-      // console.log(JSON.parse(evt.data));
-      const { data } = JSON.parse(evt.data);
-      term.writeln(`${ANSI_COLOR_YELLOW}(${data.host_id} ${data.hostname})${ANSI_COLOR_RESET}`);
-      term.writeln(data.msg);
+      console.log(JSON.parse(evt.data));
+      const { data, type, msg } = JSON.parse(evt.data);
+      if (type === 'msg') {
+        terminal?.writeln(msg);
+      } else {
+        terminal?.writeln(`${ANSI_COLOR_YELLOW}(${data?.seq} ${data?.hostname} ${data?.addr})${ANSI_COLOR_RESET}`);
+        terminal?.writeln(data.msg);
+      }
       // dispatch({ type: 'add', payload: data });
     };
     webSocket.onerror = (evt) => {
@@ -190,34 +205,39 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
     //   //   variant: 'error'
     //   // });
     // };
+    return () => {
+      webSocket.close();
+    };
+  }, [terminal]);
 
+  useEffect(() => {
     const term = new Terminal({ rows: 30, cols: 120 });
     const fitAddon = new FitAddon();
     term.loadAddon(new WebLinksAddon());
     term.loadAddon(fitAddon);
     setTerminal(term);
-    term.open(document.getElementById('commandTerminal') as HTMLElement);
-    term.writeln('');
-    term.writeln('        \x1b[1;33m   　　　　　     /|');
-    term.writeln('        \x1b[1;33m     /＼　　    ∠＿/   ⚡ ⚡ ⚡');
-    term.writeln('        \x1b[1;33m    /　│　　  ／　／    /＼  ');
-    term.writeln('        \x1b[1;33m   │　Z ＿,＜　 ／　   /　 〉  ');
-    term.writeln('        \x1b[1;33m   │　　　　　ヽ　　  /　　/ ');
-    term.writeln('        \x1b[1;33m    Y　　　　　 ヽ　〈　　/ ');
-    term.writeln('        \x1b[1;33m    | ●　､　●　　 ＼ ＼ 〈  ');
-    term.writeln('        \x1b[1;33m    🔴　  v　  🔴　  | ／／ ');
-    term.writeln('        \x1b[1;33m    　>ｰ ､_　  ィ   │ ＼＼ ');
-    term.writeln('        \x1b[1;33m  　  / へ　　 /　ﾉ  |／ﾉ ');
-    term.writeln('        \x1b[1;33m  　  ヽ_ﾉ 💻  (_／   | ﾉ  ');
-    term.writeln('        \x1b[1;33m  　 　/　　　　　  ／ ');
-    term.writeln('        \x1b[1;33m  　  |__r￣￣|＿／ ');
-    term.writeln('        \x1b[1;33m　       ⌨️    🖱️️   \x1B[0m ');
     // term.focus();
     // fitAddon.fit();
 
     const timer = setTimeout(() => {
       fitAddon.fit();
-    }, 600);
+      term.open(document.getElementById('commandTerminal') as HTMLElement);
+      term.writeln('');
+      term.writeln('        \x1b[1;33m   　　　　　     /|');
+      term.writeln('        \x1b[1;33m     /＼　　    ∠＿/   ⚡ ⚡ ⚡');
+      term.writeln('        \x1b[1;33m    /　│　　  ／　／    /＼  ');
+      term.writeln('        \x1b[1;33m   │　Z ＿,＜　 ／　   /　 〉  ');
+      term.writeln('        \x1b[1;33m   │　　　　　ヽ　　  /　　/ ');
+      term.writeln('        \x1b[1;33m    Y　　　　　 ヽ　〈　　/ ');
+      term.writeln('        \x1b[1;33m    | ●　､　●　　 ＼ ＼ 〈  ');
+      term.writeln('        \x1b[1;33m    🔴　  v　  🔴　  | ／／ ');
+      term.writeln('        \x1b[1;33m    　>ｰ ､_　  ィ   │ ＼＼ ');
+      term.writeln('        \x1b[1;33m  　  / へ　　 /　ﾉ  |／ﾉ ');
+      term.writeln('        \x1b[1;33m  　  ヽ_ﾉ 💻  (_／   | ﾉ  ');
+      term.writeln('        \x1b[1;33m  　 　/　　　　　  ／ ');
+      term.writeln('        \x1b[1;33m  　  |__r￣￣|＿／ ');
+      term.writeln('        \x1b[1;33m　       ⌨️    🖱️️   \x1B[0m ');
+    }, 100);
 
     // term.onResize((event) => {
     //   if (timers) {
@@ -234,16 +254,12 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
     //   }
     // });
     const termResize = () => {
-      // const cols = Math.ceil((document.body.clientWidth - 100) / 14);
-      // const rows = Math.ceil((document.body.clientHeight / 20) - 10);
-      // term.resize(cols, rows);
       fitAddon.fit();
     };
     window.addEventListener('resize', termResize);
 
     return () => {
       clearTimeout(timer);
-      webSocket.close();
       term.dispose();
       window.removeEventListener('resize', termResize);
     };
@@ -319,25 +335,12 @@ const Command = ({ hostList, groupList, tagList }: tProps) => {
           className={classes.clearButton}
           startIcon={<ClearIcon />}
           onClick={() => {
-            // dispatch({ type: 'reset' });
             terminal?.clear();
           }}>
           清屏
         </Button>
       </div>
       <div className={classes.shellBox}>
-        {/* {msgList.length > 0*/}
-        {/*  ? msgList.map((e: WSdata) => (*/}
-        {/*    <>*/}
-        {/*      /!* <div key={new Date().getTime() + 1} className={classes.hostname}>*!/*/}
-        {/*      /!*  {e.hostname}*!/*/}
-        {/*      /!* </div>*!/*/}
-        {/*      /!* <div key={new Date().getTime() - 1} className={classes.shellMsg}>*!/*/}
-        {/*      /!*  {e.msg}*!/*/}
-        {/*      /!* </div>*!/*/}
-        {/*    </>*/}
-        {/*  ))*/}
-        {/*  : null}*/}
         <div id="commandTerminal" />
       </div>
     </div>

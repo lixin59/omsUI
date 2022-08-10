@@ -5,9 +5,9 @@ import UploadButtons from '../../components/Button/UploadButton';
 import OmsSelect from '../../components/OmsSelect';
 import TextField from '@material-ui/core/TextField';
 import LinearProgressWithLabel from '../../components/UploadFileProgress/Linear';
-// import { ActionCreator } from 'redux';
+import { ActionCreator } from 'redux';
 import { GroupInfo, HostInfo, IState, TagInfo } from '../../store/interface';
-// import actions from '../../store/action';
+import actions from '../../store/action';
 import { connect } from 'react-redux';
 import OmsLabel from '../../components/OmsLabel';
 import OmsMenuItem from '../../components/OmsSelect/OmsMenuItem';
@@ -16,11 +16,14 @@ import { useSnackbar } from 'notistack';
 import lodash from 'lodash';
 
 type tDP = {
+  updateGroupList: ActionCreator<any>;
+  updateTagList: ActionCreator<any>;
+  updateHostList: ActionCreator<any>;
 };
 
-type tOP = {};
+type tOP = any;
 
-type tSP = tOP & {
+type tSP = {
   hostList: HostInfo[];
   groupList: GroupInfo[];
   tagList: TagInfo[];
@@ -33,6 +36,9 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
   tagList: state.tagList
 });
 const mapDispatch: tDP = {
+  updateGroupList: actions.updateGroupList,
+  updateTagList: actions.updateTagList,
+  updateHostList: actions.getHostList
 };
 
 type tProps = tSP & tDP;
@@ -84,7 +90,7 @@ const itemType = {
 
 let oldList: any[] = [];
 
-const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
+const UploadFile = ({ hostList, groupList, tagList, updateHostList, updateTagList, updateGroupList }: tProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [type, setType] = useState<string>('');
@@ -92,6 +98,12 @@ const UploadFile = ({ hostList, groupList, tagList }: tProps) => {
   const [filePath, setFilePath] = useState<string>('');
   // const [ws, setWs] = useState<'' | WebSocket>('');
   const [uploadList, setUploadList] = useState<tUploadFile[]>([]);
+
+  useEffect(() => {
+    updateHostList();
+    updateTagList();
+    updateGroupList();
+  }, []);
 
   useEffect(() => {
     const webSocket = new WebSocket(`${baseUrl}${url.index}`);

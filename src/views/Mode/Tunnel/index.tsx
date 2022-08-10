@@ -16,10 +16,8 @@ import actions from '../../../store/action';
 import { addTunnelApi, getTunnelsApi, HTTPResult } from '../../../api/http/httpRequestApi';
 
 type tDP = {
+  updateHostList: ActionCreator<any>;
   toInit: ActionCreator<any>;
-  deleteTunnel: ActionCreator<any>;
-  addTunnel: ActionCreator<any>;
-  editTunnel: ActionCreator<any>;
 };
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -36,24 +34,16 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
   hostList: state.hostList
 });
 const mapDispatch: tDP = {
-  toInit: actions.initTunnelInfo,
-  deleteTunnel: actions.deleteTunnelInfo,
-  addTunnel: actions.addTunnelInfo,
-  editTunnel: actions.editTunnelInfo
+  updateHostList: actions.getHostList,
+  toInit: actions.updateTunnelList
 };
 
 type tProps = tSP & tDP;
 
-const TunnelPage = ({ hostList, tunnelList, addTunnel, editTunnel, deleteTunnel, toInit }: tProps) => {
+const TunnelPage = ({ hostList, tunnelList, toInit, updateHostList }: tProps) => {
   useEffect(() => {
-    (async () => {
-      // console.log('tunnelEff');
-      const res = (await getTunnelsApi()) as HTTPResult;
-      if (res.code !== '200') {
-        return;
-      }
-      toInit(res.data);
-    })();
+    updateHostList();
+    toInit();
   }, []);
 
   const classes = makeStyles(styles)();
@@ -91,7 +81,7 @@ const TunnelPage = ({ hostList, tunnelList, addTunnel, editTunnel, deleteTunnel,
       });
       return;
     }
-    addTunnel(res.data);
+    toInit();
   };
 
   return (
@@ -149,7 +139,7 @@ const TunnelPage = ({ hostList, tunnelList, addTunnel, editTunnel, deleteTunnel,
         </Button>
       </div>
       <div className={classes.shellBox}>
-        <TunnelTable deleteTunnel={deleteTunnel} tunnelList={tunnelList} editTunnel={editTunnel} hostList={hostList} />
+        <TunnelTable toInit={toInit} tunnelList={tunnelList} hostList={hostList} />
       </div>
     </div>
   );

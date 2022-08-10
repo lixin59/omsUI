@@ -9,8 +9,8 @@ import IconButton from '@material-ui/core/IconButton';
 import FormControl from '@material-ui/core/FormControl';
 import VNCSvg from '../../../assets/icons/vnc.svg';
 import OmsSelect from '../../../components/OmsSelect';
-// import { ActionCreator } from 'redux';
-import { GroupInfo, HostInfo, IState, TagInfo } from '../../../store/interface';
+import { ActionCreator } from 'redux';
+import { HostInfo, IState } from '../../../store/interface';
 import { VncScreen } from 'react-vnc';
 import { connect } from 'react-redux';
 import OmsLabel from '../../../components/OmsLabel';
@@ -19,14 +19,10 @@ import OmsError from '../../../components/OmsError';
 import { useSnackbar } from 'notistack';
 import { websocketURL } from '../../../api/websocket/url';
 import { useLocation } from 'react-router-dom';
+import actions from '../../../store/action';
 
 type tDP = {
-  // deleteGroup: ActionCreator<any>;
-  // addGroup: ActionCreator<any>;
-  // editGroup: ActionCreator<any>;
-  // deleteTag: ActionCreator<any>;
-  // addTag: ActionCreator<any>;
-  // editTag: ActionCreator<any>;
+  updateHostList: ActionCreator<any>;
 };
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -34,17 +30,15 @@ type tOP = {};
 
 type tSP = tOP & {
   hostList: HostInfo[];
-  groupList: GroupInfo[];
-  tagList: TagInfo[];
 };
 
 const mapStateToProps = (state: IState, props: tOP): tSP => ({
   ...props,
-  hostList: state.hostList,
-  groupList: state.groupList,
-  tagList: state.tagList
+  hostList: state.hostList
 });
-const mapDispatch: tDP = {};
+const mapDispatch: tDP = {
+  updateHostList: actions.getHostList
+};
 
 type tProps = tSP & tDP;
 
@@ -110,7 +104,7 @@ const isValid = (vncUrl: string) => {
   return true;
 };
 
-const VNC = ({ hostList, groupList, tagList }: tProps) => {
+const VNC = ({ hostList, updateHostList }: tProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [item, setItem] = useState<number>(0);
@@ -121,6 +115,10 @@ const VNC = ({ hostList, groupList, tagList }: tProps) => {
   const vncScreenRef = useRef<React.ElementRef<typeof VncScreen>>(null);
 
   const pathname = useLocation().pathname;
+
+  useEffect(() => {
+    updateHostList();
+  }, []);
 
   useEffect(() => {
     const id = Number(pathname.replace(/\/mode\/vnc\//g, ''));
