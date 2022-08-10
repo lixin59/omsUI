@@ -30,6 +30,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import TipDialog from '../../../components/OmsDialog/TipDialog';
 import LogDialog from '../../../components/OmsDialog/LogDialog';
+import OmsTableServer from '../../../components/OmsTable/OmsTableServer';
 
 type tDP = {
   updateJobList: ActionCreator<any>;
@@ -149,7 +150,7 @@ const JobPage = (props: tProps) => {
   const [tip, tipDispatch] = useReducer(tipReducer, tipInit(), tipInit);
   const [openLog, setOpenLog] = useState<boolean>(false);
   const [logData, setLogData] = useState<any>('');
-  const [logList, setLogList] = useState<any>([]);
+  const [isShowLogList, setIsShowLogList] = useState<number>(0);
   const [Info, setInfo] = useState<JobInfo>({
     id: 0,
     name: '',
@@ -162,6 +163,17 @@ const JobPage = (props: tProps) => {
     execute_type: 'host',
     execute_id: 0
   });
+
+  useEffect(() => {
+    try {
+      const div = divRef.current as HTMLDivElement;
+      if (div) {
+        div.scrollTop = div.scrollHeight;
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }, [isShowLogList]);
 
   const divRef = useRef<null | HTMLDivElement>(null);
 
@@ -208,25 +220,17 @@ const JobPage = (props: tProps) => {
     });
   };
 
-  const jobLogs = async (info: JobInfo) => {
+  const jobLogs = (info: JobInfo) => {
     const { id } = info;
-    const res = await jobLogListApi(id);
-    if (res.code !== '200') {
-      enqueueSnackbar(`任务: ${id} 日志列表获取失败${res.msg}`, {
-        autoHideDuration: 3000,
-        variant: 'error'
-      });
-      return;
-    }
-    setLogList(res.data.data);
-    try {
-      const div = divRef.current as HTMLDivElement;
-      if (div) {
-        div.scrollTop = div.scrollHeight;
-      }
-    } catch (e) {
-      console.log(e);
-    }
+    // const res = await jobLogListApi(id);
+    // if (res.code !== '200') {
+    //   enqueueSnackbar(`任务: ${id} 日志列表获取失败${res.msg}`, {
+    //     autoHideDuration: 3000,
+    //     variant: 'error'
+    //   });
+    //   return;
+    // }
+    setIsShowLogList(id);
   };
 
   const getJobLog = async (id: number) => {
@@ -557,10 +561,10 @@ const JobPage = (props: tProps) => {
           <OmsTable columns={columns} rows={getJobRows(jobList)}></OmsTable>
         </Card>
       </div>
-      {logList.length > 0 ? (
+      {isShowLogList ? (
         <div style={{ width: '100%', height: '100%', margin: '0 auto', marginTop: '40px' }}>
           <Card style={{ width: '100%', height: '100%', margin: '0 auto', marginTop: '20px' }}>
-            <OmsTable columns={columnsLog} rows={logList}></OmsTable>
+            <OmsTableServer getDataApi={jobLogListApi} dataId={isShowLogList} columns={columnsLog} />
           </Card>
         </div>
       ) : null}

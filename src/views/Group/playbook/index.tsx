@@ -518,7 +518,12 @@ const Playbook = (props: tProps) => {
         maxWidth="md"
         open={form.open}
         content={content}
-        toClose={() => formDispatch({ type: 'close' })}
+        toClose={() => {
+          formDispatch({ type: 'close' });
+          if (!form.isAdd) {
+            formDispatch({ type: 'reset' });
+          }
+        }}
         title={form.title}
         todo={setPlayer}
       />
