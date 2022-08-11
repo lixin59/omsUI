@@ -250,21 +250,24 @@ const JobPage = (props: tProps) => {
     setOpenLog(false);
   }, [logData]);
 
-  const toDelete = useCallback(async () => {
-    const res = (await deleteJobApi(Info.id)) as HTTPResult;
-    if (res.code !== '200') {
-      enqueueSnackbar(`任务: ${Info.name}删除失败${res.msg}`, {
+  const toDelete = useCallback(
+    async (Info) => {
+      const res = (await deleteJobApi(Info.id)) as HTTPResult;
+      if (res.code !== '200') {
+        enqueueSnackbar(`任务: ${Info.name}删除失败${res.msg}`, {
+          autoHideDuration: 3000,
+          variant: 'error'
+        });
+        return;
+      }
+      updateJobList();
+      enqueueSnackbar(`任务: ${Info.name} 已被删除`, {
         autoHideDuration: 3000,
-        variant: 'error'
+        variant: 'success'
       });
-      return;
-    }
-    updateJobList();
-    enqueueSnackbar(`任务: ${Info.name} 已被删除`, {
-      autoHideDuration: 3000,
-      variant: 'success'
-    });
-  }, [Info]);
+    },
+    [Info]
+  );
 
   const editForm = useCallback(async () => {
     const res = (await editJobApi(Info)) as HTTPResult;
@@ -477,10 +480,15 @@ const JobPage = (props: tProps) => {
                   color="error"
                   onClick={() => {
                     tipDispatch({ type: 'open' });
-                    tipDispatch({ type: 'text', payload: `确认要任务：${name} 吗？` });
+                    tipDispatch({ type: 'text', payload: `确认要删除任务：${name} 吗？` });
                     tipDispatch({ type: 'title', payload: '删除任务' });
-                    setInfo(params.row);
-                    tipDispatch({ type: 'todo', payload: toDelete });
+                    // setInfo(params.row);
+                    tipDispatch({
+                      type: 'todo',
+                      payload: () => {
+                        toDelete(params.row);
+                      }
+                    });
                   }}
                 />
               </Tooltip>
