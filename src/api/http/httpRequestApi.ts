@@ -90,8 +90,8 @@ export interface UploadFilePost {
 }
 
 // 获取所有主机信息
-export const getHostsApi = (): Promise<HTTPResult> => {
-  return getApi(urlType.host);
+export const getHostsApi = (page_size = 10, page_num = 1): Promise<HTTPResult> => {
+  return getApi(urlType.host, { page_size, page_num });
 };
 
 // 通过id获取主机信息
@@ -332,7 +332,7 @@ interface JobLogListRes extends HTTPResult {
 }
 
 // 查看job日志列表
-export const jobLogListApi = (job_id: number, page_size = 10, page_num = 1): Promise<JobLogListRes> => {
+export const jobLogListApi = (page_size = 10, page_num = 1, job_id: number): Promise<JobLogListRes> => {
   return getApi(urlType.jobLog.list, { job_id, page_size, page_num });
 };
 

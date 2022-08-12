@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, Dispatch, SetStateAction } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import { GRID_DEFAULT_LOCALE_TEXT } from './constant';
@@ -10,13 +10,15 @@ import TableToolbar from './TableToolbar';
 type tProps = React.RefAttributes<HTMLDivElement> & {
   getDataApi: (...arg) => Promise<any>;
   columns: any;
+  rows?: any;
+  updateRows?: Dispatch<SetStateAction<any>>;
   dataId?: number;
 };
 
 export default function OmsTableServer(props: tProps) {
-  const { columns, dataId, getDataApi } = props;
+  const { columns, dataId, getDataApi, updateRows, rows } = props;
 
-  const [rows, setRows] = useState<any[]>([]);
+  const [orows, setRows] = useState<any[]>([]);
   const [msg, setMsg] = useState<string>('暂无数据...');
 
   // const [isLoading, setIsLoading] = useState(true);
@@ -27,53 +29,85 @@ export default function OmsTableServer(props: tProps) {
   });
 
   useEffect(() => {
-    getDataApi(dataId).then((res) => {
+    getDataApi(10, 1, dataId).then((res) => {
       if (res.code !== '200') {
-        setRows([]);
+        if (updateRows) {
+          updateRows([]);
+        } else {
+          setRows([]);
+        }
         setMsg(res.msg);
         return;
       }
-      setRows(res.data.data);
+      if (updateRows) {
+        updateRows(res.data.data);
+      } else {
+        setRows(res.data.data);
+      }
       setPage({ ...page, no: res.data.page_num - 1, total: res.data.total });
     });
   }, [dataId]);
 
   const handleReLoad = useCallback(async () => {
-    const res = await getDataApi(dataId, page.size, 1);
+    const res = await getDataApi(page.size, 1, dataId);
     if (res.code !== '200') {
-      setRows([]);
+      if (updateRows) {
+        updateRows([]);
+      } else {
+        setRows([]);
+      }
       setMsg(res.msg);
       return;
     }
-    setRows(res.data.data);
+    if (updateRows) {
+      updateRows(res.data.data);
+    } else {
+      setRows(res.data.data);
+    }
     setPage({ ...page, no: res.data.page_num - 1, total: res.data.total });
   }, [dataId]);
 
   const handlePageChange = async (newPage: number) => {
-    const res = await getDataApi(dataId, page.size, newPage + 1);
+    const res = await getDataApi(page.size, newPage + 1, dataId);
     if (res.code !== '200') {
-      setRows([]);
+      if (updateRows) {
+        updateRows([]);
+      } else {
+        setRows([]);
+      }
       setMsg(res.msg);
       return;
     }
-    setRows(res.data.data);
+    if (updateRows) {
+      updateRows(res.data.data);
+    } else {
+      setRows(res.data.data);
+    }
     setPage({ ...page, no: res.data.page_num - 1, total: res.data.total });
   };
   const handlePageSizeChange = async (pageSize: number) => {
-    const res = await getDataApi(dataId, pageSize, page.no + 1);
+    const res = await getDataApi(pageSize, page.no + 1, dataId);
     if (res.code !== '200') {
-      setRows([]);
+      if (updateRows) {
+        updateRows([]);
+      } else {
+        setRows([]);
+      }
       setMsg(res.msg);
       return;
     }
-    setRows(res.data.data);
+    if (updateRows) {
+      updateRows(res.data.data);
+    } else {
+      setRows(res.data.data);
+    }
     setPage({ size: pageSize, no: res.data.page_num - 1, total: res.data.total });
   };
 
   return (
     <Box sx={{ height: '100%', width: '100%' }}>
       <DataGrid
-        rows={rows}
+        rows={rows || orows}
         columns={columns}
         pagination
         pageSize={page.size}
