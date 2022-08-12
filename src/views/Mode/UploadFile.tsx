@@ -1,9 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, SyntheticEvent } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import UploadButtons from '../../components/Button/UploadButton';
 import OmsSelect from '../../components/OmsSelect';
 import TextField from '@material-ui/core/TextField';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LinearProgressWithLabel from '../../components/UploadFileProgress/Linear';
 import { ActionCreator } from 'redux';
 import { GroupInfo, HostInfo, IState, TagInfo } from '../../store/interface';
@@ -13,7 +18,7 @@ import OmsLabel from '../../components/OmsLabel';
 import OmsMenuItem from '../../components/OmsSelect/OmsMenuItem';
 import { baseUrl, url } from '../../api/websocket/url';
 import { useSnackbar } from 'notistack';
-import lodash from 'lodash';
+import { uniqBy } from 'lodash';
 
 type tDP = {
   updateGroupList: ActionCreator<any>;
@@ -98,6 +103,8 @@ const UploadFile = ({ hostList, groupList, tagList, updateHostList, updateTagLis
   const [filePath, setFilePath] = useState<string>('');
   // const [ws, setWs] = useState<'' | WebSocket>('');
   const [uploadList, setUploadList] = useState<tUploadFile[]>([]);
+  const [ipList, setIpList] = useState<string[]>([]);
+  const [expanded, setExpanded] = useState<string | false>(false);
 
   useEffect(() => {
     updateHostList();
@@ -109,7 +116,7 @@ const UploadFile = ({ hostList, groupList, tagList, updateHostList, updateTagLis
     const webSocket = new WebSocket(`${baseUrl}${url.index}`);
     // setWs(webSocket);
     webSocket.onopen = (evt) => {
-      console.log('WebSocket服务器连接成功上传文件');
+      // console.log('WebSocket服务器连接成功上传文件');
       webSocket.send(JSON.stringify({ type: 'FILE_STATUS' }));
     };
     webSocket.onmessage = (evt) => {
@@ -123,9 +130,11 @@ const UploadFile = ({ hostList, groupList, tagList, updateHostList, updateTagLis
           }
         });
       });
-      const newList = lodash.uniqBy([...oldList, ...data], 'id'); // 数组去重
+      const newList = uniqBy([...oldList, ...data], 'id'); // 数组去重
       oldList = newList;
+      const ipAddrList = [...new Set([...ipList, ...newList.map((e) => e.dest)])];
       setUploadList(newList);
+      setIpList(ipAddrList);
     };
     webSocket.onerror = (evt) => {
       console.warn(evt);
@@ -165,6 +174,10 @@ const UploadFile = ({ hostList, groupList, tagList, updateHostList, updateTagLis
     // console.log(item);
   };
 
+  const onAccordionChange = (panel: string) => (event: SyntheticEvent, isExpanded: boolean) => {
+    setExpanded(isExpanded ? panel : false);
+  };
+
   return (
     <div className={classes.root}>
       <div className={classes.ControlBox}>
@@ -185,13 +198,11 @@ const UploadFile = ({ hostList, groupList, tagList, updateHostList, updateTagLis
             value={item}
             onChange={handleChange}>
             {selectType(true).length > 0
-              ? (selectType(true) as Array<TagInfo | GroupInfo | HostInfo>).map((e) => {
-                return (
-                  <OmsMenuItem key={e.name} value={e.id}>
-                    {e.name}
-                  </OmsMenuItem>
-                );
-              })
+              ? (selectType(true) as Array<TagInfo | GroupInfo | HostInfo>).map((e) => (
+                <OmsMenuItem key={e.name} value={e.id}>
+                  {e.name}
+                </OmsMenuItem>
+              ))
               : null}
           </OmsSelect>
         </FormControl>
@@ -209,18 +220,32 @@ const UploadFile = ({ hostList, groupList, tagList, updateHostList, updateTagLis
         <UploadButtons filePath={filePath} typeId={item as number} type={type as 'host' | 'group' | 'tag'} />
       </div>
       <div className={classes.shellBox}>
-        {uploadList &&
-          uploadList.map((e) => {
+        {ipList &&
+          ipList.map((str) => {
             return (
-              <LinearProgressWithLabel
-                key={e.id}
-                dest={e.dest}
-                total={e.total}
-                value={e.percent}
-                file={e.file}
-                speed={e.speed}
-                status={e.status}
-              />
+              <Accordion key={str} expanded={expanded === str} onChange={onAccordionChange(str)}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls={`${str}content`} id={`${str}header`}>
+                  <Typography sx={{ width: '33%', flexShrink: 0 }}>{str}</Typography>
+                  <Typography sx={{ color: 'text.secondary' }}>
+                    共{uploadList.filter((f) => f.dest === str).length}个文件
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {uploadList
+                    .filter((f) => f.dest === str)
+                    .map((e) => (
+                      <LinearProgressWithLabel
+                        key={e.id}
+                        dest={e.dest}
+                        total={e.total}
+                        value={e.percent}
+                        file={e.file}
+                        speed={e.speed}
+                        status={e.status}
+                      />
+                    ))}
+                </AccordionDetails>
+              </Accordion>
             );
           })}
       </div>
