@@ -91,7 +91,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100vw',
       backgroundColor: '#bebebe',
       height: '100vh',
-      zIndex: 9999999
+      zIndex: 9
     }
   })
 );
