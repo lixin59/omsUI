@@ -19,6 +19,7 @@ import { FitAddon } from 'xterm-addon-fit';
 import { WebLinksAddon } from 'xterm-addon-web-links';
 import { ANSI_COLOR_CYAN, ANSI_COLOR_RESET, ANSI_COLOR_YELLOW } from '../../components/OmsTerminal/constant';
 import actions from '../../store/action';
+import { debounce } from 'lodash';
 
 type tDP = {
   updateGroupList: ActionCreator<any>;
@@ -119,6 +120,8 @@ function reducer(state: WSdata[], action: any) {
   }
 }
 
+let terminalSize = { rows: 30, cols: 120 };
+
 const Command = (props: tProps) => {
   const { hostList, groupList, tagList, playerList, updateHostList, updateTagList, updateGroupList, updatePlayerList } =
     props;
@@ -129,7 +132,7 @@ const Command = (props: tProps) => {
   const [cmd, setCmd] = useState<string>('');
   const [cmdType, setCmdType] = useState<'cmd' | 'player'>('cmd');
   const [playerId, setPlayerId] = useState<number>(0);
-  const [ws, setWs] = useState<'' | WebSocket>('');
+  const [ws, setWs] = useState<null | WebSocket>(null);
   const [terminal, setTerminal] = useState<null | Terminal>(null);
 
   // const [msgList, dispatch] = useReducer(reducer, init(), init);
@@ -140,7 +143,6 @@ const Command = (props: tProps) => {
   //   const div = msgRef.current as HTMLDivElement;
   //   div.scrollTop = div.scrollHeight;
   // }, [msgList]);
-
   useEffect(() => {
     updateHostList();
     updateTagList();
@@ -150,21 +152,31 @@ const Command = (props: tProps) => {
 
   useEffect(() => {
     const webSocket = new WebSocket(`${baseUrl}${url.index}`);
+    const term = new Terminal({ ...terminalSize });
+    const fitAddon = new FitAddon();
+    term.loadAddon(new WebLinksAddon());
+    term.loadAddon(fitAddon);
+    setTerminal(term);
     setWs(webSocket);
 
-    // webSocket.onopen = (evt) => {
-    //   console.log('WebSocket服务器连接成功执行命令');
-    //   // webSocket.send(JSON.stringify({ type: '"WS_CMD' }));
-    // };
+    term.open(document.getElementById('commandTerminal') as HTMLElement);
+    term.focus();
+    fitAddon.fit();
+
+    // 界面初始化告诉后端终端大小
+    webSocket.onopen = (evt) => {
+      // console.log('WebSocket服务器连接成功执行命令');
+      webSocket.send(JSON.stringify({ type: 'RESIZE', data: terminalSize }));
+    };
     webSocket.onmessage = (evt) => {
       // console.log('收到消息');
       // console.log(JSON.parse(evt.data));
       const { data, type, msg } = JSON.parse(evt.data);
       if (type === 'msg') {
-        terminal?.writeln(`${ANSI_COLOR_CYAN}${msg}${ANSI_COLOR_RESET}`);
+        term?.writeln(`${ANSI_COLOR_CYAN}${msg}${ANSI_COLOR_RESET}`);
       } else {
-        terminal?.writeln(`${ANSI_COLOR_YELLOW}(${data?.seq} ${data?.hostname} ${data?.addr})${ANSI_COLOR_RESET}`);
-        terminal?.writeln(data.msg);
+        term?.writeln(`${ANSI_COLOR_YELLOW}(${data?.seq} ${data?.hostname} ${data?.addr})${ANSI_COLOR_RESET}`);
+        term?.writeln(data.msg);
       }
       // dispatch({ type: 'add', payload: data });
     };
@@ -180,45 +192,25 @@ const Command = (props: tProps) => {
     //   //   variant: 'error'
     //   // });
     // };
-    return () => {
-      webSocket.close();
-    };
-  }, [terminal]);
-
-  useEffect(() => {
-    const term = new Terminal({ rows: 30, cols: 120 });
-    const fitAddon = new FitAddon();
-    term.loadAddon(new WebLinksAddon());
-    term.loadAddon(fitAddon);
-    setTerminal(term);
-    // term.focus();
-    // fitAddon.fit();
 
     const timer = setTimeout(() => {
       fitAddon.fit();
-      term.open(document.getElementById('commandTerminal') as HTMLElement);
     }, 100);
 
-    // term.onResize((event) => {
-    //   if (timers) {
-    //     //  防抖 只发送最后一次resize的值
-    //     clearTimeout(timers);
-    //     timers = null;
-    //   }
-    //   if (!timers) {
-    //     timers = setTimeout(function () {
-    //       // console.log(event);
-    //       ws.send(JSON.stringify({ cols: event.cols, rows: event.rows }));
-    //       timers = null;
-    //     }, 500);
-    //   }
-    // });
-    const termResize = () => {
+    term.onResize((event) => {
+      (ws as WebSocket)?.send(JSON.stringify({ type: 'RESIZE', data: { cols: event.cols, rows: event.rows } }));
+      terminalSize = { cols: event.cols, rows: event.rows };
+    });
+    const termResize = debounce(() => {
+      // todo 升级自适应终端大小插件的版本，解决插件没有自动设置rows的问题
+      const rows = Math.ceil(document.body.clientHeight / 18 - 10);
+      term.resize(terminalSize.cols, rows);
       fitAddon.fit();
-    };
+    }, 300);
     window.addEventListener('resize', termResize);
 
     return () => {
+      webSocket.close();
       clearTimeout(timer);
       term.dispose();
       window.removeEventListener('resize', termResize);
@@ -226,6 +218,13 @@ const Command = (props: tProps) => {
   }, []);
 
   const sendCommand = () => {
+    if (!type && !id && (!cmd || !playerId)) {
+      enqueueSnackbar(`请先选择所有选项`, {
+        autoHideDuration: 2000,
+        variant: 'error'
+      });
+      return;
+    }
     (ws as WebSocket).send(
       JSON.stringify({ type: 'WS_CMD', data: { type, id, cmd, cmd_type: cmdType, cmd_id: playerId }})
     );
@@ -314,11 +313,7 @@ const Command = (props: tProps) => {
         )}
         <div>
           <Tooltip title="下发命令" placement="top-start">
-            <IconButton
-              color="primary"
-              disabled={!(!!type && !!id && (!!cmd || !!playerId))}
-              aria-label="send"
-              onClick={sendCommand}>
+            <IconButton color="primary" aria-label="send" onClick={sendCommand}>
               <SendIcon fontSize="large" />
             </IconButton>
           </Tooltip>
