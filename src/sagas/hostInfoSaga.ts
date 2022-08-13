@@ -15,7 +15,7 @@ export default function* hostInfoSaga() {
         if (res.code !== '200') {
           return;
         }
-        yield put({ type: hostActions.INIT, value: res.data });
+        yield put({ type: hostActions.INIT, value: res?.data?.data });
       }
       if (init) {
         yield put({ type: hostActions.INIT, value: init.value });

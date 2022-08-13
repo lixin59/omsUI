@@ -36,7 +36,6 @@ type tDP = {
   initGroup: ActionCreator<any>;
   initTag: ActionCreator<any>;
   getHostList: ActionCreator<any>;
-  initStore: ActionCreator<any>;
 };
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -59,8 +58,7 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
 const mapDispatch: tDP = {
   initGroup: actions.initGroupInfo,
   initTag: actions.initTagInfo,
-  getHostList: actions.getHostList,
-  initStore: actions.initHostInfo
+  getHostList: actions.getHostList
 };
 
 type tProps = tSP &

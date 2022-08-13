@@ -31,7 +31,7 @@ class Get extends React.Component<tProps, tState> {
     try {
       const { data } = await apiFn();
       // console.log('调用获取所有主机信息的API', data);
-      if (data?.length < 1) {
+      if (data?.data?.length < 1) {
         this.setState({
           component: dataIsEmpty
         });
@@ -44,7 +44,7 @@ class Get extends React.Component<tProps, tState> {
         //   component: children(result.data)
         // });
         if (initStore) {
-          initStore(data);
+          initStore(data?.data);
         }
       }, delay || 0);
     } catch (e) {

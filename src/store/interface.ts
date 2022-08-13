@@ -28,7 +28,7 @@ export interface HostInfo {
   private_key_id: number;
   tags: TagInfo[];
   tunnels: TunnelInfo[];
-  jobs: JobInfo[];
+  jobs?: JobInfo[];
   keyFile?: any;
 }
 

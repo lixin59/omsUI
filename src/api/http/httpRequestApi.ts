@@ -2,12 +2,13 @@ import { getApi, postApi, deleteApi, putApi } from './api';
 import { urlType, baseUrl } from './requestUrl';
 import { Base64 } from 'js-base64';
 import { AxiosRequestConfig } from 'axios';
-import { JobInfo } from '../../store/interface';
+import { HostInfo, JobInfo } from '../../store/interface';
 
 export interface HTTPResult {
   code: string;
   msg: string;
   data: any | any[];
+  type: string;
 }
 
 export interface EditHostPut {
@@ -89,8 +90,19 @@ export interface UploadFilePost {
   files: any;
 }
 
+interface Pagination {
+  total: number;
+  page_num: number;
+}
+
+interface HostListRes extends HTTPResult {
+  data: Pagination & {
+    data: Array<HostInfo>;
+  };
+}
+
 // 获取所有主机信息
-export const getHostsApi = (page_size = 10, page_num = 1): Promise<HTTPResult> => {
+export const getHostsApi = (page_size = 100, page_num = 1): Promise<HostListRes> => {
   return getApi(urlType.host, { page_size, page_num });
 };
 
