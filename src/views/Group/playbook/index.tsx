@@ -39,6 +39,10 @@ import { debounce } from '../../../utils/debounce';
 import actions from '../../../store/action';
 import { ActionCreator } from 'redux';
 import { PlayerInfo } from '../../../store/interface';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import update from 'immutability-helper';
+import { DragStep } from './DragStep';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type tDP = {
@@ -54,6 +58,8 @@ type tSP = tOP & {
 };
 
 type tProps = tSP & tDP;
+
+type tStep = { name: string; type: string; seq: number; params: any };
 
 function formInit() {
   return {
@@ -184,10 +190,34 @@ const Playbook = (props: tProps) => {
     initPlayerAction();
   }, [initPlayerAction]);
 
+  const moveStep = useCallback(
+    (dragIndex: number, hoverIndex: number) => {
+      formDispatch({
+        type: 'setSteps',
+        payload: update(form.steps, {
+          $splice: [
+            [dragIndex, 1],
+            [hoverIndex, 0, form.steps[dragIndex] as tStep]
+          ]
+        })
+      });
+      formDispatch({
+        type: 'setSchemaList',
+        payload: update(form.schemaList, {
+          $splice: [
+            [dragIndex, 1],
+            [hoverIndex, 0, form.schemaList[dragIndex]]
+          ]
+        })
+      });
+    },
+    [form.steps, form.schemaList]
+  );
+
   const getChangeValue = (id, data) => {
     const step = {
-      name: form.steps[id].name,
-      type: form.steps[id].type,
+      name: form.steps[id]?.name,
+      type: form.steps[id]?.type,
       seq: id,
       params: data.formData
     };
@@ -220,9 +250,9 @@ const Playbook = (props: tProps) => {
       const reqData = {
         name: form.playerName,
         steps: JSON.stringify(
-          form.steps.map((step) => ({
+          form.steps.map((step, i) => ({
             name: step.name,
-            seq: step.seq,
+            seq: i,
             type: step.type,
             params: JSON.stringify(step.params)
           }))
@@ -339,60 +369,62 @@ const Playbook = (props: tProps) => {
               </Grid>
             </Grid>
             <Grid container spacing={2}>
-              {form.schemaList.map((e, i) => (
-                <Grid item xs={12} key={i}>
-                  <Paper elevation={2} style={{ padding: '10px' }}>
-                    <Grid container spacing={1}>
-                      <Grid item xs={2}>
-                        <Typography variant="h6" gutterBottom component="div">
-                          {`步骤${i}`}
-                        </Typography>
+              <DndProvider backend={HTML5Backend}>
+                {form.schemaList.map((e, i) => (
+                  <Grid key={i} item xs={12}>
+                    <DragStep index={i} moveStep={moveStep}>
+                      <Grid container spacing={1}>
+                        <Grid item xs={2}>
+                          <Typography variant="h6" gutterBottom component="div">
+                            {`步骤${i}`}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                          <TextField
+                            id={`step-name${i}`}
+                            label="步骤名称"
+                            required
+                            variant="outlined"
+                            value={form.steps[i]?.name || ''}
+                            style={{ width: '100%' }}
+                            onChange={(e) => {
+                              const step = {
+                                name: e.target.value,
+                                type: form.steps[i]?.type,
+                                seq: form.steps[i]?.seq,
+                                params: form.steps[i]?.params
+                              };
+                              formDispatch({ type: 'editStep', payload: { idx: i, step } });
+                            }}
+                          />
+                        </Grid>
+                        <Grid item xs={2}>
+                          <Tooltip title={`删除步骤${i}`} placement="top-start">
+                            <IconButton
+                              aria-label="delete-schema"
+                              color="secondary"
+                              onClick={() => {
+                                formDispatch({ type: 'deleteSchema-step', payload: i });
+                              }}>
+                              <RemoveIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Grid>
                       </Grid>
-                      <Grid item xs={8}>
-                        <TextField
-                          id={`step-name${i}`}
-                          label="步骤名称"
-                          required
-                          variant="outlined"
-                          defaultValue={form.steps[i].name || ''}
-                          style={{ width: '100%' }}
-                          onChange={debounce((e) => {
-                            const step = {
-                              name: e.target.value,
-                              type: form.steps[i].type,
-                              seq: form.steps[i].seq,
-                              params: form.steps[i].params
-                            };
-                            formDispatch({ type: 'editStep', payload: { idx: i, step }});
-                          }, 500)}
-                        />
-                      </Grid>
-                      <Grid item xs={2}>
-                        <Tooltip title={`删除步骤${i}`} placement="top-start">
-                          <IconButton
-                            aria-label="delete-schema"
-                            color="secondary"
-                            onClick={() => {
-                              formDispatch({ type: 'deleteSchema-step', payload: i });
-                            }}>
-                            <RemoveIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </Grid>
-                    </Grid>
-                    <Form
-                      key={i}
-                      schema={e}
-                      uiSchema={uiSchema}
-                      formData={form.steps[i].params}
-                      onChange={debounce((data) => getChangeValue(i, data), 500)}
-                      widgets={{ FileWidget, TextWidget, TextareaWidget }}
-                      idPrefix={`rjsf_prefix${i}`}
-                      customFormats={customFormats}
-                    />
-                  </Paper>
-                </Grid>
-              ))}
+                      <Form
+                        key={i}
+                        schema={e}
+                        uiSchema={uiSchema}
+                        formData={form.steps[i]?.params}
+                        onChange={debounce((data) => getChangeValue(i, data), 500)}
+                        widgets={{ FileWidget, TextWidget, TextareaWidget }}
+                        idPrefix={`rjsf_prefix${i}`}
+                        customFormats={customFormats}
+                      />
+                    </DragStep>
+                  </Grid>
+                ))}
+              </DndProvider>
             </Grid>
           </Paper>
         ) : null}
