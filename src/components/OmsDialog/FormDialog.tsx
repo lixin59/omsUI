@@ -30,7 +30,7 @@ export default function FormDialog(props: tProps) {
   };
 
   return (
-    <Dialog {...props} open={open} onClose={closeDialog} aria-labelledby="form-dialog">
+    <Dialog {...props} open={open} onClose={closeDialog} aria-labelledby="form-dialog" disableBackdropClick>
       <DialogTitle id="form-dialog">{title}</DialogTitle>
       <DialogContent>{content || null}</DialogContent>
       <DialogActions>
