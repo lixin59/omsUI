@@ -32,6 +32,8 @@ import {
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import SelectWidget from '../../../components/playbook/SelectWidget';
+import ArrayFieldTemplate from '../../../components/playbook/ArrayFieldTemplate';
 import FileWidget from '../../../components/playbook/FileWidget';
 import TextWidget from '../../../components/playbook/TextWidget';
 import TextareaWidget from '../../../components/playbook/TextareaWidget';
@@ -417,7 +419,8 @@ const Playbook = (props: tProps) => {
                         uiSchema={uiSchema}
                         formData={form.steps[i]?.params}
                         onChange={debounce((data) => getChangeValue(i, data), 500)}
-                        widgets={{ FileWidget, TextWidget, TextareaWidget }}
+                        ArrayFieldTemplate={ArrayFieldTemplate}
+                        widgets={{ FileWidget, TextWidget, TextareaWidget, SelectWidget }}
                         idPrefix={`rjsf_prefix${i}`}
                         customFormats={customFormats}
                       />
