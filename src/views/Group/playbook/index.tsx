@@ -37,7 +37,7 @@ import ArrayFieldTemplate from '../../../components/playbook/ArrayFieldTemplate'
 import FileWidget from '../../../components/playbook/FileWidget';
 import TextWidget from '../../../components/playbook/TextWidget';
 import TextareaWidget from '../../../components/playbook/TextareaWidget';
-import { debounce } from '../../../utils/debounce';
+import { debounce } from 'lodash';
 import actions from '../../../store/action';
 import { ActionCreator } from 'redux';
 import { PlayerInfo } from '../../../store/interface';
