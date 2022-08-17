@@ -43,21 +43,21 @@ export default function LogDialog({ open = false, title, text = '', toClose }: t
     term.loadAddon(fitAddon);
 
     const timer = setTimeout(() => {
-      fitAddon.fit();
       if (msgRef.current) {
         term.open(document.getElementById('logTerminal') as HTMLElement);
         term.writeln(text);
       }
+      fitAddon.fit();
     }, 60);
     const termResize = () => {
       fitAddon.fit();
     };
-    msgRef?.current?.addEventListener('resize', termResize);
+    window.addEventListener('resize', termResize);
 
     return () => {
       clearTimeout(timer);
       term.dispose();
-      msgRef?.current?.removeEventListener('resize', termResize);
+      window.removeEventListener('resize', termResize);
     };
   }, [open, msgRef]);
 
