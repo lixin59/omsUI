@@ -14,7 +14,7 @@ import OmsMenuItem from '../../components/OmsSelect/OmsMenuItem';
 import OmsError from '../../components/OmsError';
 import { useSnackbar } from 'notistack';
 import { baseUrl } from '../../api/websocket/url';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import actions from '../../store/action';
 
 type tDP = {
@@ -89,14 +89,15 @@ const WebSSH = ({ hostList, updateHostList }: tProps) => {
   const [item, setItem] = useState<number>(0);
   const [ws, setWs] = useState<'' | WebSocket>('');
 
-  const pathname = useLocation().pathname;
+  const params = useParams();
 
   useEffect(() => {
     updateHostList();
   }, []);
 
   useEffect(() => {
-    const id = Number(pathname.replace(/\/mode\/web_ssh\//g, ''));
+    // const id = Number(pathname.replace(/\/mode\/web_ssh\//g, ''));
+    const id = Number(params?.id || '0');
     if (id !== 0) {
       connectHost(id);
       setItem(id);

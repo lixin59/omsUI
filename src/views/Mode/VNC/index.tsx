@@ -18,7 +18,7 @@ import OmsMenuItem from '../../../components/OmsSelect/OmsMenuItem';
 import OmsError from '../../../components/OmsError';
 import { useSnackbar } from 'notistack';
 import { websocketURL } from '../../../api/websocket/url';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import actions from '../../../store/action';
 
 type tDP = {
@@ -114,14 +114,14 @@ const VNC = ({ hostList, updateHostList }: tProps) => {
 
   const vncScreenRef = useRef<React.ElementRef<typeof VncScreen>>(null);
 
-  const pathname = useLocation().pathname;
+  const params = useParams();
 
   useEffect(() => {
     updateHostList();
   }, []);
 
   useEffect(() => {
-    const id = Number(pathname.replace(/\/mode\/vnc\//g, ''));
+    const id = Number(params?.id || '0');
     if (id !== 0) {
       setVncUrl(`${websocketURL.vnc}${id}`);
       connectHost(id);
