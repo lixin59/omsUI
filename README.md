@@ -1,3 +1,11 @@
+<h1 align="center">项目简介</h1>
+
+<p align="center">
+本项目后端使用gin、gorm和ssh、sftp开发。旨在编写一个轻量，易用，多平台的运维项目。
+前端使用react、typescript、vite构建。
+现阶段目的是做一个阉割版的xshell并简单的实现ansible或者saltstack的部分功能。
+</p>
+
 <p align="center">
     <a href="https://github.com/lixin59/omsUI/blob/master/LICENSE">
         <img
@@ -24,13 +32,14 @@
     <img src="https://img.shields.io/github/forks/lixin59/omsUI?style=flat-square">
     <img src="https://img.shields.io/github/watchers/lixin59/omsUI?style=flat-square">
     <br />
-    <br />
 </p>
-
-## 项目简介
-本项目后端使用gin、gorm和ssh、sftp开发。旨在编写一个轻量，易用，多平台的运维项目。
-前端使用react、typescript、vite构建。
-现阶段目的是做一个阉割版的xshell并简单的实现ansible或者saltstack的部分功能。
+<p align="center">
+  <a href="https://wang918562230.gitbook.io/ssbeattyoms-wen-dang/">文档</a>
+  ·
+  <a href="https://github.com/ssbeatty/oms/releases">下载</a>
+  ·
+  <a href="https://wang918562230.gitbook.io/ssbeattyoms-wen-dang/">开始使用</a>
+</p>
 
 ### 目前已经实现的功能
 1. 隧道, 类似`ssh`的`-L`和`-R`
