@@ -225,9 +225,18 @@ const UploadFile = ({ hostList, groupList, tagList, updateHostList, updateTagLis
             return (
               <Accordion key={str} expanded={expanded === str} onChange={onAccordionChange(str)}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls={`${str}content`} id={`${str}header`}>
-                  <Typography sx={{ width: '33%', flexShrink: 0 }}>{str}</Typography>
-                  <Typography sx={{ color: 'text.secondary' }}>
+                  <Typography sx={{ width: '20%', flexShrink: 0 }}>{str}</Typography>
+                  <Typography sx={{ color: 'text.secondary', width: '15%', flexShrink: 0 }}>
                     共{uploadList.filter((f) => f.dest === str).length}个文件
+                  </Typography>
+                  <Typography sx={{ width: '15%', flexShrink: 0 }} color="secondary">
+                    上传中:{uploadList.filter((f) => f.dest === str)?.filter((f) => f.status === 'running').length}
+                  </Typography>
+                  <Typography sx={{ width: '15%', flexShrink: 0 }} color="primary">
+                    已上传:{uploadList.filter((f) => f.dest === str)?.filter((f) => f.status === 'done').length}
+                  </Typography>
+                  <Typography sx={{ width: '15%', flexShrink: 0 }} color="error">
+                    失败:{uploadList.filter((f) => f.dest === str)?.filter((f) => f.status === 'failed').length}
                   </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
