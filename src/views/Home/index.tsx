@@ -247,6 +247,7 @@ function Home(props: tProps) {
         setHostId={setId}
         tipDispatch={tipDispatch}
         formDispatch={formDispatch}
+        setTlc={setTlc}
       />
     )
   };
@@ -254,6 +255,8 @@ function Home(props: tProps) {
   const handleClickOpen = () => {
     formDispatch({ type: 'title', payload: '添加一个新的主机' });
     formDispatch({ type: 'open' });
+    setTlc(tagList?.map((e) => ({ ...e, checked: false })));
+    setId(0);
   };
 
   const editNewHost = useCallback(async () => {
@@ -291,7 +294,7 @@ function Home(props: tProps) {
     });
     setHostInfo(baseHostInfo);
     return true;
-  }, [hostInfo]);
+  }, [hostInfo, tlc]);
 
   const addNewHost = useCallback(async () => {
     if (!hostInfo.addr) {
@@ -362,7 +365,7 @@ function Home(props: tProps) {
     setHostInfo(baseHostInfo);
     setTlc(tagList?.map((e) => ({ ...e, checked: false })));
     return true;
-  }, [hostInfo]);
+  }, [hostInfo, tlc]);
 
   return (
     <BodyBox>

@@ -80,7 +80,7 @@ const columns = [
     type: 'actions',
     getActions: (params: GridRowParams) => {
       const { id, name } = params.row;
-      const { navigate, openDelete, toDelete, openEdit, setHostId, setHostInfo } = params.row.actions;
+      const { navigate, openDelete, toDelete, openEdit, setHostId, setHostInfo, setTlc, tagList } = params.row.actions;
       return [
         <GridActionsCellItem
           key={params.row.id + 'VNC'}
@@ -116,10 +116,13 @@ const columns = [
               <EditIcon
                 color="secondary"
                 onClick={() => {
-                  openEdit({ type: 'open' });
-                  openEdit({ type: 'title', payload: '编辑主机信息' });
+                  setTlc(
+                    tagList?.map((e) => ({ ...e, checked: !!params.row.tags?.find((item) => item.name === e.name) }))
+                  );
                   setHostId(id);
                   setHostInfo(params.row);
+                  openEdit({ type: 'title', payload: '编辑主机信息' });
+                  openEdit({ type: 'open' });
                 }}
               />
             </Tooltip>
@@ -183,10 +186,11 @@ type tProps = tSP &
     formDispatch: Dispatch<any>;
     setHostId: Dispatch<SetStateAction<number>>;
     setHostInfo: Dispatch<SetStateAction<HostInfo>>;
+    setTlc: Dispatch<SetStateAction<Array<TagInfo & { checked: boolean }>>>;
   };
 
 function HostInfoTable(props: tProps) {
-  const { hostList, upHostList, tipDispatch, formDispatch, setHostId, setHostInfo } = props;
+  const { hostList, upHostList, tipDispatch, formDispatch, setHostId, setHostInfo, setTlc, tagList } = props;
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -200,6 +204,8 @@ function HostInfoTable(props: tProps) {
         ...h,
         actions: {
           navigate,
+          setTlc,
+          tagList,
           openEdit: formDispatch,
           setHostId,
           setHostInfo,
