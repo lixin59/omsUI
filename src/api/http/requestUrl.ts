@@ -37,3 +37,7 @@ export const urlType = {
   },
   privateKey: '/private_key'
 };
+
+export const commandUrl = {
+  getHistory: '/command/history'
+};

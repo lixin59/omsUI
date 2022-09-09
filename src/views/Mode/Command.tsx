@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useReducer } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import SendIcon from '@material-ui/icons/Send';
 import ClearIcon from '@material-ui/icons/Clear';
@@ -12,6 +12,7 @@ import OmsMenuItem from '../../components/OmsSelect/OmsMenuItem';
 import { useSnackbar } from 'notistack';
 import { baseUrl, url } from '../../api/websocket/url';
 import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { Terminal } from 'xterm';
@@ -20,6 +21,8 @@ import { WebLinksAddon } from 'xterm-addon-web-links';
 import { ANSI_COLOR_CYAN, ANSI_COLOR_RESET, ANSI_COLOR_YELLOW } from '../../components/OmsTerminal/constant';
 import actions from '../../store/action';
 import { debounce } from 'lodash';
+import { getCMDListApi } from '../../api/http/command';
+import useDebounce from '../../hooks/debounce';
 
 type tDP = {
   updateGroupList: ActionCreator<any>;
@@ -130,6 +133,7 @@ const Command = (props: tProps) => {
   const [type, setType] = useState<string>('');
   const [id, setId] = useState<string>('');
   const [cmd, setCmd] = useState<string>('');
+  const [cmdList, setCmdList] = useState<string[]>([]);
   const [cmdType, setCmdType] = useState<'cmd' | 'player'>('cmd');
   const [playerId, setPlayerId] = useState<number>(0);
   const [ws, setWs] = useState<null | WebSocket>(null);
@@ -149,6 +153,32 @@ const Command = (props: tProps) => {
     updateGroupList();
     updatePlayerList();
   }, []);
+
+  const handleDebounce = useDebounce((value) => {
+    console.log(value);
+    const getData = async () => {
+      console.log('cmd', value);
+      const res = await getCMDListApi(value);
+      if (res?.data?.length > 0) {
+        setCmdList(res.data);
+      }
+    };
+    getData();
+  }, 300);
+
+  useEffect(() => {
+    try {
+      if (!cmd) {
+        return;
+      }
+      handleDebounce(cmd);
+    } catch (e) {
+      enqueueSnackbar(`获取cmd历史数据失败: ${JSON.stringify(e)}`, {
+        autoHideDuration: 2000,
+        variant: 'error'
+      });
+    }
+  }, [cmd]);
 
   useEffect(() => {
     const webSocket = new WebSocket(`${baseUrl}${url.index}`);
@@ -286,15 +316,26 @@ const Command = (props: tProps) => {
           </OmsSelect>
         </FormControl>
         {cmdType === 'cmd' ? (
-          <TextField
-            style={{ marginTop: '12px', width: '400px' }}
-            className={classes.Control}
-            size="small"
+          // <TextField
+          //   style={{ marginTop: '12px', width: '400px' }}
+          //   className={classes.Control}
+          //   size="small"
+          //   id="cmd-disabled"
+          //   label="请输入执行的命令"
+          //   variant="outlined"
+          //   value={cmd}
+          //   onChange={(e) => setCmd(e.target.value)}
+          // />
+          <Autocomplete
+            freeSolo
+            inputValue={cmd}
+            onInputChange={(event, newInputValue: string) => {
+              setCmd(newInputValue);
+            }}
             id="cmd-disabled"
-            label="请输入执行的命令"
-            variant="outlined"
-            value={cmd}
-            onChange={(e) => setCmd(e.target.value)}
+            options={cmdList}
+            sx={{ width: 300 }}
+            renderInput={(params) => <TextField {...params} size="small" label="请输入执行的命令" />}
           />
         ) : (
           <FormControl className={classes.Control}>
