@@ -45,13 +45,20 @@ import { FileData } from 'chonky/src/types/file.types';
 import actions from '../../../store/action';
 import { ActionCreator } from 'redux';
 
+function getImgBase64Byte(imgType) {
+  if (imgType === 'svg') {
+    return 'svg+xml';
+  }
+  return 'bmp';
+}
+
 const imgType = {
   jpeg: 'jpeg',
+  jpg: 'jpg',
   tiff: 'tiff',
   png: 'png',
   gif: 'gif',
-  svg: 'svg',
-  pdf: 'pdf'
+  svg: 'svg'
 };
 
 const codeType = {
@@ -494,7 +501,11 @@ const FileBrowserPage = ({ hostList, updateHostList }: tProps) => {
         {language === codeType.md ? (
           <OmsViewMarkdown textContent={Base64.decode(code)} darkMode={darkMode} />
         ) : imgType[language] ? (
-          <img src={`data:image/bmp;base64,${code}`} style={{ maxHeight: '74vh' }} alt="图片预览" />
+          <img
+            src={`data:image/${getImgBase64Byte(language)};base64,${code}`}
+            style={{ maxHeight: '74vh' }}
+            alt="图片预览"
+          />
         ) : (
           <OmsSyntaxHighlight textContent={Base64.decode(code)} language={language} darkMode={darkMode} />
         )}
