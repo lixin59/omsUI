@@ -4,6 +4,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import styles from './style';
 import { useSnackbar } from 'notistack';
 import Button from '@mui/material/Button';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import Card from '@mui/material/Card';
 import OmsTable from '../../../components/OmsTable';
 import { GridRowParams } from '@mui/x-data-grid/models/params/gridRowParams';
@@ -26,7 +28,10 @@ import {
   addPlayerApi,
   deletePlayerApi,
   editPlayerApi,
+  exportPlayerApi,
   getSchemaInfoApi,
+  importPlayerApi,
+  importPluginApi,
   tSchemaInfo
 } from '../../../api/http/playbook';
 import IconButton from '@mui/material/IconButton';
@@ -45,6 +50,13 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import update from 'immutability-helper';
 import { DragStep } from './DragStep';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import ImportFile from '../../../components/Button/ImportFile';
+import DialogActions from '@material-ui/core/DialogActions';
+import Dialog from '@material-ui/core/Dialog';
+
+let importFileApi = importPlayerApi;
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type tDP = {
@@ -177,6 +189,7 @@ const Playbook = (props: tProps) => {
   const [form, formDispatch] = useReducer(formReducer, formInit(), formInit);
   const [tip, tipDispatch] = useReducer(tipReducer, tipInit(), tipInit);
   const [schema, setSchema] = useState<tSchemaInfo[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
     getSchemaInfoApi().then((res) => {
@@ -536,6 +549,36 @@ const Playbook = (props: tProps) => {
         <Button variant="contained" className={classes.addButton} onClick={() => openForm(true)}>
           添加剧本
         </Button>
+        <Button
+          variant="contained"
+          className={classes.addButton}
+          color="warning"
+          startIcon={<FileDownloadIcon />}
+          onClick={() => exportPlayerApi()}>
+          导出剧本
+        </Button>
+        <Button
+          variant="contained"
+          className={classes.addButton}
+          color="secondary"
+          startIcon={<FileUploadIcon />}
+          onClick={() => {
+            setOpen(true);
+            importFileApi = importPlayerApi;
+          }}>
+          导入剧本
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          // className={classes.addButton}
+          startIcon={<FileUploadIcon />}
+          onClick={() => {
+            setOpen(true);
+            importFileApi = importPluginApi;
+          }}>
+          导入插件
+        </Button>
       </div>
       <div className={classes.shellBox}>
         <Card style={{ width: '100%', height: '100%', margin: '0 auto', marginTop: '20px' }}>
@@ -562,6 +605,27 @@ const Playbook = (props: tProps) => {
         title={form.title}
         todo={setPlayer}
       />
+      <Dialog open={open} onClose={() => setOpen(false)} aria-labelledby="file-browser" fullWidth maxWidth={'sm'}>
+        <DialogContent
+          style={{ minHeight: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'center ' }}
+          dividers>
+          <DialogContentText>
+            <ImportFile
+              importFileApi={importFileApi}
+              onBeforeUpload={() => {
+                setOpen(false);
+              }}
+              onUploadComplete={initPlayerAction}
+              // showUploadProgress={true}
+            />
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)} color="primary">
+            关闭
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

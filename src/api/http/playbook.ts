@@ -1,7 +1,8 @@
 import { postApi, putApi, getApi, deleteApi } from './api';
-import { urlType } from './requestUrl';
+import { baseUrl, playbookUrl, pluginUrl, urlType } from './requestUrl';
 import { HTTPResult } from './httpRequestApi';
 import { AxiosRequestConfig } from 'axios';
+import { downloadFile } from '../../utils';
 
 type tStepType = 'cmd' | 'shell' | 'file'; // 插件类型
 
@@ -29,6 +30,43 @@ interface Player {
   name: string;
   steps: string; // stringify(steps: tStep[])
 }
+
+// // 导入插件
+export const importPluginApi = (data: { files: any }) => {
+  const { files } = data;
+  const formData = new FormData();
+  for (const k in files) {
+    // eslint-disable-next-line no-prototype-builtins
+    if (files.hasOwnProperty(k)) {
+      formData.append('files', files[k]);
+    }
+  }
+  return postApi(pluginUrl.upload, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 86400000 // 一天
+  });
+};
+
+// 导出剧本
+export const exportPlayerApi = () => {
+  const url = `${baseUrl}${playbookUrl.player.export}`;
+  downloadFile(url, 'oms');
+};
+// 导入剧本
+export const importPlayerApi = (data: { files: any }) => {
+  const { files } = data;
+  const formData = new FormData();
+  for (const k in files) {
+    // eslint-disable-next-line no-prototype-builtins
+    if (files.hasOwnProperty(k)) {
+      formData.append('files', files[k]);
+    }
+  }
+  return postApi(playbookUrl.player.import, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 86400000 // 一天
+  });
+};
 
 // 获取JSON schema数据
 export const getSchemaInfoApi = (): Promise<SchemaResp> => {

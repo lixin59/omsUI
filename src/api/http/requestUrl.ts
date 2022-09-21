@@ -38,6 +38,17 @@ export const urlType = {
   privateKey: '/private_key'
 };
 
+export const playbookUrl = {
+  player: {
+    export: '/player/export',
+    import: '/player/import'
+  }
+};
+
+export const pluginUrl = {
+  upload: '/plugin/upload'
+};
+
 export const commandUrl = {
   getHistory: '/command/history'
 };
