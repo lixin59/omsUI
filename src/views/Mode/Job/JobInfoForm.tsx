@@ -24,17 +24,6 @@ const JobInfoForm = ({ Info, setInfo, execute, playerList }: tProps) => {
 
   return (
     <>
-      <FormControl style={{ width: '100%' }}>
-        <InputLabel id="job-select-label">选择任务类型</InputLabel>
-        <Select
-          labelId="job-select-label"
-          id="job-select"
-          value={Info.type}
-          onChange={(e) => setInfo({ ...Info, type: e.target.value as 'cron' | 'task' })}>
-          <MenuItem value={'cron'}>cron</MenuItem>
-          <MenuItem value={'task'}>task</MenuItem>
-        </Select>
-      </FormControl>
       <TextField
         autoFocus
         margin="dense"
