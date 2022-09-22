@@ -190,7 +190,7 @@ const JobPage = (props: tProps) => {
 
   const runJob = async (info: JobInfo) => {
     const { id, name } = info;
-    const res = (await jobStartApi(id)) as HTTPResult;
+    const res = (await jobRunApi(id)) as HTTPResult;
     updateJobList();
     if (res.code !== '200') {
       enqueueSnackbar(`任务: ${name} 启动失败${res.msg}`, {
@@ -207,7 +207,7 @@ const JobPage = (props: tProps) => {
 
   const startJob = async (info: JobInfo) => {
     const { id, name } = info;
-    const res = (await jobRunApi(id)) as HTTPResult;
+    const res = (await jobStartApi(id)) as HTTPResult;
     updateJobList();
     if (res.code !== '200') {
       enqueueSnackbar(`任务: ${name} 执行失败${res.msg}`, {
@@ -439,7 +439,7 @@ const JobPage = (props: tProps) => {
               <Tooltip title="执行一次任务" placement="top-start">
                 <PlayArrowIcon
                   onClick={() => {
-                    startJob(params.row);
+                    runJob(params.row);
                   }}
                   color="primary"
                 />
