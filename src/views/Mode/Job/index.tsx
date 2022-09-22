@@ -17,6 +17,7 @@ import {
   jobLogApi,
   jobLogListApi,
   jobStartApi,
+  jobRunApi,
   jobStopApi
 } from '../../../api/http/httpRequestApi';
 import FormDialog from '../../../components/OmsDialog/FormDialog';
@@ -28,6 +29,7 @@ import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import EventNoteIcon from '@material-ui/icons/EventNote';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import TipDialog from '../../../components/OmsDialog/TipDialog';
 import LogDialog from '../../../components/OmsDialog/LogDialog';
 import OmsTableServer from '../../../components/OmsTable/OmsTableServer';
@@ -154,7 +156,7 @@ const JobPage = (props: tProps) => {
   const [Info, setInfo] = useState<JobInfo>({
     id: 0,
     name: '',
-    type: 'task',
+    type: 'cron',
     spec: '',
     cmd: '',
     status: '',
@@ -186,7 +188,7 @@ const JobPage = (props: tProps) => {
     playerList
   });
 
-  const startJob = async (info: JobInfo) => {
+  const runJob = async (info: JobInfo) => {
     const { id, name } = info;
     const res = (await jobStartApi(id)) as HTTPResult;
     updateJobList();
@@ -198,6 +200,23 @@ const JobPage = (props: tProps) => {
       return;
     }
     enqueueSnackbar(`任务: ${name} 启动成功${res.msg}`, {
+      autoHideDuration: 3000,
+      variant: 'success'
+    });
+  };
+
+  const startJob = async (info: JobInfo) => {
+    const { id, name } = info;
+    const res = (await jobRunApi(id)) as HTTPResult;
+    updateJobList();
+    if (res.code !== '200') {
+      enqueueSnackbar(`任务: ${name} 执行失败${res.msg}`, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
+      return;
+    }
+    enqueueSnackbar(`任务: ${name} 执行成功${res.msg}`, {
       autoHideDuration: 3000,
       variant: 'success'
     });
@@ -309,7 +328,7 @@ const JobPage = (props: tProps) => {
     }
     const res = (await addJobApi({
       name: Info.name,
-      type: Info.type as 'cron' | 'task',
+      type: 'cron',
       spec: Info.spec,
       cmd: Info.cmd,
       cmd_type: Info.cmd_type,
@@ -414,6 +433,20 @@ const JobPage = (props: tProps) => {
       getActions: (params: GridRowParams) => {
         const { id, name } = params.row;
         return [
+          <GridActionsCellItem
+            key={params.row.id + '执行一次任务'}
+            icon={
+              <Tooltip title="执行一次任务" placement="top-start">
+                <PlayArrowIcon
+                  onClick={() => {
+                    startJob(params.row);
+                  }}
+                  color="primary"
+                />
+              </Tooltip>
+            }
+            label="启动"
+          />,
           <GridActionsCellItem
             key={params.row.id + '启动'}
             icon={

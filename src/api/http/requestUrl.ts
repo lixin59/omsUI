@@ -14,6 +14,7 @@ export const urlType = {
   group: '/group',
   tunnel: '/tunnel',
   job: '/job',
+  jobExec: 'job/exec',
   jobStart: 'job/start',
   jobStop: 'job/stop',
   jobLog: {

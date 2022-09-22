@@ -35,18 +35,16 @@ const JobInfoForm = ({ Info, setInfo, execute, playerList }: tProps) => {
           <MenuItem value={'task'}>task</MenuItem>
         </Select>
       </FormControl>
-      {Info.type === 'cron' ? (
-        <TextField
-          autoFocus
-          margin="dense"
-          id="job-spec"
-          label="cron表达式"
-          placeholder="task类型不用添加规则"
-          fullWidth
-          value={Info.spec}
-          onChange={(e) => setInfo({ ...Info, spec: e.target.value })}
-        />
-      ) : null}
+      <TextField
+        autoFocus
+        margin="dense"
+        id="job-spec"
+        label="cron表达式"
+        placeholder="例: */10 * * * * *"
+        fullWidth
+        value={Info.spec}
+        onChange={(e) => setInfo({ ...Info, spec: e.target.value })}
+      />
       <FormControl style={{ width: '100%' }}>
         <InputLabel id="job-select-target-type">选择执行对象类型</InputLabel>
         <Select

@@ -300,6 +300,19 @@ export const deleteJobApi = (id: number) => {
   return deleteApi(`${urlType.job}/${id}`);
 };
 
+// 执行一次任务
+export const jobRunApi = (id: number) => {
+  const data = { id };
+  const formData = new FormData();
+  for (const k in data) {
+    // eslint-disable-next-line no-prototype-builtins
+    if (data.hasOwnProperty(k)) {
+      formData.append(k, data[k]);
+    }
+  }
+  return postApi(`${urlType.jobExec}`, formData);
+};
+
 // 启动job
 export const jobStartApi = (id: number) => {
   const data = { id };
