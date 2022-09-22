@@ -546,21 +546,21 @@ const Playbook = (props: tProps) => {
   return (
     <div className={classes.itemPage}>
       <div className={classes.ControlBox}>
-        <Button variant="contained" className={classes.addButton} onClick={() => openForm(true)}>
+        <Button variant="contained" style={{ marginRight: '20px' }} onClick={() => openForm(true)}>
           添加剧本
         </Button>
         <Button
           variant="contained"
-          className={classes.addButton}
           color="warning"
+          style={{ marginRight: '20px' }}
           startIcon={<FileDownloadIcon />}
           onClick={() => exportPlayerApi()}>
           导出剧本
         </Button>
         <Button
           variant="contained"
-          className={classes.addButton}
-          color="secondary"
+          color="warning"
+          style={{ marginRight: '20px' }}
           startIcon={<FileUploadIcon />}
           onClick={() => {
             setOpen(true);
@@ -571,7 +571,7 @@ const Playbook = (props: tProps) => {
         <Button
           variant="contained"
           color="secondary"
-          // className={classes.addButton}
+          style={{ marginRight: '20px' }}
           startIcon={<FileUploadIcon />}
           onClick={() => {
             setOpen(true);

@@ -22,11 +22,14 @@ const styles: Styles<any, {}> = (theme: Theme) => ({
   },
   ControlBox: {
     marginBottom: '20px',
-    width: '100%',
-    display: 'flex',
-    alignContent: 'space-evenly',
-    alignItems: 'center',
-    justifyContent: 'space-between'
+    width: '100%'
+    // display: 'flex',
+    // alignContent: 'space-evenly',
+    // alignItems: 'center',
+    // justifyContent: 'space-between'
+  },
+  Button: {
+    marginRight: '20px'
   },
   Control: {
     width: '15%'
