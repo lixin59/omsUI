@@ -13,6 +13,7 @@ type tProps = {
 };
 
 let timers: any = null;
+let terminalSize = { rows: 40, cols: 150 };
 
 const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -22,8 +23,8 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
     const term = new Terminal({
       // rendererType: 'canvas', // 渲染类型
       // rows: Math.ceil((document.getElementById('terminal').clientHeight + 40)), // 行数
-      rows: 40,
-      cols: 150,
+      rows: terminalSize.rows,
+      cols: terminalSize.cols,
       convertEol: true, // 启用时，光标将设置为下一行的开头
       // scrollback: 1000, // 终端中的回滚量
       // disableStdin: false, // 是否应禁用输入。
@@ -77,6 +78,7 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
         timers = setTimeout(function () {
           // console.log(event);
           ws.send(JSON.stringify({ cols: event.cols, rows: event.rows }));
+          terminalSize = { cols: event.cols, rows: event.rows };
           timers = null;
         }, 500);
       }
@@ -135,6 +137,8 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
       // const cols = Math.ceil((document.body.clientWidth - 100) / 14);
       // const rows = Math.ceil((document.body.clientHeight / 20) - 10);
       // term.resize(cols, rows);
+      const rows = Math.ceil(document.body.clientHeight / 18 - 10);
+      term.resize(terminalSize.cols, rows);
       fitAddon.fit();
     };
 

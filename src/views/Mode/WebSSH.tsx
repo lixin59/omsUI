@@ -4,9 +4,10 @@ import Button from '@material-ui/core/Button';
 import LinkIcon from '@material-ui/icons/Link';
 import LinkOffIcon from '@material-ui/icons/LinkOff';
 import FormControl from '@material-ui/core/FormControl';
+import SendIcon from '@material-ui/icons/Send';
 import OmsSelect from '../../components/OmsSelect';
 import { ActionCreator } from 'redux';
-import { HostInfo, IState } from '../../store/interface';
+import { HostInfo, IState, QuickCommandInfo } from '../../store/interface';
 import OmsTerminal from '../../components/OmsTerminal';
 import { connect } from 'react-redux';
 import OmsLabel from '../../components/OmsLabel';
@@ -19,6 +20,7 @@ import actions from '../../store/action';
 
 type tDP = {
   updateHostList: ActionCreator<any>;
+  initQuickCommandAction: ActionCreator<any>;
 };
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -26,14 +28,17 @@ type tOP = {};
 
 type tSP = tOP & {
   hostList: HostInfo[];
+  quickCommandList: QuickCommandInfo[];
 };
 
 const mapStateToProps = (state: IState, props: tOP): tSP => ({
   ...props,
-  hostList: state.hostList
+  hostList: state.hostList,
+  quickCommandList: state.quickCommandList
 });
 const mapDispatch: tDP = {
-  updateHostList: actions.getHostList
+  updateHostList: actions.getHostList,
+  initQuickCommandAction: actions.initQuickCommandList
 };
 
 type tProps = tSP & tDP;
@@ -70,9 +75,21 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: '40px',
       height: '45px',
       width: '90px',
+      marginRight: '40px',
       backgroundColor: theme.palette.error[theme.palette.type],
       '&:hover': {
         backgroundColor: theme.palette.error.main
+      }
+    },
+    sendButton: {
+      marginTop: '12px',
+      marginLeft: '40px',
+      height: '45px',
+      width: '90px',
+      marginRight: '40px',
+      backgroundColor: theme.palette.success[theme.palette.type],
+      '&:hover': {
+        backgroundColor: theme.palette.success.main
       }
     },
     shellBox: {
@@ -83,16 +100,18 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const WebSSH = ({ hostList, updateHostList }: tProps) => {
+const WebSSH = ({ hostList, updateHostList, initQuickCommandAction, quickCommandList }: tProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [item, setItem] = useState<number>(0);
   const [ws, setWs] = useState<'' | WebSocket>('');
+  const [qCmd, setQcmd] = useState(0);
 
   const params = useParams();
 
   useEffect(() => {
     updateHostList();
+    initQuickCommandAction();
   }, []);
 
   useEffect(() => {
@@ -161,6 +180,40 @@ const WebSSH = ({ hostList, updateHostList }: tProps) => {
         </Button>
         <Button disabled={!ws} className={classes.LinkOffButton} startIcon={<LinkOffIcon />} onClick={closeHost}>
           断开
+        </Button>
+        <FormControl className={classes.Control}>
+          <OmsLabel>请选择快捷命令</OmsLabel>
+          <OmsSelect
+            labelId="typeItem-select-cmd"
+            id="typeItem-select-cmd"
+            value={qCmd || ''}
+            onChange={(event) => {
+              setQcmd(event?.target?.value as number);
+            }}>
+            {quickCommandList.map((e) => {
+              return (
+                <OmsMenuItem key={e.id} value={e.id}>
+                  {`${e.name}`}
+                </OmsMenuItem>
+              );
+            })}
+          </OmsSelect>
+        </FormControl>
+        <Button
+          disabled={!ws}
+          className={classes.sendButton}
+          startIcon={<SendIcon />}
+          onClick={() => {
+            const cmdObj = quickCommandList.find((e) => e.id === qCmd);
+            if (ws && cmdObj) {
+              if (cmdObj.append_cr) {
+                ws?.send(cmdObj.cmd + '\r');
+                return;
+              }
+              ws?.send(cmdObj.cmd);
+            }
+          }}>
+          发送
         </Button>
       </div>
       <div className={classes.shellBox}>
