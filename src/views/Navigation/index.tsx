@@ -20,7 +20,7 @@ export default function Navigation() {
     if (hash.pathname.includes(URL.home)) {
       setValue(0);
     }
-    if (hash.pathname.includes(URL.group)) {
+    if (hash.pathname.includes(URL.group.root)) {
       setValue(1);
     }
     if (hash.pathname.includes(URL.mode)) {
@@ -39,12 +39,11 @@ export default function Navigation() {
           setValue(newValue);
         }}
         showLabels
-        className={classes.root}
-      >
-        <BottomNavigationAction label='主机' component={NavLink} to={URL.home} className={classes.navItem}/>
-        <BottomNavigationAction label='组' component={NavLink} to={URL.group} className={classes.navItem} />
-        <BottomNavigationAction label='运维模式' component={NavLink} to={URL.mode} className={classes.navItem} />
-        <BottomNavigationAction label='关于' component={NavLink} to={URL.about} className={classes.navItem}/>
+        className={classes.root}>
+        <BottomNavigationAction label="主机" component={NavLink} to={URL.home} className={classes.navItem} />
+        <BottomNavigationAction label="资产" component={NavLink} to={URL.group.root} className={classes.navItem} />
+        <BottomNavigationAction label="运维模式" component={NavLink} to={URL.mode} className={classes.navItem} />
+        <BottomNavigationAction label="关于" component={NavLink} to={URL.about} className={classes.navItem} />
       </BottomNavigation>
       <div style={{ height: 'calc(100% - 56px)' }}>
         <Outlet />

@@ -10,9 +10,9 @@ export const WILL_ADD_GROUP = 'WILL_ADD_GROUP'; // 更新数据
 export const WILL_EDIT_GROUP = 'WILL_EDIT_GROUP'; // 编辑分组信息
 
 export const WILL_INIT_TAG = 'WILL_INIT_TAG';
-export const WILL_DELETE_TAG = 'WILL_DELETE_TAG';
-export const WILL_ADD_TAG = 'WILL_ADD_TAG'; // 更新数据
-export const WILL_EDIT_TAG = 'WILL_EDIT_TAG'; // 编辑标签信息
+// export const WILL_DELETE_TAG = 'WILL_DELETE_TAG';
+// export const WILL_ADD_TAG = 'WILL_ADD_TAG'; // 更新数据
+// export const WILL_EDIT_TAG = 'WILL_EDIT_TAG'; // 编辑标签信息
 
 export const WILL_INIT_Tunnel = 'WILL_INIT_Tunnel';
 // export const WILL_DELETE_Tunnel = 'WILL_DELETE_Tunnel';
@@ -20,14 +20,15 @@ export const WILL_INIT_Tunnel = 'WILL_INIT_Tunnel';
 // export const WILL_EDIT_Tunnel = 'WILL_EDIT_Tunnel';
 
 export const WILL_INIT_Job = 'WILL_INIT_Job';
-export const WILL_DELETE_Job = 'WILL_DELETE_Job';
-export const WILL_ADD_Job = 'WILL_ADD_Job'; // 更新数据
-export const WILL_EDIT_Job = 'WILL_EDIT_Job'; // 编辑标签信息
+// export const WILL_DELETE_Job = 'WILL_DELETE_Job';
+// export const WILL_ADD_Job = 'WILL_ADD_Job'; // 更新数据
+// export const WILL_EDIT_Job = 'WILL_EDIT_Job'; // 编辑标签信息
 
-export const WILL_DELETE_PLAYER = 'WILL_DELETE_PLAYER';
-export const WILL_ADD_PLAYER = 'WILL_ADD_PLAYER';
-export const WILL_EDIT_PLAYER = 'WILL_EDIT_PLAYER';
+// export const WILL_DELETE_PLAYER = 'WILL_DELETE_PLAYER';
+// export const WILL_ADD_PLAYER = 'WILL_ADD_PLAYER';
+// export const WILL_EDIT_PLAYER = 'WILL_EDIT_PLAYER';
 export const WILL_INIT_PLAYER = 'WILL_INIT_PLAYER';
+export const WILL_INIT_QUICK_COMMAND = 'WILL_INIT_QUICK_COMMAND';
 
 export enum hostActions {
   INIT = 'INIT_HOST_INFO',
@@ -76,4 +77,8 @@ export enum playerActions {
   DELETE = 'DELETE_PLAYER_INFO',
   ADD = 'ADD_PLAYER_INFO',
   EDIT = 'EDIT_PLAYER_INFO'
+}
+
+export enum quickCommandActions {
+  INIT = 'INIT_QUICK_COMMAND_INFO'
 }

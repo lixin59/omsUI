@@ -43,23 +43,34 @@ function ModeTabs({ initGroup, initTag }: tProps) {
   const hash = useLocation();
 
   useEffect(() => {
-    if (hash.pathname === URL.group) {
+    if (hash.pathname === URL.group.root) {
       setValue(0);
-      navigate(URL.groupTable);
+      navigate(URL.group.groupTable);
     }
-    if (hash.pathname === URL.groupTable) {
+    if (hash.pathname === URL.group.groupTable) {
       setValue(0);
     }
-    if (hash.pathname === URL.tagTable) {
+    if (hash.pathname === URL.group.tagTable) {
       setValue(1);
     }
-    if (hash.pathname === URL.privateKey) {
+    if (hash.pathname === URL.group.privateKey) {
       setValue(2);
     }
-    if (hash.pathname === URL.playbook) {
+    if (hash.pathname === URL.group.playbook) {
       setValue(3);
     }
+    if (hash.pathname === URL.group.quick_command) {
+      setValue(4);
+    }
   }, [hash]);
+
+  const pageList = [
+    { label: '分组', index: 0, path: URL.group.groupTable },
+    { label: '标签', index: 1, path: URL.group.tagTable },
+    { label: '密钥', index: 2, path: URL.group.privateKey },
+    { label: '剧本', index: 3, path: URL.group.playbook },
+    { label: '快捷命令', index: 4, path: URL.group.quick_command }
+  ];
 
   useEffect(() => {
     (async () => {
@@ -89,28 +100,18 @@ function ModeTabs({ initGroup, initTag }: tProps) {
         orientation="vertical"
         variant="scrollable"
         value={value}
-        // indicatorColor="primary"
-        // textColor="primary"
         onChange={handleChange}
         aria-label="Vertical tabs example"
         className={classes.tabs}>
-        <OmsTab label="分组" component={NavLink} to={URL.groupTable} {...a11yProps(0)} />
-        <OmsTab label="标签" component={NavLink} to={URL.tagTable} {...a11yProps(1)} />
-        <OmsTab label="密钥" component={NavLink} to={URL.privateKey} {...a11yProps(2)} />
-        <OmsTab label="剧本" component={NavLink} to={URL.playbook} {...a11yProps(3)} />
+        {pageList.map((p) => (
+          <OmsTab key={p.index} label={p.label} component={NavLink} to={p.path} {...a11yProps(p.index)} />
+        ))}
       </OmsTabs>
-      <TabPanel className={classes.TabPanel} value={value} index={0}>
-        <Outlet />
-      </TabPanel>
-      <TabPanel className={classes.TabPanel} value={value} index={1}>
-        <Outlet />
-      </TabPanel>
-      <TabPanel className={classes.TabPanel} value={value} index={2}>
-        <Outlet />
-      </TabPanel>
-      <TabPanel className={classes.TabPanel} value={value} index={3}>
-        <Outlet />
-      </TabPanel>
+      {pageList.map((p) => (
+        <TabPanel key={p.index} className={classes.TabPanel} value={value} index={p.index}>
+          <Outlet />
+        </TabPanel>
+      ))}
     </div>
   );
 }

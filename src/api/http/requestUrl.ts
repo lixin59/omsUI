@@ -51,5 +51,6 @@ export const pluginUrl = {
 };
 
 export const commandUrl = {
-  getHistory: '/command/history'
+  getHistory: '/command/history',
+  quick_command: '/quick_command'
 };

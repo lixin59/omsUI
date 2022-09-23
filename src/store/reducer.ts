@@ -6,7 +6,8 @@ import {
   tunnelActions,
   jobActions,
   privateKeyActions,
-  playerActions
+  playerActions,
+  quickCommandActions
 } from './action-types';
 // import { getGroupsApi, getJobsApi, getTagsApi, getTunnelsApi, HTTPResult } from '../api/http/httpRequestApi';
 // import { hostInfo } from '../views/Home/typings';
@@ -159,7 +160,8 @@ const initialState: IState = {
   tunnelList: [],
   jobList: [],
   privateKeyList: [],
-  playerList: []
+  playerList: [],
+  quickCommandList: []
   // groupList: res.data || [],
   // tagList: rest.data || [],
   // tunnelList: tunnel.data || [],
@@ -209,6 +211,12 @@ const reducer = (state = initialState, action: HostAction) => {
       return {
         ...state,
         playerList: action.value
+      };
+    }
+    case quickCommandActions.INIT: {
+      return {
+        ...state,
+        quickCommandList: action.value
       };
     }
     default:

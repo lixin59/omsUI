@@ -10,6 +10,7 @@ const Grouping = lazy(() => import('../views/Group/Grouping'));
 const Tag = lazy(() => import('../views/Group/Tag'));
 const PrivateKey = lazy(() => import('../views/Group/PrivateKey'));
 const Playbook = lazy(() => import('../views/Group/playbook/index'));
+const QuickCommand = lazy(() => import('../views/Group/QuickCommand/index'));
 const Job = lazy(() => import('../views/Mode/Job/index'));
 const Tunnel = lazy(() => import('../views/Mode/Tunnel/index'));
 const UploadFile = lazy(() => import('../views/Mode/UploadFile'));
@@ -34,13 +35,16 @@ const lazyLoad = (children: ReactNode): ReactNode => {
 
 export const URL = {
   home: '/home',
-  group: '/group',
+  group: {
+    root: '/group',
+    groupTable: '/group/group_table',
+    tagTable: '/group/tagTable',
+    privateKey: '/group/private_key',
+    playbook: '/group/playbook',
+    quick_command: '/group/quick_command'
+  },
   mode: '/mode',
   about: '/about',
-  groupTable: '/group/group_table',
-  tagTable: '/group/tagTable',
-  privateKey: '/group/private_key',
-  playbook: '/group/playbook',
   job: '/mode/job',
   tunnel: '/mode/tunnel',
   uploadFile: '/mode/upload_file',
@@ -62,25 +66,29 @@ const router: RouteObject[] = [
         element: lazyLoad(<Home />)
       },
       {
-        path: URL.group,
+        path: URL.group.root,
         element: lazyLoad(<Group />),
         children: [
           {
             index: true,
-            path: URL.groupTable,
+            path: URL.group.groupTable,
             element: lazyLoad(<Grouping />)
           },
           {
-            path: URL.tagTable,
+            path: URL.group.tagTable,
             element: lazyLoad(<Tag />)
           },
           {
-            path: URL.privateKey,
+            path: URL.group.privateKey,
             element: lazyLoad(<PrivateKey />)
           },
           {
-            path: URL.playbook,
+            path: URL.group.playbook,
             element: lazyLoad(<Playbook />)
+          },
+          {
+            path: URL.group.quick_command,
+            element: lazyLoad(<QuickCommand />)
           }
         ]
       },

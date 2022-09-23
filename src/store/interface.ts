@@ -13,6 +13,7 @@ export interface IState {
   jobList: JobInfo[];
   privateKeyList: PrivateKeyInfo[];
   playerList: PlayerInfo[];
+  quickCommandList: QuickCommandInfo[];
 }
 
 export interface HostInfo {
@@ -82,4 +83,11 @@ export interface PlayerInfo {
   id: number;
   name: string;
   steps: tStep[];
+}
+
+export interface QuickCommandInfo {
+  id: number;
+  name: string;
+  cmd: string;
+  append_cr: boolean; // 是否追加CR
 }
