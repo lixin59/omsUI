@@ -11,9 +11,10 @@ import GitHubIcon from '@material-ui/icons/GitHub';
 import OmsSnackbar from './components/Snackbars';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import ThemeSwitch from './components/OmsSwitch/ThemeSwitchInput';
-import { ThemeProvider, makeStyles, createStyles, StylesProvider } from '@material-ui/core/styles'; // 4.x.x 版本
+import { ThemeProvider, makeStyles, createStyles } from '@material-ui/core/styles'; // 4.x.x 版本
 import { ThemeProvider as ThemeProviderV5 } from '@mui/material/styles'; // 5.x.x 版本
 import { themeLight, themeDark, themeLightV5, themeDarkV5 } from './theming';
+import Version from './views/Version';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -21,12 +22,12 @@ const useStyles = makeStyles(() =>
       cursor: 'pointer',
       position: 'absolute',
       top: '15px',
-      right: '10vw',
+      right: '8vw',
       display: 'flex',
       justifyContent: 'space-around',
       alignItems: 'center',
-      width: '100px',
-      '@media (max-width:940px)': {
+      width: '150px',
+      '@media (max-width:1000px)': {
         display: 'none'
       }
     }
@@ -57,6 +58,7 @@ function App() {
           <div className={classes.githubIconBox}>
             <GitHubIcon onClick={openGithub} />
             <ThemeSwitch checked={light} onChange={() => setLight((prev) => !prev)} />
+            <Version />
           </div>
         </ThemeProviderV5>
       </ThemeProvider>

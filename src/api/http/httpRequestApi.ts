@@ -492,3 +492,8 @@ export const editPrivateKeyApi = (data: { id: number; name: string; passphrase?:
 export const deletePrivateKeyApi = (id: number) => {
   return deleteApi(`${urlType.privateKey}/${id}`, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
 };
+
+// 获取app当前后端版本信息
+export const getVersionApi = (): Promise<string> => {
+  return getApi('/version');
+};

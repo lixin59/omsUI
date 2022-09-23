@@ -7,7 +7,8 @@ import {
   jobActions,
   privateKeyActions,
   playerActions,
-  quickCommandActions
+  quickCommandActions,
+  INIT_APP_VERSION
 } from './action-types';
 // import { getGroupsApi, getJobsApi, getTagsApi, getTunnelsApi, HTTPResult } from '../api/http/httpRequestApi';
 // import { hostInfo } from '../views/Home/typings';
@@ -154,6 +155,7 @@ import {
 
 // 初始化state数据
 const initialState: IState = {
+  appVersion: 'v0.0',
   hostList: [],
   groupList: [],
   tagList: [],
@@ -217,6 +219,12 @@ const reducer = (state = initialState, action: HostAction) => {
       return {
         ...state,
         quickCommandList: action.value
+      };
+    }
+    case INIT_APP_VERSION: {
+      return {
+        ...state,
+        appVersion: action.value
       };
     }
     default:

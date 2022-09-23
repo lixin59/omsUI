@@ -1,6 +1,6 @@
 import * as actionType from './action-types';
 import { GroupInfo, HostInfo, JobInfo, PrivateKeyInfo, TagInfo, TunnelInfo } from './interface';
-import { WILL_INIT_QUICK_COMMAND } from './action-types';
+import { WILL_INIT_APP_VERSION, WILL_INIT_QUICK_COMMAND } from './action-types';
 
 const actions = {
   getHostList() {
@@ -47,6 +47,9 @@ const actions = {
   },
   initQuickCommandList() {
     return { type: actionType.WILL_INIT_QUICK_COMMAND };
+  },
+  initAppVersion() {
+    return { type: WILL_INIT_APP_VERSION };
   }
 };
 

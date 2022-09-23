@@ -6,6 +6,7 @@ export interface HostAction {
 }
 
 export interface IState {
+  appVersion: string;
   hostList: HostInfo[];
   groupList: GroupInfo[];
   tagList: TagInfo[];

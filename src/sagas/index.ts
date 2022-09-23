@@ -6,6 +6,7 @@ import jobInfoSaga from './JobInfoSaga';
 import tunnelInfoSaga from './tunnelInfoSaga';
 import playerInfoSaga from './playerInfoSaga';
 import quickCommandInfoSaga from './quickCommandSaga';
+import versionInfoSaga from './versionInfoSaga';
 
 export function* defSaga() {
   yield all([
@@ -15,6 +16,7 @@ export function* defSaga() {
     groupInfoSaga(),
     tagInfoSaga(),
     playerInfoSaga(),
-    quickCommandInfoSaga()
+    quickCommandInfoSaga(),
+    versionInfoSaga()
   ]);
 }
