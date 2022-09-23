@@ -12,7 +12,7 @@ export default function About() {
           href="#"
           underline="none"
           onClick={() => {
-            window.open('https://github.com/lixin59/omsUI');
+            window.open('https://wang918562230.gitbook.io/ssbeattyoms-wen-dang/');
           }}>
           <Typography variant="h5">文档</Typography>
         </Link>
