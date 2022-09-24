@@ -4,11 +4,15 @@ import type { FC, ReactNode } from 'react';
 import Paper from '@mui/material/Paper';
 import { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
+import Typography from '@mui/material/Typography';
 
 const style = {
   width: '100%',
-  padding: '10px',
-  border: '1px dashed gray',
+  paddingLeft: '14px',
+  marginBottom: '10px',
+  // border: '1px dashed gray',
+  borderRadius: '5px 5px 0 0',
+  background: '#0ba8a8',
   cursor: 'move'
 };
 
@@ -16,13 +20,14 @@ type tProps = {
   index: number;
   moveStep: (dragIndex: number, hoverIndex: number) => void;
   children: ReactNode;
+  text: string;
 };
 
 interface DragItem {
   index: number;
 }
 
-export const DragStep: FC<tProps> = ({ index, moveStep, children }) => {
+export const DragStep: FC<tProps> = ({ index, moveStep, children, text }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [{ handlerId }, drop] = useDrop<DragItem, void, { handlerId: Identifier | null }>({
     accept: 'playbookStep',
@@ -93,7 +98,10 @@ export const DragStep: FC<tProps> = ({ index, moveStep, children }) => {
   const opacity = isDragging ? 0 : 1;
   drag(drop(ref));
   return (
-    <Paper ref={ref} style={{ ...style, opacity }} elevation={2} data-handler-id={handlerId}>
+    <Paper elevation={2} data-handler-id={handlerId}>
+      <Typography ref={ref} style={{ ...style, opacity }} variant="h6" gutterBottom component="div">
+        {text}
+      </Typography>
       {children}
     </Paper>
   );

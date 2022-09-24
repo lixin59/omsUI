@@ -387,14 +387,9 @@ const Playbook = (props: tProps) => {
               <DndProvider backend={HTML5Backend}>
                 {form.schemaList.map((e, i) => (
                   <Grid key={i} item xs={12}>
-                    <DragStep index={i} moveStep={moveStep}>
-                      <Grid container spacing={1}>
-                        <Grid item xs={2}>
-                          <Typography variant="h6" gutterBottom component="div">
-                            {`步骤${i}`}
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={8}>
+                    <DragStep index={i} moveStep={moveStep} text={`步骤${i}`}>
+                      <Grid container spacing={1} style={{ paddingLeft: '15px' }}>
+                        <Grid item xs={10}>
                           <TextField
                             id={`step-name${i}`}
                             label="步骤名称"
