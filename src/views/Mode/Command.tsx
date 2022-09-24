@@ -5,7 +5,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 import FormControl from '@material-ui/core/FormControl';
 import OmsSelect from '../../components/OmsSelect';
 import { ActionCreator } from 'redux';
-import { GroupInfo, HostInfo, IState, PlayerInfo, TagInfo } from '../../store/interface';
+import { GroupInfo, HostInfo, IState, PlayerInfo, QuickCommandInfo, TagInfo } from '../../store/interface';
 import { connect } from 'react-redux';
 import OmsLabel from '../../components/OmsLabel';
 import OmsMenuItem from '../../components/OmsSelect/OmsMenuItem';
@@ -14,6 +14,7 @@ import { baseUrl, url } from '../../api/websocket/url';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
@@ -29,6 +30,7 @@ type tDP = {
   updateTagList: ActionCreator<any>;
   updateHostList: ActionCreator<any>;
   updatePlayerList: ActionCreator<any>;
+  initQuickCommandAction: ActionCreator<any>;
 };
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -39,6 +41,7 @@ type tSP = tOP & {
   groupList: GroupInfo[];
   tagList: TagInfo[];
   playerList: PlayerInfo[];
+  quickCommandList: QuickCommandInfo[];
 };
 
 const mapStateToProps = (state: IState, props: tOP): tSP => ({
@@ -46,13 +49,15 @@ const mapStateToProps = (state: IState, props: tOP): tSP => ({
   hostList: state.hostList,
   groupList: state.groupList,
   tagList: state.tagList,
-  playerList: state.playerList
+  playerList: state.playerList,
+  quickCommandList: state.quickCommandList
 });
 const mapDispatch: tDP = {
   updateGroupList: actions.updateGroupList,
   updateTagList: actions.updateTagList,
   updateHostList: actions.getHostList,
-  updatePlayerList: actions.initPlayerInfo
+  updatePlayerList: actions.initPlayerInfo,
+  initQuickCommandAction: actions.initQuickCommandList
 };
 
 type tProps = tSP & tDP;
@@ -64,7 +69,7 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%'
     },
     ControlBox: {
-      marginBottom: '20px',
+      // marginBottom: '20px',
       width: '100%',
       display: 'flex',
       alignContent: 'center',
@@ -78,7 +83,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: '20px',
       // padding: '20px',
       width: '100%',
-      height: '90%',
+      // height: '90%',
       overflow: 'auto'
       // backgroundColor: '#000000'
     }
@@ -126,8 +131,18 @@ function reducer(state: WSdata[], action: any) {
 let terminalSize = { rows: 30, cols: 120 };
 
 const Command = (props: tProps) => {
-  const { hostList, groupList, tagList, playerList, updateHostList, updateTagList, updateGroupList, updatePlayerList } =
-    props;
+  const {
+    hostList,
+    groupList,
+    tagList,
+    playerList,
+    updateHostList,
+    updateTagList,
+    updateGroupList,
+    updatePlayerList,
+    initQuickCommandAction,
+    quickCommandList
+  } = props;
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [type, setType] = useState<string>('');
@@ -152,6 +167,7 @@ const Command = (props: tProps) => {
     updateTagList();
     updateGroupList();
     updatePlayerList();
+    initQuickCommandAction();
   }, []);
 
   const handleDebounce = useDebounce((value) => {
@@ -228,7 +244,7 @@ const Command = (props: tProps) => {
     }, 100);
 
     term.onResize((event) => {
-      (ws as WebSocket)?.send(JSON.stringify({ type: 'RESIZE', data: { cols: event.cols, rows: event.rows } }));
+      (ws as WebSocket)?.send(JSON.stringify({ type: 'RESIZE', data: { cols: event.cols, rows: event.rows }}));
       terminalSize = { cols: event.cols, rows: event.rows };
     });
     const termResize = debounce(() => {
@@ -260,7 +276,20 @@ const Command = (props: tProps) => {
     );
   };
 
-  const selectType = (flag: boolean): string | Array<any> => {
+  const sendQuickCommand = (cmdObj: QuickCommandInfo) => {
+    if (!type && !id && (!cmd || !playerId)) {
+      enqueueSnackbar(`请先选择执行对象`, {
+        autoHideDuration: 2000,
+        variant: 'error'
+      });
+      return;
+    }
+    (ws as WebSocket).send(
+      JSON.stringify({ type: 'WS_CMD', data: { type, id, cmd: cmdObj.cmd, cmd_type: 'cmd', cmd_id: playerId }})
+    );
+  };
+
+  const selectType = (flag: boolean): string | Array<HostInfo | TagInfo | GroupInfo> => {
     if (type === 'host') {
       return flag ? hostList : 'hostList';
     }
@@ -297,9 +326,9 @@ const Command = (props: tProps) => {
             value={id}
             onChange={handleChange}>
             {selectType(true).length > 0
-              ? (selectType(true) as Array<any>).map((e) => (
+              ? (selectType(true) as Array<HostInfo | TagInfo | GroupInfo>).map((e) => (
                 <OmsMenuItem key={e.name} value={e.id}>
-                  {`${e.name} ${e?.addr ? e.addr : ''}`}
+                  {`${e.name} ${'addr' in e && e?.addr ? e.addr : ''}`}
                 </OmsMenuItem>
               ))
               : null}
@@ -371,6 +400,21 @@ const Command = (props: tProps) => {
       </div>
       <div className={classes.shellBox}>
         <div id="commandTerminal" />
+      </div>
+      <div style={{ width: '100%' }}>
+        {quickCommandList.map((e) => (
+          <Tooltip key={e.id} title={`发送快捷命令: ${e.cmd}`} placement="top-start">
+            <Button
+              variant="outlined"
+              size="small"
+              style={{ padding: '0, 2px', height: '20px', textTransform: 'none' }}
+              onClick={() => {
+                sendQuickCommand(e);
+              }}>
+              {e.name}
+            </Button>
+          </Tooltip>
+        ))}
       </div>
     </div>
   );
