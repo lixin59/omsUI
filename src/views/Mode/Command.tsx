@@ -19,7 +19,12 @@ import Tooltip from '@mui/material/Tooltip';
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { WebLinksAddon } from 'xterm-addon-web-links';
-import { ANSI_COLOR_CYAN, ANSI_COLOR_RESET, ANSI_COLOR_YELLOW } from '../../components/OmsTerminal/constant';
+import {
+  ANSI_COLOR_CYAN,
+  ANSI_COLOR_RED,
+  ANSI_COLOR_RESET,
+  ANSI_COLOR_YELLOW
+} from '../../components/OmsTerminal/constant';
 import actions from '../../store/action';
 import { debounce } from 'lodash';
 import { getCMDListApi } from '../../api/http/command';
@@ -217,7 +222,11 @@ const Command = (props: tProps) => {
     webSocket.onmessage = (evt) => {
       // console.log('收到消息');
       // console.log(JSON.parse(evt.data));
-      const { data, type, msg } = JSON.parse(evt.data);
+      const { data, type, msg, code } = JSON.parse(evt.data);
+      if (code === '-1') {
+        term?.writeln(`${ANSI_COLOR_RED}ERROR: ${msg}${ANSI_COLOR_RESET}`);
+        return;
+      }
       if (type === 'msg') {
         term?.writeln(`${ANSI_COLOR_CYAN}${msg}${ANSI_COLOR_RESET}`);
       } else {
@@ -264,7 +273,14 @@ const Command = (props: tProps) => {
   }, []);
 
   const sendCommand = () => {
-    if (!type && !id && (!cmd || !playerId)) {
+    if (!type || !id) {
+      enqueueSnackbar(`请先选择所有选项`, {
+        autoHideDuration: 2000,
+        variant: 'error'
+      });
+      return;
+    }
+    if (!type || !id) {
       enqueueSnackbar(`请先选择所有选项`, {
         autoHideDuration: 2000,
         variant: 'error'
