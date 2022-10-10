@@ -642,7 +642,7 @@ const FileBrowserPage = ({ hostList, updateHostList }: tProps) => {
           <ChromeTab
             key={p.index}
             label={
-              <div>
+              <div style={{ display: 'flex', justifyContent: 'space-around', width: '100%' }}>
                 {p.label + (i + 1)}
                 <IconButton size="small" onClick={() => removeTab(p.index)}>
                   <CloseIcon fontSize="small" />
@@ -660,9 +660,7 @@ const FileBrowserPage = ({ hostList, updateHostList }: tProps) => {
       </ChromeTabs>
       {pageList.map((p, index) => (
         <ChromeTabPanel key={p.index} value={value} index={index} style={{ height: '85vh' }}>
-          <Box style={{ height: '100%' }}>
-            <FileBrowser hostList={hostList} />
-          </Box>
+          <FileBrowser hostList={hostList} />
         </ChromeTabPanel>
       ))}
     </div>

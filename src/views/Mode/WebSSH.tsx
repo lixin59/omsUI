@@ -307,8 +307,8 @@ const WebSSHPage = ({ hostList, updateHostList, initQuickCommandAction, quickCom
           <ChromeTab
             key={p.index}
             label={
-              <div>
-                {p.label + (i + 1)}
+              <div style={{ display: 'flex', justifyContent: 'space-around', width: '100%' }}>
+                <span>{p.label + (i + 1)}</span>
                 <IconButton size="small" onClick={() => removeTab(p.index)}>
                   <CloseIcon fontSize="small" />
                 </IconButton>
