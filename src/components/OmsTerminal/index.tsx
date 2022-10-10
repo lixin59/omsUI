@@ -102,7 +102,7 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
 
     ws.onopen = (evt) => {
       term.writeln('WebSocket服务器连接成功...');
-      ws.send(JSON.stringify({ cols: terminalSize.cols, rows: terminalSize.rows }));
+      ws.send(JSON.stringify({ cols: term.cols, rows: term.rows }));
       enqueueSnackbar(` WebSocket服务器连接成功: ${evt.type}`, {
         autoHideDuration: 3000,
         variant: 'success'
