@@ -57,6 +57,7 @@ export const themeLight = createTheme({
     },
     type: 'light',
     grey: {
+      50: '#fefefe',
       A100: '#f5f5f5', // BodyBox
       A200: '#d5d5d5', // Navigation
       A700: '#ffffff' // omsSelect
@@ -93,6 +94,8 @@ export const themeDark = createTheme({
     },
     type: 'dark',
     grey: {
+      50: '#373738',
+      200: '#212121',
       A100: '#2b2b2b',
       A200: '#3c3f41',
       A700: '#31343d' // omsSelect

@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, memo, useMemo, useReducer } from 'react';
 import { connect } from 'react-redux';
-import { GroupInfo, HostInfo, IState, TagInfo } from '../../../store/interface';
+import { HostInfo, IState } from '../../../store/interface';
 import {
   fileBrowserApi,
   deleteFileApi,
@@ -36,7 +36,7 @@ import TextField from '@material-ui/core/TextField';
 import FileIcon from './FileIcon';
 import qs from 'qs';
 import { baseUrl, urlType } from '../../../api/http/requestUrl';
-import { downloadFile } from '../../../utils';
+import { a11yProps, downloadFile } from '../../../utils';
 import { useSnackbar } from 'notistack';
 import { getFileType } from '../../../utils';
 import OmsViewMarkdown from '../../../components/OmsViewMarkdown';
@@ -44,6 +44,14 @@ import OmsSyntaxHighlight from '../../../components/OmsSyntaxHighligh';
 import { FileData } from 'chonky/src/types/file.types';
 import actions from '../../../store/action';
 import { ActionCreator } from 'redux';
+import ChromeTab from '../../../components/OmsTabs/ChromeTab';
+import ChromeTabs from '../../../components/OmsTabs/ChromeTabs';
+import ChromeTabPanel from '../../../components/OmsTabs/ChromeTabPanel';
+import IconButton from '@material-ui/core/IconButton';
+import AddIcon from '@material-ui/icons/Add';
+import Tooltip from '@material-ui/core/Tooltip';
+import CloseIcon from '@mui/icons-material/Close';
+import Box from '@material-ui/core/Box';
 
 function getImgBase64Byte(imgType) {
   if (imgType === 'svg') {
@@ -92,15 +100,11 @@ type tOP = {};
 
 type tSP = tOP & {
   hostList: HostInfo[];
-  groupList: GroupInfo[];
-  tagList: TagInfo[];
 };
 
 const mapStateToProps = (state: IState, props: tOP): tSP => ({
   ...props,
-  hostList: state.hostList,
-  groupList: state.groupList,
-  tagList: state.tagList
+  hostList: state.hostList
 });
 const mapDispatch: tDP = {
   updateHostList: actions.getHostList
@@ -110,16 +114,15 @@ type tProps = tSP & tDP;
 
 setChonkyDefaults({ iconComponent: FileIcon });
 
-const FileBrowserPage = ({ hostList, updateHostList }: tProps) => {
+const FileBrowserComponent = ({ hostList }: { hostList: HostInfo[] }) => {
   let darkMode = false;
-
   const useStyles = makeStyles((theme: Theme) => {
     if (theme.palette.type === 'dark') {
       darkMode = true;
     }
     return createStyles({
       root: {
-        width: '98%',
+        width: '100%',
         height: '100%'
       },
       ControlBox: {
@@ -165,10 +168,6 @@ const FileBrowserPage = ({ hostList, updateHostList }: tProps) => {
   const [code, setCode] = useState<string>('');
   const [files, setFiles] = useState<FileArray>([]);
   const [folderChain, setFolderChain] = useState<FileArray>([]);
-
-  useEffect(() => {
-    updateHostList();
-  }, []);
 
   const deleteAction = defineFileAction(
     {
@@ -570,6 +569,102 @@ const FileBrowserPage = ({ hostList, updateHostList }: tProps) => {
           ) : null}
         </DialogActions>
       </Dialog>
+    </div>
+  );
+};
+
+const FileBrowser = React.memo(FileBrowserComponent, (prevProps, nextProps) => {
+  return prevProps.hostList === nextProps.hostList;
+});
+
+function stateInit() {
+  return [
+    {
+      label: '窗口',
+      index: 0
+    }
+  ];
+}
+
+function stateReducer(state, action: any) {
+  switch (action.type) {
+    case 'update':
+      return state.map((e) => {
+        if (e.index === action.index) {
+          return { ...e, [action.key]: action.payload };
+        } else {
+          return e;
+        }
+      });
+    case 'add':
+      return [
+        ...state,
+        {
+          label: '窗口',
+          index: new Date().getTime()
+        }
+      ];
+    case 'remove':
+      return state.filter((e) => e.index !== action.index);
+    case 'reset':
+      return stateInit();
+    default:
+      throw new Error();
+  }
+}
+
+const FileBrowserPage = ({ hostList, updateHostList }: tProps) => {
+  const [value, setValue] = useState(0);
+  const [pageList, pageDispatch] = useReducer(stateReducer, stateInit(), stateInit);
+
+  useEffect(() => {
+    updateHostList();
+  }, []);
+
+  const handleChange = (event: React.ChangeEvent<any>, newValue: number) => {
+    setValue(newValue);
+  };
+  const addTab = () => {
+    pageDispatch({ type: 'add' });
+  };
+  const removeTab = (index) => {
+    pageDispatch({ type: 'remove', index });
+  };
+  return (
+    <div style={{ width: '100%' }}>
+      <ChromeTabs
+        variant="scrollable"
+        scrollButtons="auto"
+        value={value}
+        onChange={handleChange}
+        aria-label="Vertical tabs example">
+        {pageList.map((p, i) => (
+          <ChromeTab
+            key={p.index}
+            label={
+              <div>
+                {p.label + (i + 1)}
+                <IconButton size="small" onClick={() => removeTab(p.index)}>
+                  <CloseIcon fontSize="small" />
+                </IconButton>
+              </div>
+            }
+            {...a11yProps(p.index)}
+          />
+        ))}
+        <Tooltip title="新窗口" placement="top-start">
+          <IconButton color="primary" onClick={addTab}>
+            <AddIcon />
+          </IconButton>
+        </Tooltip>
+      </ChromeTabs>
+      {pageList.map((p, index) => (
+        <ChromeTabPanel key={p.index} value={value} index={index} style={{ height: '85vh' }}>
+          <Box style={{ height: '100%' }}>
+            <FileBrowser hostList={hostList} />
+          </Box>
+        </ChromeTabPanel>
+      ))}
     </div>
   );
 };
