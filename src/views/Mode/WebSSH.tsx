@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useReducer } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import LinkIcon from '@material-ui/icons/Link';
@@ -17,6 +17,14 @@ import { useSnackbar } from 'notistack';
 import { baseUrl } from '../../api/websocket/url';
 import { useParams } from 'react-router-dom';
 import actions from '../../store/action';
+import ChromeTabs from '../../components/OmsTabs/ChromeTabs';
+import ChromeTab from '../../components/OmsTabs/ChromeTab';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import { a11yProps } from '../../utils';
+import Tooltip from '@material-ui/core/Tooltip';
+import AddIcon from '@material-ui/icons/Add';
+import ChromeTabPanel from '../../components/OmsTabs/ChromeTabPanel';
 
 type tDP = {
   updateHostList: ActionCreator<any>;
@@ -46,7 +54,7 @@ type tProps = tSP & tDP;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: '98%',
+      width: '100%',
       height: '100%'
     },
     ControlBox: {
@@ -100,19 +108,16 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const WebSSH = ({ hostList, updateHostList, initQuickCommandAction, quickCommandList }: tProps) => {
+const WebSSH = ({ hostList, quickCommandList }: tSP) => {
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [item, setItem] = useState<number>(0);
   const [ws, setWs] = useState<'' | WebSocket>('');
   const [qCmd, setQcmd] = useState(0);
 
-  const params = useParams();
+  const termId = useRef('terminal' + new Date().getTime());
 
-  useEffect(() => {
-    updateHostList();
-    initQuickCommandAction();
-  }, []);
+  const params = useParams();
 
   useEffect(() => {
     // const id = Number(pathname.replace(/\/mode\/web_ssh\//g, ''));
@@ -218,7 +223,7 @@ const WebSSH = ({ hostList, updateHostList, initQuickCommandAction, quickCommand
       </div>
       <div className={classes.shellBox}>
         {ws ? (
-          <OmsTerminal id="terminal" ws={ws as WebSocket} onCloseTodo={() => setWs('')} />
+          <OmsTerminal id={termId.current} ws={ws as WebSocket} onCloseTodo={() => setWs('')} />
         ) : (
           <OmsError
             errInfo="请选择一个主机进行连接"
@@ -232,4 +237,99 @@ const WebSSH = ({ hostList, updateHostList, initQuickCommandAction, quickCommand
   );
 };
 
-export default connect(mapStateToProps, mapDispatch)(WebSSH);
+const MemoWebSSH = React.memo(WebSSH, (prevProps, nextProps) => {
+  return prevProps.hostList === nextProps.hostList;
+});
+
+function stateInit() {
+  return [
+    {
+      label: '窗口',
+      index: 0
+    }
+  ];
+}
+
+function stateReducer(state, action: any) {
+  switch (action.type) {
+    case 'update':
+      return state.map((e) => {
+        if (e.index === action.index) {
+          return { ...e, [action.key]: action.payload };
+        } else {
+          return e;
+        }
+      });
+    case 'add':
+      return [
+        ...state,
+        {
+          label: '窗口',
+          index: new Date().getTime()
+        }
+      ];
+    case 'remove':
+      return state.filter((e) => e.index !== action.index);
+    case 'reset':
+      return stateInit();
+    default:
+      throw new Error();
+  }
+}
+
+const WebSSHPage = ({ hostList, updateHostList, initQuickCommandAction, quickCommandList }: tProps) => {
+  const [value, setValue] = useState(0);
+  const [pageList, pageDispatch] = useReducer(stateReducer, stateInit(), stateInit);
+
+  useEffect(() => {
+    updateHostList();
+    initQuickCommandAction();
+  }, []);
+
+  const handleChange = (event: React.ChangeEvent<any>, newValue: number) => {
+    setValue(newValue);
+  };
+  const addTab = () => {
+    pageDispatch({ type: 'add' });
+  };
+  const removeTab = (index) => {
+    pageDispatch({ type: 'remove', index });
+  };
+  return (
+    <div style={{ width: '100%', height: '100%' }}>
+      <ChromeTabs
+        variant="scrollable"
+        scrollButtons="auto"
+        value={value}
+        onChange={handleChange}
+        aria-label="Vertical tabs example">
+        {pageList.map((p, i) => (
+          <ChromeTab
+            key={p.index}
+            label={
+              <div>
+                {p.label + (i + 1)}
+                <IconButton size="small" onClick={() => removeTab(p.index)}>
+                  <CloseIcon fontSize="small" />
+                </IconButton>
+              </div>
+            }
+            {...a11yProps(p.index)}
+          />
+        ))}
+        <Tooltip title="新窗口" placement="top-start">
+          <IconButton color="primary" onClick={addTab}>
+            <AddIcon />
+          </IconButton>
+        </Tooltip>
+      </ChromeTabs>
+      {pageList.map((p, index) => (
+        <ChromeTabPanel key={p.index} value={value} index={index} style={{ height: '95%' }}>
+          <MemoWebSSH hostList={hostList} quickCommandList={quickCommandList} />
+        </ChromeTabPanel>
+      ))}
+    </div>
+  );
+};
+
+export default connect(mapStateToProps, mapDispatch)(WebSSHPage);

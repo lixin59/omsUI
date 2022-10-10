@@ -15,11 +15,27 @@ type tProps = {
 let timers: any = null;
 let terminalSize = { rows: 40, cols: 150 };
 
+function changeTerminalSize() {
+  if (window.screen.height > 870) {
+    terminalSize.rows = 40;
+  }
+  if (window.screen.height > 1000) {
+    terminalSize.rows = 45;
+  }
+  if (window.screen.height > 1100) {
+    terminalSize.rows = 50;
+  }
+  if (window.screen.height < 870) {
+    terminalSize.rows = 30;
+  }
+}
+
 const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     // const ws = new WebSocket(wsUrl);
+    changeTerminalSize();
     const term = new Terminal({
       // rendererType: 'canvas', // 渲染类型
       // rows: Math.ceil((document.getElementById('terminal').clientHeight + 40)), // 行数
@@ -86,6 +102,7 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
 
     ws.onopen = (evt) => {
       term.writeln('WebSocket服务器连接成功...');
+      ws.send(JSON.stringify({ cols: terminalSize.cols, rows: terminalSize.rows }));
       enqueueSnackbar(` WebSocket服务器连接成功: ${evt.type}`, {
         autoHideDuration: 3000,
         variant: 'success'
