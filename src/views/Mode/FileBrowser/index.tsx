@@ -51,7 +51,7 @@ import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import Tooltip from '@material-ui/core/Tooltip';
 import CloseIcon from '@mui/icons-material/Close';
-import Box from '@material-ui/core/Box';
+import FullScreenEditorDialog from '../../../components/OmsDialog/FullScreenEditorDialog';
 
 function getImgBase64Byte(imgType) {
   if (imgType === 'svg') {
@@ -163,6 +163,8 @@ const FileBrowserComponent = ({ hostList }: { hostList: HostInfo[] }) => {
   const [parentDir, setParentDir] = useState<string>('');
   const [isMkdir, setIsMkdir] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
+  const [openEdit, setOpenEdit] = useState<boolean>(false);
+  const [editFile, setEditFile] = useState<string>('');
   const [dialogType, setDialogType] = useState<string>('');
   const [language, setLanguage] = useState<string>(codeType.txt);
   const [code, setCode] = useState<string>('');
@@ -317,6 +319,45 @@ const FileBrowserComponent = ({ hostList }: { hostList: HostInfo[] }) => {
     }
   );
 
+  const editFilesAction = defineFileAction(
+    {
+      id: 'edit_files',
+      requiresSelection: true,
+      button: {
+        name: '编辑文件',
+        toolbar: true,
+        contextMenu: true,
+        group: 'Actions',
+        icon: ChonkyIconName.code
+      }
+    } as const,
+    async ({ state }) => {
+      // console.log(state);
+      const { contextMenuTriggerFile } = state;
+      const fileType = getFileType(contextMenuTriggerFile?.name);
+      // console.log(fileType);
+      setEditFile(contextMenuTriggerFile?.id || '');
+      if (contextMenuTriggerFile?.isDir) {
+        // 文件夹不能预览
+        return;
+      }
+      // 调用api 获取文件内容 然后setCode
+      const res = (await previewFileApi({ host_id: hostId, id: contextMenuTriggerFile?.id })) as HTTPResult;
+      // console.log(res);
+      if (res.code !== '200') {
+        enqueueSnackbar(res.msg, {
+          autoHideDuration: 3000,
+          variant: 'error'
+        });
+        return;
+      }
+      setIsMkdir(false);
+      setLanguage(codeType[fileType] || 'txt');
+      setCode(res.data);
+      setOpenEdit(true);
+    }
+  );
+
   const viewFilesAction = defineFileAction(
     {
       id: 'view_files',
@@ -364,8 +405,14 @@ const FileBrowserComponent = ({ hostList }: { hostList: HostInfo[] }) => {
     clearSelectAction,
     openSelectAction,
     uploadFilesAction,
-    viewFilesAction
+    viewFilesAction,
+    editFilesAction
   ];
+
+  const onSave = (data: string) => {
+    // todo 调用后端接口保存文件
+    console.log('data', data);
+  };
 
   const handleAction = React.useCallback<FileActionHandler>(
     async (data) => {
@@ -569,6 +616,15 @@ const FileBrowserComponent = ({ hostList }: { hostList: HostInfo[] }) => {
           ) : null}
         </DialogActions>
       </Dialog>
+      <FullScreenEditorDialog
+        open={openEdit}
+        fileName={editFile}
+        darkMode={darkMode}
+        language={language}
+        defaultValue={Base64.decode(code)}
+        onSave={onSave}
+        onClose={() => setOpenEdit(false)}
+      />
     </div>
   );
 };
