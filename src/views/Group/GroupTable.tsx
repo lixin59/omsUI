@@ -170,7 +170,7 @@ export default function GroupTable({ groupList, updateGroupList }: tProps) {
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
-        labelRowsPerPage={<div>每页行数:</div>}
+        labelRowsPerPage={'每页行数:'}
         labelDisplayedRows={({ from, to, count }) => `${from}-${to} 总数 ${count !== -1 ? count : 0}`}
         component="div"
         count={groupList.length}

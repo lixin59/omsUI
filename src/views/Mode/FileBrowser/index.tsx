@@ -713,9 +713,9 @@ const FileBrowserPage = ({ hostList, updateHostList }: tProps) => {
             label={
               <div style={{ display: 'flex', justifyContent: 'space-around', width: '100%' }}>
                 {p.label + (i + 1)}
-                <IconButton size="small" onClick={() => removeTab(p.index)}>
-                  <CloseIcon fontSize="small" />
-                </IconButton>
+                <Tooltip title="关闭窗口" placement="top-start">
+                  <CloseIcon fontSize="small" color="error" onClick={() => removeTab(p.index)} />
+                </Tooltip>
               </div>
             }
             {...a11yProps(p.index)}

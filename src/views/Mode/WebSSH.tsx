@@ -297,21 +297,16 @@ const WebSSHPage = ({ hostList, updateHostList, initQuickCommandAction, quickCom
   };
   return (
     <div style={{ width: '100%', height: '100%' }}>
-      <ChromeTabs
-        variant="scrollable"
-        scrollButtons="auto"
-        value={value}
-        onChange={handleChange}
-        aria-label="Vertical tabs example">
+      <ChromeTabs variant="scrollable" scrollButtons="auto" value={value} onChange={handleChange} aria-label="上传文件">
         {pageList.map((p, i) => (
           <ChromeTab
             key={p.index}
             label={
               <div style={{ display: 'flex', justifyContent: 'space-around', width: '100%' }}>
                 <span>{p.label + (i + 1)}</span>
-                <IconButton size="small" onClick={() => removeTab(p.index)}>
-                  <CloseIcon fontSize="small" />
-                </IconButton>
+                <Tooltip title="关闭窗口" placement="top-start">
+                  <CloseIcon fontSize="small" color="error" onClick={() => removeTab(p.index)} />
+                </Tooltip>
               </div>
             }
             {...a11yProps(p.index)}

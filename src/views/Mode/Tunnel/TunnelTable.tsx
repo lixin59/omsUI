@@ -200,7 +200,7 @@ export default function JobTable({ toInit, tunnelList, hostList }: tProps) {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        labelRowsPerPage={<div>每页行数:</div>}
+        labelRowsPerPage={'每页行数:'}
         labelDisplayedRows={({ from, to, count }) => `${from}-${to} 总数 ${count !== -1 ? count : 0}`}
         count={tunnelList.length}
         rowsPerPage={rowsPerPage}

@@ -7,15 +7,14 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 
 type tProps = {
-  open: boolean,
-  title: string,
-  text: string,
-  toClose: () => any,
-  todo?: () => any
-}
+  open: boolean;
+  title: string;
+  text: string;
+  toClose: () => any;
+  todo?: () => any;
+};
 
 export default function TipDialog({ open = false, title = '', text = '', toClose, todo }: tProps) {
-
   // const [isOpen, setIsOpen] = useState<boolean>(open);
 
   const closeDialog = () => {
@@ -34,18 +33,16 @@ export default function TipDialog({ open = false, title = '', text = '', toClose
   };
 
   return (
-    <Dialog open={open} onClose={closeDialog} aria-labelledby='is-delete-host'>
+    <Dialog open={open} onClose={closeDialog} aria-labelledby="is-delete-host">
       <DialogTitle style={{ backgroundColor: '#ecad5a' }}>{title}</DialogTitle>
       <DialogContent dividers>
-        <DialogContentText>
-          {text}
-        </DialogContentText>
+        <DialogContentText>{text}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={closeDialog} color='primary'>
+        <Button onClick={closeDialog} color="primary">
           取消
         </Button>
-        <Button onClick={determine} color='primary'>
+        <Button onClick={determine} color="primary">
           确定
         </Button>
       </DialogActions>
