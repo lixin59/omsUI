@@ -107,7 +107,7 @@ export const themeDark = createTheme({
       main: '#5fb878'
     },
     secondary: {
-      main: '#74ffff'
+      main: '#00C1C1FF'
     },
     snacbar: {
       light: '#659d4d',
