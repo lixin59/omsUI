@@ -26,6 +26,7 @@ export const urlType = {
   preview_file: '/tools/preview',
   fileBrowser: '/tools/browse',
   deleteFile: '/tools/delete',
+  editFile: '/tools/modify',
   mkdir: '/tools/mkdir',
   tools: {
     export: '/tools/export',

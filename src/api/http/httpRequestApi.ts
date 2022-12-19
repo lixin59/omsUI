@@ -450,6 +450,15 @@ export const previewFileApi = (data: {
   return getApi(`${urlType.preview_file}`, { ...data }, { timeout: 86400000 });
 };
 
+// 预览文件
+export const editFileApi = (data: {
+  host_id: string | number; // host的ID
+  id: any; // 文件路径 如/root/go/robots.txt
+  modify_content: any; // 文本内容字符串
+}) => {
+  return postApi(`${urlType.editFile}`, data, { timeout: 86400000 });
+};
+
 // 新增密钥
 export const addPrivateKeyApi = (data: {
   name: string; // 某主机秘钥

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, memo, useMemo, useReducer } from 'react';
+import React, { useState, useCallback, useEffect, memo, useReducer } from 'react';
 import { connect } from 'react-redux';
 import { HostInfo, IState } from '../../../store/interface';
 import {
@@ -6,7 +6,8 @@ import {
   deleteFileApi,
   createFileApi,
   previewFileApi,
-  HTTPResult
+  HTTPResult,
+  editFileApi
 } from '../../../api/http/httpRequestApi';
 import { Base64 } from 'js-base64';
 import {
@@ -87,6 +88,7 @@ const codeType = {
   txt: 'txt',
   ts: 'typescript',
   xml: 'xml',
+  yml: 'yml',
   yaml: 'yaml',
   ...imgType
 };
@@ -409,12 +411,23 @@ const FileBrowserComponent = ({ hostList }: { hostList: HostInfo[] }) => {
     editFilesAction
   ];
 
-  const onSave = (data: string) => {
-    // todo 调用后端接口保存文件
-    console.log('data', data);
+  const onSave = async (data: string) => {
+    const res = await editFileApi({ host_id: hostId, id: editFile, modify_content: Base64.encode(data) });
+    if (res.code !== '200') {
+      enqueueSnackbar(res.msg, {
+        autoHideDuration: 3000,
+        variant: 'error'
+      });
+      return;
+    }
+    enqueueSnackbar(`文件${editFile}保存成功`, {
+      autoHideDuration: 3000,
+      variant: 'success'
+    });
+    return;
   };
 
-  const handleAction = React.useCallback<FileActionHandler>(
+  const handleAction = useCallback<FileActionHandler>(
     async (data) => {
       // console.log(data);
       if (data.id === ChonkyActions.OpenSelection.id && data.state?.contextMenuTriggerFile?.isDir) {
@@ -629,7 +642,7 @@ const FileBrowserComponent = ({ hostList }: { hostList: HostInfo[] }) => {
   );
 };
 
-const FileBrowser = React.memo(FileBrowserComponent, (prevProps, nextProps) => {
+const FileBrowser = memo(FileBrowserComponent, (prevProps, nextProps) => {
   return prevProps.hostList === nextProps.hostList;
 });
 
