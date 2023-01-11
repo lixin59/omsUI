@@ -15,7 +15,7 @@ type tProps = DialogProps & {
 };
 
 export default function FormDialog(props: tProps) {
-  const { open = false, title, content, toClose, todo } = props;
+  const { open = false, title, content, toClose, todo, maxWidth } = props;
   const closeDialog = (event, reason) => {
     if (reason === 'backdropClick') {
       return;
@@ -33,7 +33,7 @@ export default function FormDialog(props: tProps) {
   };
 
   return (
-    <Dialog open={open} title={title} onClose={closeDialog} aria-labelledby="form-dialog">
+    <Dialog open={open} title={title} onClose={closeDialog} maxWidth={maxWidth} aria-labelledby="form-dialog">
       <DialogTitle id="form-dialog">{title}</DialogTitle>
       <DialogContent>{content || null}</DialogContent>
       <DialogActions>
