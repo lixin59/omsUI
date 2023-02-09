@@ -1,8 +1,11 @@
 name: Release
 on:
   push:
-    tags:
-      - '**'
+    branches:
+      - master
+      - next
+      - beta
+      - "*.x"
 
 permissions:
   contents: read #  for checkout
