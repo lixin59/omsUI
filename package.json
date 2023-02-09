@@ -12,6 +12,17 @@
     "serve": "vite preview",
     "semantic-release": "semantic-release"
   },
+  "release": {
+    "branch": "master",
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/github",
+      ["@semantic-release/npm", {
+        "npmPublish": false
+      }],
+      "@semantic-release/release-notes-generator"
+    ]
+  },
   "browserslist": {
     "production": [
       ">0.2%",
