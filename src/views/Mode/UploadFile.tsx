@@ -199,10 +199,10 @@ const UploadFile = ({ hostList, groupList, tagList, updateHostList, updateTagLis
             onChange={handleChange}>
             {selectType(true).length > 0
               ? (selectType(true) as Array<TagInfo | GroupInfo | HostInfo>).map((e) => (
-                <OmsMenuItem key={e.name} value={e.id}>
-                  {e.name}
-                </OmsMenuItem>
-              ))
+                  <OmsMenuItem key={e.name} value={e.id}>
+                    {e.name}
+                  </OmsMenuItem>
+                ))
               : null}
           </OmsSelect>
         </FormControl>
