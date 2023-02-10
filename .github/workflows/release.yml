@@ -2,7 +2,7 @@ name: Release
 on:
   push:
     tags:
-      - '**'
+      - '*'
 
 permissions:
   contents: write
@@ -22,7 +22,7 @@ jobs:
           node-version: 16.x
       # 缓存 node_modules
       - name: Cache dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: yarn-cache
         with:
           path: |
@@ -37,23 +37,19 @@ jobs:
         run: yarn --frozen-lockfile
 
       # 运行构建脚本
-      - name: Build frontend
-        run: yarn build
+      #      - name: Build frontend
+      #        run: yarn build
+      #      - name: Compressed file # 压缩dist目录
+      #        run: zip -r omsui.zip ./dist
+      #      - name: release # 创建release文件
+      #        uses: softprops/action-gh-release@v1
+      #        if: startsWith(github.ref, 'refs/tags/')
+      #        with:
+      #          files: "omsui.zip"
+      #        env:
+      #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # 压缩dist目录
-      - name: Compressed file
-        run: zip -r omsui.zip ./dist
-
-      # 创建release文件
-      - name: release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: "omsui.zip"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: "Build Changelog"
+      - name: Create github releases
         run: npx changelogithub
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
