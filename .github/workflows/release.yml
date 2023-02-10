@@ -1,29 +1,25 @@
 name: Release
 on:
   push:
-    branches:
-      - master
-      - next
-      - beta
-      - "*.x"
+    tags:
+      - '**'
 
 permissions:
-  contents: read #  for checkout
+  contents: write
+
 jobs:
   release:
-    permissions:
-      contents: write #  to be able to publish a GitHub release
-      issues: write #  to be able to comment on released issues
-      pull-requests: write #  to be able to comment on released pull requests
     name: release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           cache: npm
-          node-version: lts/*
+          node-version: 16.x
       # 缓存 node_modules
       - name: Cache dependencies
         uses: actions/cache@v2
@@ -56,6 +52,8 @@ jobs:
           files: "omsui.zip"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: npx semantic-release
+
+      - name: "Build Changelog"
+        run: npx changelogithub
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

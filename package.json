@@ -9,34 +9,7 @@
     "lint-staged": "lint-staged",
     "prepare": "husky install",
     "release": "yarn version",
-    "serve": "vite preview",
-    "semantic-release": "semantic-release"
-  },
-  "release": {
-    "branch": [
-      "+([0-9])?(.{+([0-9]),x}).x",
-      "master",
-      {
-        "name": "beta",
-        "prerelease": true
-      },
-      {
-        "name": "alpha",
-        "prerelease": true
-      }
-    ],
-    "plugins": [
-      "@semantic-release/commit-analyzer",
-      "@semantic-release/release-notes-generator",
-      "@semantic-release/github",
-      [
-        "@semantic-release/npm",
-        {
-          "npmPublish": false
-        }
-      ]
-    ],
-    "preset": "angular"
+    "serve": "vite preview"
   },
   "browserslist": {
     "production": [
@@ -80,6 +53,7 @@
     "@rjsf/core": "^4.2.2",
     "@rjsf/material-ui": "^4.2.2",
     "axios": "^0.24.0",
+    "changelogithub": "^0.12.7",
     "chonky": "^2.3.0",
     "chonky-icon-fontawesome": "^2.3.0",
     "echarts": "^5.2.2",
@@ -126,7 +100,6 @@
     "husky": "^7.0.4",
     "lint-staged": "^12.3.3",
     "prettier": "^2.5.1",
-    "semantic-release": "^20.1.0",
     "typescript": "^4.9.3",
     "vite": "^4.0.0"
   }

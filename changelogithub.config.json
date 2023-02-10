@@ -1,0 +1,23 @@
+{
+  "types": {
+    "feat": { "title": "🚀 Features", "semver": "minor" },
+    "perf": { "title": "🔥 Performance", "semver": "patch" },
+    "fix": { "title": "🩹 Fixes", "semver": "patch" },
+    "refactor": { "title": "💅 Refactors", "semver": "patch" },
+    "docs": { "title": "📖 Documentation", "semver": "patch" },
+    "add": { "title": "➕ Add", "semver": "patch" },
+    "types": { "title": "🌊 Types", "semver": "patch" },
+    "chore": { "title": "🏡 Chore" },
+    "examples": { "title": "🏀 Examples" },
+    "test": { "title": "🧪 Tests" },
+    "style": { "title": "🎨 Styles" },
+    "ci": { "title": "🤖 CI" }
+  },
+  "scopeMap": {},
+  "titles": {
+    "breakingChanges": "🚨 Breaking Changes"
+  },
+  "contributors": true,
+  "capitalize": true,
+  "group": true
+}
