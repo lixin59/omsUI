@@ -30,7 +30,8 @@ export const urlType = {
   mkdir: '/tools/mkdir',
   tools: {
     export: '/tools/export',
-    import: '/tools/import'
+    import: '/tools/import',
+    upload_file_cancel: '/tools/upload/cancel'
   },
   playbook: {
     schema: '/schema', // get

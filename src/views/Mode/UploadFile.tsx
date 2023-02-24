@@ -9,6 +9,9 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import IconButton from '@mui/material/IconButton';
+import CancelIcon from '@mui/icons-material/Cancel';
+import Tooltip from '@mui/material/Tooltip';
 import LinearProgressWithLabel from '../../components/UploadFileProgress/Linear';
 import { ActionCreator } from 'redux';
 import { GroupInfo, HostInfo, IState, TagInfo } from '../../store/interface';
@@ -19,6 +22,7 @@ import OmsMenuItem from '../../components/OmsSelect/OmsMenuItem';
 import { baseUrl, url } from '../../api/websocket/url';
 import { useSnackbar } from 'notistack';
 import { uniqBy } from 'lodash';
+import { uploadFileCancelApi } from '../../api/http/httpRequestApi';
 
 type tDP = {
   updateGroupList: ActionCreator<any>;
@@ -178,6 +182,23 @@ const UploadFile = ({ hostList, groupList, tagList, updateHostList, updateTagLis
     setExpanded(isExpanded ? panel : false);
   };
 
+  const cancelUploadFile = async (data: { addr: string; file: string }) => {
+    try {
+      const res = await uploadFileCancelApi(data);
+      if (res.code === '200') {
+        enqueueSnackbar(`${data.addr}: ${data.file} 已取消上传`, {
+          autoHideDuration: 10000,
+          variant: 'success'
+        });
+      }
+    } catch (e) {
+      enqueueSnackbar(`${data.addr}: ${data.file} 取消上传失败 ${e}`, {
+        autoHideDuration: 10000,
+        variant: 'error'
+      });
+    }
+  };
+
   return (
     <div className={classes.root}>
       <div className={classes.ControlBox}>
@@ -238,20 +259,34 @@ const UploadFile = ({ hostList, groupList, tagList, updateHostList, updateTagLis
                   <Typography sx={{ width: '15%', flexShrink: 0 }} color="error">
                     失败:{uploadList.filter((f) => f.dest === str)?.filter((f) => f.status === 'failed').length}
                   </Typography>
+                  <Typography sx={{ width: '15%', flexShrink: 0 }} style={{ color: '#ffb74d' }}>
+                    取消:{uploadList.filter((f) => f.dest === str)?.filter((f) => f.status === 'cancel').length}
+                  </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   {uploadList
                     .filter((f) => f.dest === str)
                     .map((e) => (
-                      <LinearProgressWithLabel
-                        key={e.id}
-                        dest={e.dest}
-                        total={e.total}
-                        value={e.percent}
-                        file={e.file}
-                        speed={e.speed}
-                        status={e.status}
-                      />
+                      <div key={e.id} style={{ display: 'flex', alignItems: 'center' }}>
+                        <LinearProgressWithLabel
+                          dest={e.dest}
+                          total={e.total}
+                          value={e.percent}
+                          file={e.file}
+                          speed={e.speed}
+                          status={e.status}
+                        />
+                        <Tooltip title="取消上传">
+                          <IconButton
+                            aria-label="cancel"
+                            style={{ width: '50px', height: '50px' }}
+                            disabled={e.status !== 'running'}
+                            onClick={() => cancelUploadFile({ addr: e.dest, file: e.file })}
+                            color="warning">
+                            <CancelIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </div>
                     ))}
                 </AccordionDetails>
               </Accordion>

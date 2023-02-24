@@ -395,6 +395,14 @@ export const uploadFileApi = (data: UploadFilePost, config?: AxiosRequestConfig)
   });
 };
 
+// 取消 上传文件
+export const uploadFileCancelApi = (data: { addr: string; file: string }, config?: AxiosRequestConfig) => {
+  return postApi(`${urlType.tools.upload_file_cancel}`, data, {
+    timeout: 86400000, // 一天
+    ...config
+  });
+};
+
 // 文件浏览
 export const fileBrowserApi = (data: {
   host_id: string | number; // host的ID
