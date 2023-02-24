@@ -85,6 +85,7 @@
     "xterm-addon-web-links": "^0.6.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.30.0",
     "@types/js-base64": "^3.3.1",
     "@types/lodash": "^4.14.172",
     "@types/qs": "^6.9.7",
