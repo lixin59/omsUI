@@ -11,10 +11,11 @@ export default function* hostInfoSaga() {
         init: take(actionType.WILL_INIT_HOST)
       });
       if (getList) {
-        const res = yield call(getHostsApi);
+        const res = yield call(getHostsApi, getList?.value?.pageSize || 1000, getList?.value?.pageNo || 1);
         if (res.code !== '200') {
           return;
         }
+        yield put({ type: hostActions.UPDATE_HOST_TOTAL, value: res?.data?.total });
         yield put({ type: hostActions.INIT, value: res?.data?.data });
       }
       if (init) {

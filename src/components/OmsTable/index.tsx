@@ -8,6 +8,7 @@ type tProps = DataGridProps & React.RefAttributes<HTMLDivElement>;
 
 export default function OmsTable(props: tProps) {
   const { columns, rows } = props;
+
   return (
     <Box sx={{ height: '100%', width: '100%' }}>
       {rows.length < 1 ? (
@@ -16,6 +17,7 @@ export default function OmsTable(props: tProps) {
         </div>
       ) : (
         <DataGrid
+          {...props}
           rows={rows}
           columns={columns}
           components={{

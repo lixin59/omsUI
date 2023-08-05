@@ -3,8 +3,8 @@ import { GroupInfo, HostInfo, JobInfo, PrivateKeyInfo, TagInfo, TunnelInfo } fro
 import { WILL_INIT_APP_VERSION, WILL_INIT_QUICK_COMMAND } from './action-types';
 
 const actions = {
-  getHostList() {
-    return { type: actionType.WILL_GET_HOST_LIST };
+  getHostList(value?: { pageSize: number; pageNo: number }) {
+    return { type: actionType.WILL_GET_HOST_LIST, value };
   },
   initHostInfo(value: HostInfo[]) {
     return { type: actionType.WILL_INIT_HOST, value };

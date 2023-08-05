@@ -8,6 +8,7 @@ export interface HostAction {
 export interface IState {
   appVersion: string;
   hostList: HostInfo[];
+  hostTotal: number;
   groupList: GroupInfo[];
   tagList: TagInfo[];
   tunnelList: TunnelInfo[];

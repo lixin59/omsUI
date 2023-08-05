@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import OmsTable from '../OmsTable/index';
 import Card from '@material-ui/core/Card';
 import { GroupInfo, HostInfo, IState, PrivateKeyInfo, TagInfo } from '../../store/interface';
@@ -163,6 +163,7 @@ type tOP = {};
 type tSP = tOP & {
   hostList: HostInfo[];
   groupList: GroupInfo[];
+  hostTotal: number;
   tagList: TagInfo[];
   privateKeyList: PrivateKeyInfo[];
 };
@@ -170,6 +171,7 @@ type tSP = tOP & {
 const mapStateToProps = (state: IState, props: tOP): tSP => ({
   ...props,
   hostList: state.hostList,
+  hostTotal: state.hostTotal,
   groupList: state.groupList,
   tagList: state.tagList,
   privateKeyList: state.privateKeyList
@@ -190,14 +192,24 @@ type tProps = tSP &
   };
 
 function HostInfoTable(props: tProps) {
-  const { hostList, upHostList, tipDispatch, formDispatch, setHostId, setHostInfo, setTlc, tagList } = props;
+  const { hostList, hostTotal, upHostList, tipDispatch, formDispatch, setHostId, setHostInfo, setTlc, tagList } = props;
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
+  const [pageSize, setPageSize] = useState(25);
+
   useEffect(() => {
-    upHostList();
+    upHostList({ pageSize, pageNo: 1 });
   }, []);
 
+  const onPageSizeChange = (pageSize: number) => {
+    setPageSize(pageSize);
+    upHostList({ pageSize, pageNo: 1 });
+  };
+
+  const onPageChange = (pageNo: number) => {
+    upHostList({ pageSize, pageNo: pageNo + 1 }); // 组件库是以0开始的所以要加一
+  };
   const getHostList = (hostList: HostInfo[]) => {
     return hostList?.map((h) => {
       return {
@@ -232,7 +244,17 @@ function HostInfoTable(props: tProps) {
 
   return (
     <Card style={{ width: '98%', height: '80vh', margin: '0 auto', marginTop: '20px' }}>
-      <OmsTable columns={columns} rows={getHostList(hostList)} />
+      <OmsTable
+        columns={columns}
+        rows={getHostList(hostList)}
+        rowCount={hostTotal}
+        pagination
+        pageSize={pageSize}
+        rowsPerPageOptions={[25, 50, 100]}
+        paginationMode={'server'}
+        onPageSizeChange={onPageSizeChange}
+        onPageChange={onPageChange}
+      />
     </Card>
   );
 }

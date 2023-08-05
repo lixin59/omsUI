@@ -157,6 +157,7 @@ import {
 const initialState: IState = {
   appVersion: 'v0.0',
   hostList: [],
+  hostTotal: 0,
   groupList: [],
   tagList: [],
   tunnelList: [],
@@ -177,6 +178,12 @@ const reducer = (state = initialState, action: HostAction) => {
       return {
         ...state,
         hostList: action.value
+      };
+    }
+    case hostActions.UPDATE_HOST_TOTAL: {
+      return {
+        ...state,
+        hostTotal: action.value
       };
     }
     case groupActions.INIT: {
