@@ -15,6 +15,7 @@ type tProps = {
   onUploadComplete?: () => void; // 上传完成后需要处理的回调
   // onUploadProgress?: (progressEvent: any) => void;
   showUploadProgress?: boolean;
+  customUploadFn?: (filelist) => void; // 自定义上传
 };
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function UploadButtons(props: tProps) {
-  const { filePath = '', typeId, type, onBeforeUpload, onUploadComplete, showUploadProgress } = props;
+  const { filePath = '', typeId, type, onBeforeUpload, onUploadComplete, showUploadProgress, customUploadFn } = props;
   const classes = useStyles();
   const [fileList, setFileList] = useState<null | FileList>(null);
   const [fileName, setFileName] = useState<string>('未选择任何文件');
@@ -131,13 +132,17 @@ export default function UploadButtons(props: tProps) {
       });
       return;
     }
-    const res = (await uploadFileApi({
-      id: typeId,
-      type,
-      remote: filePath,
-      files: fileList
-    })) as HTTPResult;
-    console.log(res);
+    if (customUploadFn) {
+      customUploadFn(fileList);
+    } else {
+      const res = (await uploadFileApi({
+        id: typeId,
+        type,
+        remote: filePath,
+        files: fileList
+      })) as HTTPResult;
+      console.log(res);
+    }
     if (onUploadComplete) {
       onUploadComplete();
     }
