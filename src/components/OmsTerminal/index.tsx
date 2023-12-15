@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Terminal } from 'xterm';
 import Zmodem from 'zmodem.js';
 import 'xterm/css/xterm.css';
-import { AttachAddon } from 'xterm-addon-attach';
+import { AttachAddon } from './AttachAddon';
 import { FitAddon } from 'xterm-addon-fit';
 import { useSnackbar } from 'notistack';
-import { c } from 'chonky/dist/util/styles';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -324,10 +323,7 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
       document.body.removeChild(el);
     };
     const _to_terminal = (octets) => {
-      // i.e. send to the ZMODEM peer
-      if (ws) {
-        ws.send(new Uint8Array(octets).buffer);
-      }
+      // i.e. send to the Terminal
     };
     const _on_retract = () => {
       // for when Sentry retracts a Detection
@@ -423,13 +419,14 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
         onClose={() => setUploadDialogVisible(false)}
         aria-labelledby="file-browser"
         fullWidth
-        maxWidth={'xl'}>
+        maxWidth="md">
         <DialogContent
           style={{ minHeight: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'center ' }}
           dividers>
           <DialogContentText>
             <UploadButtons
               type="host"
+              typeId={1}
               onBeforeUpload={() => {
                 setUploadDialogVisible(false);
               }}
