@@ -432,7 +432,7 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
               }}
               customUploadFn={upload}
               // onUploadProgress={onUploadProgress}
-              showUploadProgress={true}
+              showUploadProgress={false}
             />
           </DialogContentText>
         </DialogContent>

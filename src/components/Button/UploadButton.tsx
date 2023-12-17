@@ -141,7 +141,7 @@ export default function UploadButtons(props: tProps) {
         remote: filePath,
         files: fileList
       })) as HTTPResult;
-      console.log(res);
+      console.log('uploadFileApi res', res);
     }
     if (onUploadComplete) {
       onUploadComplete();
