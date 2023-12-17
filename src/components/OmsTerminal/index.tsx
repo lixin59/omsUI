@@ -55,6 +55,8 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
     for (let f = files.length - 1; f >= 0; f--) {
       const fobj = files[f];
       total_size += fobj.size;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       batch[f] = {
         obj: fobj,
         name: fobj.name,
@@ -74,6 +76,8 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
       file_idx++;
       return session.send_offer(cur_b).then(function after_send_offer(xfer) {
         if (options.on_offer_response) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           options.on_offer_response(cur_b.obj, xfer);
         }
         if (xfer === undefined) {
@@ -91,29 +95,37 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
           reader.onprogress = function reader_onprogress(e) {
             // Some browsers (e.g., Chrome) give partial returns,
             // while others (e.g., Firefox) don’t.
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             if (e.target.result) {
-              piece = new Uint8Array(e.target.result, xfer.get_offset());
+              piece = new Uint8Array(e?.target?.result as ArrayBufferLike, xfer.get_offset());
               // _check_aborted(session);
               if (session.aborted()) {
                 throw new Zmodem.Error('aborted');
               }
               xfer.send(piece);
               if (options.on_progress) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
                 options.on_progress(cur_b.obj, xfer, piece);
               }
             }
           };
           reader.onload = function reader_onload(e) {
-            piece = new Uint8Array(e.target.result, xfer, piece);
+            piece = new Uint8Array(e?.target?.result as ArrayBufferLike, xfer, piece);
             // _check_aborted(session);
             if (session.aborted()) {
               throw new Zmodem.Error('aborted');
             }
             xfer.end(piece).then(function () {
               if (options.on_progress && piece.length) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
                 options.on_progress(cur_b.obj, xfer, piece);
               }
               if (options.on_file_complete) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
                 options.on_file_complete(cur_b.obj, xfer);
               }
               // Resolve the current file-send promise with
@@ -123,6 +135,8 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
               res(promise_callback());
             });
           };
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           reader.readAsArrayBuffer(cur_b.obj);
         });
       });
@@ -165,6 +179,8 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
           console.log(`${obj.name} 上传成功`);
         }
       }).then(() => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         zsession?.close();
         setUploadDialogVisible(false);
         setUpLoading(false);
@@ -177,16 +193,16 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
     }
   };
   // 上传文件弹框关闭
-  const handleCloseUpload = () => {
-    if (uploadLoading) {
-      console.log('====上传中无法关闭');
-    } else {
-      zsession?.close().then(() => {
-        // const upload = this.$refs.upload;
-        // upload.clearFiles();
-      });
-    }
-  };
+  // const handleCloseUpload = () => {
+  //   if (uploadLoading) {
+  //     console.log('====上传中无法关闭');
+  //   } else {
+  //     zsession?.close().then(() => {
+  //       // const upload = this.$refs.upload;
+  //       // upload.clearFiles();
+  //     });
+  //   }
+  // };
 
   useEffect(() => {
     // const ws = new WebSocket(wsUrl);
@@ -341,6 +357,8 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
       // is actually not meant to be ZMODEM.
       zsession = detection.confirm();
       // 这里是监听上传事件
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       if (zsession?.type === 'send') {
         // Send a group of files, e.g., from an <input>’s “.files”.
         // There are events you can listen for here as well,
@@ -351,6 +369,8 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
         setUploadDialogVisible(true);
       } else {
         // 这里监听下载事件
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         zsession.on('offer', (xfer) => {
           // Do this if you don’t want the offered file.
 
@@ -373,10 +393,14 @@ const OmsTerminal = ({ id, ws, onCloseTodo }: tProps) => {
           });
         });
         // 监听到下载完毕，关闭下载弹框
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         zsession.on('session_end', () => {
           setPercentage(0);
           setDownloadDialogVisible(false);
         });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         zsession.start();
       }
     };
