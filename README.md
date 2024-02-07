@@ -42,51 +42,63 @@
 </p>
 
 ### 目前已经实现的功能
+
 1. 隧道, 类似`ssh`的`-L`和`-R`
-2. cron任务和长进程的管理
-3. ssh命令批量执行
+2. cron 任务和长进程的管理
+3. ssh 命令批量执行
 4. 文件批量的上传 流式传输支持大文件
 5. 基于`sftp`文件浏览器
 
 ### 查看后端代码请移步到 [oms](https://github.com/ssbeatty/oms)
 
 ## 安装依赖
+
 ```shell
 npm install
 ```
+
 或者
+
 ```shell
-yarn add
+pnpm install
 ```
 
-## 1.运行 
+## 1.运行
+
 ```shell
 npm run dev
 ```
+
 ```shell
-yarn dev
+pnpm dev
 ```
+
 ## 2.编译
+
 ```shell
 npm run build
 ```
+
 ```shell
-yarn build
+pnpm build
 ```
 
-## 3.注意 
-## node 版本 14.17.1 , vite 版本 4.0.0
+## 3.注意
+
+## node 版本 20.11.0 , vite 版本 5.1.X
 
 ## 开发环境调试设置
 
-系统打包会优先使用```.env```文件里面的环境变量。
-如果没有```.env```文件会使用默认的host.
-如果需要在开发环境中调试api,在根目录下添加```.env```文件，然后添加以下内容(ip地址和端口根据后端接口来修改).
+系统打包会优先使用`.env`文件里面的环境变量。
+如果没有`.env`文件会使用默认的 host.
+如果需要在开发环境中调试 api,在根目录下添加`.env`文件，然后添加以下内容(ip 地址和端口根据后端接口来修改).
+
 ```text
  VITE_TEST_HOST='127.0.0.1:9090'
 ```
 
 ## 项目预览
+
 ### 主题切换
 
 ![浅色](./docs/images/light.png)
@@ -111,7 +123,6 @@ yarn build
 ### web ssh
 
 ![web ssh](./docs/images/webssh.png)
-
 
 ### 文件浏览
 
