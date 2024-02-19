@@ -6,7 +6,7 @@ if (import.meta.env.DEV) {
 
 const localhost = testHost || window.location.host;
 
-export const baseUrl = `http://${localhost}/api/v1`;
+export const baseUrl = `${document.location.protocol}//${localhost}/api/v1`;
 
 export const urlType = {
   host: '/host',
