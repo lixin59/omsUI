@@ -6,7 +6,7 @@ if (import.meta.env.DEV) {
 
 const localhost = testHost || window.location.host;
 
-export const baseUrl = `ws://${localhost}/ws/`;
+export const baseUrl = `${document.location.protocol === 'https:' ? 'wss' : 'ws'}://${localhost}/ws/`;
 
 export const url = {
   index: 'index',
