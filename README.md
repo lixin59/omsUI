@@ -51,6 +51,11 @@
 
 ### 查看后端代码请移步到 [oms](https://github.com/ssbeatty/oms)
 
+### 技术交流
+
+- QQ 群 720670808
+- ![QQ群](./docs/images/qq.png)
+
 ## 安装依赖
 
 ```shell
