@@ -147,8 +147,11 @@ const WebSSH = ({ hostList, quickCommandList }: tSP) => {
       autoHideDuration: 3000,
       variant: 'info'
     });
-    (ws as WebSocket).close();
-    setWs('');
+    ws?.send('exit' + '\r');
+    setTimeout(() => {
+      (ws as WebSocket).close();
+      setWs('');
+    }, 2000);
   };
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
