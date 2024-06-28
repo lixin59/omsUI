@@ -364,7 +364,7 @@ const Playbook = (props: tProps) => {
           </List>
         </Paper>
         {form.schemaList.length > 0 ? (
-          <Paper elevation={3} style={{ maxWidth: '700px', padding: '10px' }}>
+          <Paper elevation={3} style={{ maxWidth: '800px', padding: '10px' }}>
             <Grid container spacing={1}>
               <Grid item xs={4}>
                 <Typography variant="h6" gutterBottom component="div">
@@ -588,7 +588,7 @@ const Playbook = (props: tProps) => {
         todo={tip.todo}
       />
       <FormDialog
-        maxWidth="md"
+        maxWidth="xl"
         open={form.open}
         content={content}
         toClose={() => {

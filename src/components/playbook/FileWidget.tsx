@@ -29,7 +29,7 @@ export default function FileWidget(props: WidgetProps) {
   const { id, multiple, autofocus, onChange } = props;
   const classes = useStyles();
   const [fileList, setFileList] = useState<null | FileList>(null);
-  const [fileName, setFileName] = useState<string>('未选择任何文件');
+  const [fileName, setFileName] = useState<string>(props.value || '未选择任何文件');
   const [fileNameList, setFileNameList] = useState<any[]>([]);
   const [progress, setProgress] = useState(0);
 
