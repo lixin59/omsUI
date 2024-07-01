@@ -53,6 +53,7 @@ import AddIcon from '@material-ui/icons/Add';
 import Tooltip from '@material-ui/core/Tooltip';
 import CloseIcon from '@mui/icons-material/Close';
 import FullScreenEditorDialog from '../../../components/OmsDialog/FullScreenEditorDialog';
+import { fileLanguageType } from '../../../constants';
 
 function getImgBase64Byte(imgType) {
   if (imgType === 'svg') {
@@ -71,25 +72,7 @@ const imgType = {
 };
 
 const codeType = {
-  c: 'c',
-  cpp: 'cpp',
-  css: 'css',
-  go: 'go',
-  html: 'html',
-  js: 'javascript',
-  jsx: 'jsx',
-  java: 'java',
-  json: 'json',
-  md: 'markdown',
-  php: 'php',
-  py: 'python',
-  rs: 'rust',
-  tsx: 'jsx',
-  txt: 'txt',
-  ts: 'typescript',
-  xml: 'xml',
-  yml: 'yml',
-  yaml: 'yaml',
+  ...fileLanguageType,
   ...imgType
 };
 
@@ -354,7 +337,7 @@ const FileBrowserComponent = ({ hostList }: { hostList: HostInfo[] }) => {
         return;
       }
       setIsMkdir(false);
-      setLanguage(codeType[fileType] || 'txt');
+      setLanguage(codeType[fileType] || codeType.txt);
       setCode(res.data);
       setOpenEdit(true);
     }
@@ -393,7 +376,7 @@ const FileBrowserComponent = ({ hostList }: { hostList: HostInfo[] }) => {
       }
       setIsMkdir(false);
       setDialogType('viewFile');
-      setLanguage(codeType[fileType] || 'txt');
+      setLanguage(codeType[fileType] || codeType.txt);
       setCode(res.data);
       setOpen(true);
     }
