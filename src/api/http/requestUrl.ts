@@ -1,5 +1,5 @@
 let testHost = '';
-if (import.meta.env.DEV) {
+if (import.meta.env.DEV || import.meta.env.MODE === 'test') {
   // 开发环境使用配置的host
   testHost = import.meta.env.VITE_TEST_HOST;
 }

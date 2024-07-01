@@ -59,20 +59,10 @@
 ## 安装依赖
 
 ```shell
-npm install
-```
-
-或者
-
-```shell
 pnpm install
 ```
 
 ## 1.运行
-
-```shell
-npm run dev
-```
 
 ```shell
 pnpm dev
@@ -81,11 +71,11 @@ pnpm dev
 ## 2.编译
 
 ```shell
-npm run build
-```
-
-```shell
 pnpm build
+```
+本地打包调试
+```shell
+pnpm build:test  && pnpm serve
 ```
 
 ## 3.注意
