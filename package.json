@@ -88,7 +88,6 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.30.0",
-    "@types/js-base64": "^3.3.1",
     "@types/lodash": "^4.14.172",
     "@types/qs": "^6.9.7",
     "@types/react": "^17.0.0",
@@ -105,6 +104,6 @@
     "lint-staged": "^12.3.3",
     "prettier": "^2.5.1",
     "typescript": "^4.9.3",
-    "vite": "^5.1.3"
+    "vite": "^6.1.0"
   }
 }
