@@ -13,23 +13,29 @@ export default function Navigation() {
   const navigate = useNavigate();
   const hash = useLocation();
 
+  // 定义一个对象，将URL路径映射到对应的导航栏索引
+  const pathToIndexMap = {
+    [URL.home]: 0, // 首页
+    [URL.group.root]: 1, // 资产组
+    [URL.mode]: 2, // 运维模式
+    [URL.about]: 3, // 关于
+  };
+
   useEffect(() => {
+    // 如果当前路径是根路径，则导航到首页
     if (hash.pathname === '/') {
       navigate(URL.home); // 页面初始化跳转Home页面
     }
-    if (hash.pathname.includes(URL.home)) {
-      setValue(0);
+
+    // 根据当前路径获取对应的导航栏索引
+    const index = Object.keys(pathToIndexMap).find(key => hash.pathname.includes(key));
+    // 如果索引存在，则设置导航栏的选中状态
+    if (index !== undefined) {
+      setValue(pathToIndexMap[index]);
     }
-    if (hash.pathname.includes(URL.group.root)) {
-      setValue(1);
-    }
-    if (hash.pathname.includes(URL.mode)) {
-      setValue(2);
-    }
-    if (hash.pathname.includes(URL.about)) {
-      setValue(3);
-    }
-  }, [hash]);
+  }, [hash]); // 监听hash变化，更新导航栏选中状态
+
+
 
   return (
     <>
