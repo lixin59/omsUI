@@ -14,12 +14,12 @@ export const WILL_INIT_TAG = 'WILL_INIT_TAG';
 // export const WILL_ADD_TAG = 'WILL_ADD_TAG'; // 更新数据
 // export const WILL_EDIT_TAG = 'WILL_EDIT_TAG'; // 编辑标签信息
 
-export const WILL_INIT_Tunnel = 'WILL_INIT_Tunnel';
+export const WILL_INIT_TUNNEL = 'WILL_INIT_TUNNEL';
 // export const WILL_DELETE_Tunnel = 'WILL_DELETE_Tunnel';
 // export const WILL_ADD_Tunnel = 'WILL_ADD_Tunnel';
 // export const WILL_EDIT_Tunnel = 'WILL_EDIT_Tunnel';
 
-export const WILL_INIT_Job = 'WILL_INIT_Job';
+export const WILL_INIT_JOB = 'WILL_INIT_JOB';
 // export const WILL_DELETE_Job = 'WILL_DELETE_Job';
 // export const WILL_ADD_Job = 'WILL_ADD_Job'; // 更新数据
 // export const WILL_EDIT_Job = 'WILL_EDIT_Job'; // 编辑标签信息
@@ -59,7 +59,7 @@ export enum tunnelActions {
   INIT = 'INIT_JOB_TUNNEL_INFO',
   DELETE = 'DELETE_TUNNEL_INFO',
   ADD = 'ADD_TUNNEL_INFO',
-  EDIT = 'EDIT_TUNNELINFO'
+  EDIT = 'EDIT_TUNNEL_INFO'
 }
 
 export enum jobActions {

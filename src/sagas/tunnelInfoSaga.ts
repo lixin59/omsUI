@@ -1,5 +1,5 @@
 import { put, take, race, call } from 'redux-saga/effects';
-import { WILL_INIT_Tunnel } from '../store/action-types';
+import { WILL_INIT_TUNNEL } from '../store/action-types';
 import { tunnelActions } from '../store/action-types';
 import { getTunnelsApi } from '../api/http/httpRequestApi';
 
@@ -7,7 +7,7 @@ export default function* tunnelInfoSaga() {
   try {
     while (true) {
       const { update } = yield race({
-        update: take(WILL_INIT_Tunnel)
+        update: take(WILL_INIT_TUNNEL)
         // toAdd: take(actionType.WILL_INIT_Tunnel),
         // toDelete: take(actionType.WILL_DELETE_Tunnel),
         // toEdit: take(actionType.WILL_EDIT_Tunnel)

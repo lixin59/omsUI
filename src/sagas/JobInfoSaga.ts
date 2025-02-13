@@ -7,7 +7,7 @@ export default function* jobInfoSaga() {
   try {
     while (true) {
       const { update } = yield race({
-        update: take(actionType.WILL_INIT_Job)
+        update: take(actionType.WILL_INIT_JOB)
         // toAdd: take(actionType.WILL_ADD_Job),
         // toDelete: take(actionType.WILL_DELETE_Job),
         // toEdit: take(actionType.WILL_EDIT_Job)

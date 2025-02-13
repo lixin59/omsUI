@@ -37,10 +37,10 @@ const actions = {
     return { type: actionType.WILL_INIT_TAG };
   },
   updateJobList() {
-    return { type: actionType.WILL_INIT_Job };
+    return { type: actionType.WILL_INIT_JOB };
   },
   updateTunnelList() {
-    return { type: actionType.WILL_INIT_Tunnel };
+    return { type: actionType.WILL_INIT_TUNNEL };
   },
   initPlayerInfo() {
     return { type: actionType.WILL_INIT_PLAYER };
