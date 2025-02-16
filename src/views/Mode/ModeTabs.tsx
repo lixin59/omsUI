@@ -32,6 +32,17 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
+const urlMapList = [
+  { index: 0, path: URL.job },
+  { index: 1, path: URL.tunnel },
+  { index: 2, path: URL.uploadFile },
+  { index: 3, path: `${URL.webSSH}/0` },
+  { index: 4, path: URL.command },
+  { index: 5, path: URL.fileBrowser },
+  { index: 6, path: URL.hostMonitor },
+  { index: 7, path: `${URL.vnc}/0` }
+];
+
 function ModeTabs() {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
@@ -94,30 +105,11 @@ function ModeTabs() {
         <OmsTab label="主机监控" component={NavLink} to={URL.hostMonitor} {...a11yProps(6)} />
         <OmsTab label="远程桌面" component={NavLink} to={`${URL.vnc}/0`} {...a11yProps(7)} />
       </OmsTabs>
-      <TabPanel className={classes.TabPanel} value={value} index={0}>
-        <Outlet />
-      </TabPanel>
-      <TabPanel className={classes.TabPanel} value={value} index={1}>
-        <Outlet />
-      </TabPanel>
-      <TabPanel className={classes.TabPanel} value={value} index={2}>
-        <Outlet />
-      </TabPanel>
-      <TabPanel className={classes.TabPanel} value={value} index={3}>
-        <Outlet />
-      </TabPanel>
-      <TabPanel className={classes.TabPanel} value={value} index={4}>
-        <Outlet />
-      </TabPanel>
-      <TabPanel className={classes.TabPanel} value={value} index={5}>
-        <Outlet />
-      </TabPanel>
-      <TabPanel className={classes.TabPanel} value={value} index={6}>
-        <Outlet />
-      </TabPanel>
-      <TabPanel className={classes.TabPanel} value={value} index={7}>
-        <Outlet />
-      </TabPanel>
+      {urlMapList.map((e) => (
+        <TabPanel className={classes.TabPanel} key={e.index} value={value} index={e.index}>
+          <Outlet />
+        </TabPanel>
+      ))}
     </div>
   );
 }
